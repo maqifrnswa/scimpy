@@ -1,4 +1,5 @@
 \documentclass[10pt,letterpaper]{article}
+%\usepackage[a5paper]{geometry}%if printed as book
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -122,7 +123,7 @@ Equation \ref{impmatching} represents how we will design our impedance matching 
 
 \begin{figure}
 \centering
-\begin{circuitikz}
+\begin{circuitikz}[yscale=0.75]
   \draw (0,0)
   to[open,o-o] (0,4) % The voltage source
   to[short] (2,4)
@@ -358,11 +359,11 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 \subsubsection{Acoustical Model}
 From Section~\ref{mechanical_section}, we found a way to find the velocity the diaphragm will move as a function of input current. The moving diaphragm will push air and create a pressure wave, which is what we will hear. The speaker diaphragm pushes the following $V$ of air per second:
 \begin{align}
-Q=S_d\frac{dv}{dt}
+Q=S_dv\label{eq:volume_velocity}
 \end{align}
 Where $Q$ is the volume velocity, $v$ is diaphragm velocity as found in Section~\ref{mechanical_section}, and $S_d$ is the area of the driver diaphragm. Also, it is possible to convert between mechanical and acoustic impedances by using the speaker diaphragm area $S_d$:
 \begin{align}
-Z_m=\frac{F}{v}=\frac{pS_d}{Q/S_d}= S_d^2 Z_a
+Z_m=\frac{F}{v}=\frac{pS_d}{Q/S_d}= S_d^2 Z_a\label{eq:acoustic-to-mech_imp}
 \end{align}
 
 When mounted in a speaker enclosure, the air pushed/pulled from the front of the diaphragm radiates as sound waves while the air pushed/pulled from the back of the driver is shielded from the listener. This is because the sound waves from the back are perfectly out of phase from the front, and thus will lead to audio nulls in the room.
@@ -484,7 +485,7 @@ We now have all the tools to model the acoustic system as a circuit. When the sp
 
 \begin{figure}
 \centering
-\begin{circuitikz}
+\begin{circuitikz}[yscale=.75]
   \draw (0,0)
   to[open,v^>=$p_i$,o-o] (0,4) % The voltage source
   to[short,i=$Q_d$] (1,4)
@@ -526,8 +527,88 @@ We now have all the tools to model the acoustic system as a circuit. When the sp
 \caption{Common Simplified Acoustic Circuit Model}\label{acoustic_model_simple}
 \end{figure}
 
+\textbf{bass reflect out of phase!? yes/no!?}
 
 \subsubsection{Combined Model}\label{sec:combined_model}
+In this section, we will combine our models into a single model, then show how measurements can extract values for each of the components.
+
+First, we combine the acoustic model with the mechanical using Equations~\ref{eq:volume_velocity} and \ref{eq:acoustic-to-mech_imp} to generate Figure~\ref{mech-acoustic_model}.
+
+\begin{figure}
+\centering
+\begin{circuitikz}[yscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+  \draw (-2,0)
+  to[open,v^>=$F$,o-o] (-2,4) % The voltage source
+  to[L=$M_{md}$] (0,4)
+  to[R=$R_{ms}$] (1.5,4)
+  to[C=$C_{ms}$] (2.5,4)
+  to[R=$S_d^2 Z_{rad}$] (4,4)
+  to[short] (4,4)
+  to[C=$S_d^2 C_{ab}$] (4,2)
+  to[R=$S_d^2 R_{ab}$] (4,0)
+  to[short] (-2,0);
+  \draw (4,4)
+  to[short] (6,4)
+  to[R=$S_d^2 R_{al}$] (6,0) % The resistor
+  to[short] (4,0);
+  \draw (6,4)
+  to[R=$S_d^2 R_{av}$] (8,4)
+  to[L=$S_d^2 L_{av}$] (8,2)
+  to[R=$S_d^2 Z_{rad}$] (8,0)
+  to[short] (6,0);
+\end{circuitikz}
+\caption{Mechanical-Acoustic Circuit Model}\label{mech-acoustic_model}
+\end{figure}
+
+Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impedances to electrical $Z_e=(BI)^2Z_m^{-1}$. That means we have to find the dual of Figure~\ref{mech-acoustic_model} and place that circuit in Figure~\ref{electrical_model}.
+
+\begin{figure}
+\centering
+\begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+  \draw (-2,0)
+  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[R=$R_e$] (0,2)
+  to[L=$L_e$] (2,2)
+  to[C=$C_{mes}$,mirror] (2,0)
+  to[short] (-2,0);
+  \draw (2,2)
+  to[short] (4,2)
+  to[R=$R_{es}$] (4,0)
+  to[short] (2,0);
+  \draw (4,2)
+  to[short] (6,2)
+  to[L=$L_{ces}$] (6,0)
+  to[short] (4,0);
+  \draw (6,2)
+  to[L=$L_{ceb}$] (8,2)
+  to[R=$R_{el}$] (10,2)
+  to[C=$C_{lev}$, mirror] (10,0)
+  to[short] (6,0);
+  \draw (10,2)
+  to[short] (12,2)
+  to[R=$R_{ev}$] (12,0)
+  to[short] (10,0);
+  \draw (6,2)
+  to[short] (6,3)
+  to[R=$R_{eb}$] (8,3)
+  to[short] (8,2);
+  \draw (0,2)
+  to[short] (0,3)
+  to[R=$R_{eddy}$] (2,3)
+  to[short] (2,2);
+\end{circuitikz}
+\caption{Mechanical-Acoustic Circuit Model}\label{elec-mech-acoustic_model}
+\end{figure}
+
+to R=$S_d^2 R_{ab}$  (4,0)
+
+
+\hrule
+
+\textbf{when there is no box, $Q_b=Q_l=0$, load is inductive and added to $M_ms$}
+
+should i make inductors all value of M?
+
 \subsubsection{Monopole Radiation}
 
 
