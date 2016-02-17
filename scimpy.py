@@ -90,7 +90,7 @@ int(sc_info[new_row]["defaultHighOutputLatency"]*sc_info[new_row]["defaultSample
         formwidget=QtGui.QGroupBox("Measurement Parameters")
         formwidgetlayout=QtGui.QFormLayout()
         test2LineEdit=QtGui.QLineEdit()
-        test3LineEdit=QtGui.QLineEdit("0")
+        test3LineEdit=QtGui.QLineEdit("1024")
         test4ComboBox=QtGui.QComboBox()
         test4ComboBox.addItem("8")
         test4ComboBox.addItem("16")

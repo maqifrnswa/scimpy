@@ -62,7 +62,7 @@ class SpeakerTestEngine():
     def run(self,
             framesize=0,
             datarate=44100,
-            duration=2,
+            duration=4,
             width=2):
         """Runs speaker impedance test
 
@@ -100,11 +100,23 @@ class SpeakerTestEngine():
         else:
             print("Bit width should be 1, 2, or 4 bytes")
 
-        self.data = np.array(
-            np.random.random_integers(0, 2**(8*width)-1,
-                                      duration*self.datarate),
-            dtype=np_type)  # this works because fixed-width ints wrap
+#        self.data = np.array(
+#            np.random.random_integers(0, 2**(8*width)-1,
+#                                      duration*self.datarate),
+#            dtype=np_type)  # this works because fixed-width ints wrap
+
         # print(self.data.shape)
+        self.data = (scipy.signal.chirp(np.arange(0,duration,1/self.datarate),
+                                        0,
+                                        duration,
+                                        20000,
+                                        method='lin',
+                                        phi=-90
+                    )*((2**(8*width))/2-1))#.astype(dtype=np_type,copy=False)
+        if width == 1:
+            self.data=self.data+(2**(8*width))/2-1
+        self.data=self.data.astype(dtype=np_type,copy=False)
+        # self.data=scipy.hanning(len(self.data))*self.data
         # make it stereo
         self.data = np.array([self.data, self.data]).transpose().flatten()
         # print(self.data.shape)

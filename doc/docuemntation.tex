@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage[american,cuteinductors]{circuitikz}
 \usepackage{hyperref}
+\usepackage{tabularx}
 \usepackage{booktabs}
 \author{Scott Howard scott@scimpy.com}
 \title{Scimpy:\\ \textbf{S}ound \textbf{C}ard based \textbf{I}mpedance \textbf{M}easurements in \textbf{Py}thon}
@@ -329,12 +330,12 @@ From Equations~\ref{force_current} and \ref{velocity_potential} this description
 
 To continue with our model, we need to find the relationship between $v$ and $F$, so we turn to Newton's law of motion and Hook's law for a dampened mass on a spring:
 \begin{align}
-\sum F&=M_{md}\frac{d^2x}{dt^2}\\
-F-\frac{1}{C_{ms}}x&=M_{md}\frac{d^2x}{dt^2}+R_{ms}\frac{dx}{dt}\\
-F&=M_{md}\frac{dv}{dt}+R_{ms}v+\frac{1}{C_{ms}}\int v\,dt\\
-F(\omega)&=i\omega M_{md}v+R_{ms}v+\frac{1}{i\omega C_{ms}}v\label{force_equation}
+\sum F&=M_{ms}\frac{d^2x}{dt^2}\\
+F-\frac{1}{C_{ms}}x&=M_{ms}\frac{d^2x}{dt^2}+R_{ms}\frac{dx}{dt}\\
+F&=M_{ms}\frac{dv}{dt}+R_{ms}v+\frac{1}{C_{ms}}\int v\,dt\\
+F(\omega)&=i\omega M_{ms}v+R_{ms}v+\frac{1}{i\omega C_{ms}}v\label{force_equation}
 \end{align}
-where $M_{md}$ is the mass of the diaphragm and coil, $C_{ms}$ is the compliance of the suspension (i.e., $1/k$ of Hooke's Law), and $R_{ms}$ represents the coefficient of friction (mechanical resistance to motion). From Equation~\ref{force_equation}, you can see that we can actually model mechanical systems as electrical circuits. In such a circuit,  voltages represent force, current represents velocity, inductance is mass, electrical resistance is mechanical resistance, and capacitance is compliance. Mechanical impedance, is thus:
+where $M_{ms}$ is the mass of the diaphragm and coil (and acoustic mass), $C_{ms}$ is the compliance of the suspension (i.e., $1/k$ of Hooke's Law), and $R_{ms}$ represents the coefficient of friction (mechanical resistance to motion). From Equation~\ref{force_equation}, you can see that we can actually model mechanical systems as electrical circuits. In such a circuit,  voltages represent force, current represents velocity, inductance is mass, electrical resistance is mechanical resistance, and capacitance is compliance. Mechanical impedance, is thus:
 \begin{align}
 \hat{Z}_m&=\frac{F}{v}\\
 \hat{Z}_e &= \hat{Z}_m^{-1} (B\ell)^2\label{mech_imp_dual}
@@ -347,7 +348,7 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 \begin{circuitikz}
   \draw (0,0)
   to[open,v^>=$F$,o-o] (0,2) % The voltage source
-  to[L=$M_{md}$] (2,2) % The resistor
+  to[L=$M_{ms}$] (2,2) % The resistor
   to[R=$R_{ms}$] (4,2)
   to[C=$C_{ms}$] (6,2)
   to[generic=$\hat{Z_m}$,i=$v$] (6,0)
@@ -404,7 +405,7 @@ However, only one or two of the terms will typically dominate. To determine whic
 \begin{table}
 \centering
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{@{} l p{.25\textwidth} p{.5\textwidth} @{}}
+\begin{tabularx}{\textwidth}{@{} l X X @{}}
 \toprule
 Term & Description & Usage \\
 \midrule
@@ -414,7 +415,7 @@ Air leaking out the box ($R_{al}$); \newline
 Air flowing through acoustic filling material inside the box ($R_{ab}$)\\
 $C = \frac{V}{\rho c^2}$ & Air compressing inside an enclosure & Air compression in the box ($C_{ab}$)\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \caption{Guide to Acoustic Impedance Terms}\label{table:acoustic}
 \end{table}
 
@@ -432,9 +433,9 @@ and assume a spherical wave solution of the form:
 \begin{align}
 p=\Re \left\{ \frac{K}{r} e^{i(\omega t - k r)} \right\}
 \end{align}
-where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$. That basically places a spherical monopole in your opening. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
+where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$, assuming $a\ll \lambda/2\pi$. That basically places a spherical monopole in your opening. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
 \begin{align}
-Q_a=Av_a(t)=\frac{4\pi a^2}{2} v_a(t) = \hat{Q}_0e^{i\omega t}
+Q_a=Av_a(t)=\frac{4\pi a^2}{2} v_a(t) \approx \hat{Q}_0e^{i\omega t}
 \end{align}
 where $Q_0$ is the volume velocity inside the port. The velocity at radius $a$ from the center of the port is thus:
 \begin{align}
@@ -458,13 +459,18 @@ v_a=\frac{1}{2\pi a^2} \hat{Q}_0 e^{i\omega t}
 To make the connection between pressure and velocity, we can look to conservation of momentum. Momentum conservation says that the rate of momentum increase is equal to the force density $f$ (N/m$^3$) on a fluid.
 \begin{align}
 F&=m\frac{dv}{dt}\\
-\int f dV &= \int \rho \frac{dv}{dt} dV\\
-f&=\frac{\partial}{\partial t} (\rho v) \\
+\int f dV &= \int \rho\,dV \frac{dv}{dt} \\
+f&=\rho \frac{\partial v}{\partial t}\label{eq:density_wave} \\
 -\nabla p &= \rho \frac{\partial}{\partial t}\left( \hat{v}e^{i\omega t } \right)\\
 \frac{ikK}{r} e^{i(\omega t - k r)} + \frac{K}{r^2} e^{i(\omega t - k r)} &=\rho i\omega \hat{v}e^{i\omega t}\\
 \frac{kK}{\omega \rho r} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr} &= \hat{v}\label{solve_for_K}
 \end{align}
-We now evaluate Equation~\ref{solve_for_K} at $r=a$:
+%Here we assume $\rho(t)=\rho_0+\Delta \rho(t)$, since $\rho_0\gg\Delta \rho$, we can just consider the time independent part of $\rho$ in Equation \ref{eq:density_wave}
+We now evaluate Equation~\ref{solve_for_K} to find $Q$ at $r=a$, that is at the output of the port where the area is a hemisphere pointing out to space:
+\begin{align}
+\lim_{r\rightarrow 0} \left[ 2\pi r^2\left(\frac{k\,K}{\omega \rho r} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr}\right) \right] &= A\hat{v}=\hat{Q}_0\\
+K&=\frac{i\omega \rho \hat{Q}_0}{2\pi}
+\end{align}
 \begin{align}
 \frac{kr\,K}{\omega \rho r^2} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr} &= \frac{1}{2\pi a^2} \hat{Q}_0\\
 K &= \frac{\omega\rho}{2\pi({ka-i})} \hat{Q}_0e^{ika}
@@ -472,9 +478,19 @@ K &= \frac{\omega\rho}{2\pi({ka-i})} \hat{Q}_0e^{ika}
 Therefore:
 \begin{align}
 p&=\frac{\omega\rho \hat{Q}_0}{2\pi r(ka-i)} e^{i(\omega t - k (r-a))}\\
-\hat{Z}&=\frac{\hat{p}}{\hat{Q}}|_{r=a}=\frac{\omega \rho}{2\pi a(ka-i)}=\frac{\omega^2 \rho }{2\pi c(k^2a^2+1)}+\frac{i \rho }{2\pi ka(k^2a^2+1)}
+\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{\omega \rho}{2\pi r(ka-i)}=\frac{\omega^2 \rho }{2\pi c(k^2a^2+1)}+\frac{i \rho \omega }{2\pi r (k^2a^2+1)}
 \end{align}
-Now we consider $ka\approx0$ since $a \ll \lambda$:
+\begin{align}
+p&=\frac{i\omega\rho \hat{Q}_0}{2\pi r} e^{i(\omega t - k r)}\\
+Q&=(1+ikr)\hat{Q}_0e^{i(\omega t- kr)}\\
+\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{i\omega \rho}{2\pi r(1+ikr)}=\frac{\omega^2 \rho }{2\pi c(1+(kr)^2)}+\frac{i \omega \rho}{2\pi r (1+(kr)^2)}
+\end{align}
+Time average acoustic power can be found:
+\begin{align}
+\left\langle P \right\rangle &=\frac{\Re\left\{ \hat{Q}\hat{p}^*\right\}}{2}=\frac{k\omega\rho }{4\pi}\left|\hat{Q}_0 \right|^2\\
+\left\langle P \right\rangle &=\frac{\left|\hat{p}\right|^2}{R}=\omega^2\rho^2
+\end{align}
+Now we consider $(ka)^2\ll 1$ by assuming $\lambda\gg 2 \pi a$, and by considering wave propagation to the far field $r\gg\frac{\lambda}{2\pi}$
 \begin{align}
 \hat{Z}_{rad}&=\frac{\omega^2 \rho }{2\pi c}
 \end{align}
@@ -539,7 +555,7 @@ First, we combine the acoustic model with the mechanical using Equations~\ref{eq
 \begin{circuitikz}[yscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
   to[open,v^>=$F$,o-o] (-2,4) % The voltage source
-  to[L=$M_{md}$] (0,4)
+  to[L=$M_{ms}$] (0,4)
   to[R=$R_{ms}$] (1.5,4)
   to[C=$C_{ms}$] (2.5,4)
   to[R=$S_d^2 Z_{rad}$] (4,4)
@@ -560,7 +576,7 @@ First, we combine the acoustic model with the mechanical using Equations~\ref{eq
 \caption{Mechanical-Acoustic Circuit Model}\label{mech-acoustic_model}
 \end{figure}
 
-Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impedances to electrical $Z_e=(BI)^2Z_m^{-1}$. That means we have to find the dual of Figure~\ref{mech-acoustic_model} and place that circuit in Figure~\ref{electrical_model}.
+Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impedances to electrical $Z_e=(B\ell)^2Z_m^{-1}$. That means we have to find the dual of Figure~\ref{mech-acoustic_model} and place that circuit in Figure~\ref{electrical_model}. The resulting equivalent circuit model is presented in Figure~\ref{elec-mech-acoustic_model}; variables are defined in Table~\ref{table:variables}.
 
 \begin{figure}
 \centering
@@ -597,10 +613,47 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
   to[R=$R_{eddy}$] (2,3)
   to[short] (2,2);
 \end{circuitikz}
-\caption{Mechanical-Acoustic Circuit Model}\label{elec-mech-acoustic_model}
+\caption{Electro-Mechanical-Acoustic Circuit Model}\label{elec-mech-acoustic_model}
 \end{figure}
 
-to R=$S_d^2 R_{ab}$  (4,0)
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} ll X @{}}
+\toprule
+Variable & Definition & Description \\
+\midrule
+$R_e$ & & Electrical resistance of the voice coil\\
+$L_e$ & & Electrical inductance of the voice coil\\
+$R_{eddy}$ & & Losses due to inductive currents near voice coil\\
+$C_{es}$ & $\frac{(B\ell)^2}{M_{ms}}$ & Equivalent electrical capacitance from diaphragm and voice coil mass\\
+$B$ & & Magnetic flux density of speaker driver magnets\\
+$\ell$ & & Total length of wire in voice coil\\
+$R_{es}$ & $\frac{(B\ell)^2}{R_{ms}+S_d^2Z_{rad}}$ & Equiv. electrical resistance from mechanical dampening in the speaker suspension and front front acoustic radiation\\
+$S_d$ & & Speaker driver area\\
+$Z_{rad}$ & $\frac{\omega^2 \rho}{2\pi c}$ & 1/2 of acoustic impedance of monopole radiation\\
+$L_{ces}$ & $\frac{(B\ell)^2}{C_{ms}}$ & Equivalent electrical inductance of the suspension's mechanical compliance\\
+$L_{ceb}$ & $\frac{(B\ell)^2}{S_d^2} \frac{\rho c^2}{V}$ & Equivalent electrical inductance of the compression of air in a box with volume $V$\\
+$R_{eb}$ & $\frac{(B\ell)^2}{S_d^2 R_{ab}}$ & Equivalent electrical resistance of acoustic dampening from fill material in box\\
+$R_{el}$ & $\frac{(B\ell)^2}{S_d^2 } \frac{\kappa A}{\mu l}$ & Equivalent electrical resistance of air leakage in the enclosure with surface area $A$ and thickness $l$\\
+$C_{lev}$ & $\frac{(B\ell)^2}{S_d^2}\frac{A}{\rho l}$ & Equivalent electrical capacitance from a mass of air flowing through a vent/port of area $A$ and length $l$\\
+$R_{ev}$ & $\frac{(B\ell)^2}{S_d^2\left( \frac{\mu l}{\kappa A}+Z_{rad}\right)}$ & Equiv. electrical resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A$ and length $l$\\
+\bottomrule
+\end{tabularx}
+\caption{Variable Definitions}\label{table:variables}
+\end{table}
+
+
+\textbf{circuit is general, can remove vent, or entire box as would be done in measurements typically}
+
+efficiency is proportional to difference in voltage over res and voltage over rev (assuming vent losses are low). voltage is transferred to Q
+
+\textbf{output power rev should be maximized, proportional to voltage across it, so rel should be made as small as possible. Same with Res}
+
+\textbf{in vented box, Rel is low (well sealed - acoustic resistance is high), rev is high (air moves easily, not viscous flow through vent), Reb polyfill can be tuned to help increase size of box (more on that next) but can assume Reb large (acoustic resistance is low)}
+
+\textbf{sealed box, rel still tiny}
+
 
 
 \hrule
@@ -608,6 +661,16 @@ to R=$S_d^2 R_{ab}$  (4,0)
 \textbf{when there is no box, $Q_b=Q_l=0$, load is inductive and added to $M_ms$}
 
 should i make inductors all value of M?
+
+\textbf{thiele does not have factor of two in resistance of vent}
+
+\textbf{$\mu$ for air is $1.56\times10^{-5}$m$^2$/s.}
+
+\textbf{Compliance is V/rho csquared}
+
+\textbf{split variable definitions in to electrical/mechanical/acoustic? Also derived variables?}
+
+\textbf{EBP - compare efficiency of sealed to vented, when does one win?}
 
 \subsubsection{Monopole Radiation}
 
