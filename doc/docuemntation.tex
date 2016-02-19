@@ -348,7 +348,7 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 \begin{circuitikz}
   \draw (0,0)
   to[open,v^>=$F$,o-o] (0,2) % The voltage source
-  to[L=$M_{ms}$] (2,2) % The resistor
+  to[L=$M_{md}$] (2,2) % The resistor
   to[R=$R_{ms}$] (4,2)
   to[C=$C_{ms}$] (6,2)
   to[generic=$\hat{Z_m}$,i=$v$] (6,0)
@@ -357,7 +357,9 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 \caption{Mechanical Model}\label{mechanical_model}
 \end{figure}
 
-\subsubsection{Acoustical Model}
+
+
+\subsubsection{Acoustical Model}\label{sec:acoustic_model}
 From Section~\ref{mechanical_section}, we found a way to find the velocity the diaphragm will move as a function of input current. The moving diaphragm will push air and create a pressure wave, which is what we will hear. The speaker diaphragm pushes the following $V$ of air per second:
 \begin{align}
 Q=S_dv\label{eq:volume_velocity}
@@ -433,7 +435,7 @@ and assume a spherical wave solution of the form:
 \begin{align}
 p=\Re \left\{ \frac{K}{r} e^{i(\omega t - k r)} \right\}
 \end{align}
-where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$, assuming $a\ll \lambda/2\pi$. That basically places a spherical monopole in your opening. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
+where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$, assuming $a\ll \lambda/2\pi$. That basically places a spherical monopole in your opening\footnote{This is an approximation, more formal analysis of acoustic radiation models the vent as a piston. The approach here still works pretty well at drawing some meaningful conclusions, nonetheless.}. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
 \begin{align}
 Q_a=Av_a(t)=\frac{4\pi a^2}{2} v_a(t) \approx \hat{Q}_0e^{i\omega t}
 \end{align}
@@ -463,37 +465,48 @@ F&=m\frac{dv}{dt}\\
 f&=\rho \frac{\partial v}{\partial t}\label{eq:density_wave} \\
 -\nabla p &= \rho \frac{\partial}{\partial t}\left( \hat{v}e^{i\omega t } \right)\\
 \frac{ikK}{r} e^{i(\omega t - k r)} + \frac{K}{r^2} e^{i(\omega t - k r)} &=\rho i\omega \hat{v}e^{i\omega t}\\
-\frac{kK}{\omega \rho r} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr} &= \hat{v}\label{solve_for_K}
+\frac{kK}{\omega \rho r} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr} &= \hat{v}\label{solve_for_K}\\
+\frac{\hat{p}}{\rho c} \left(1 - \frac{i}{ k r} \right) &= \hat{v}
 \end{align}
 %Here we assume $\rho(t)=\rho_0+\Delta \rho(t)$, since $\rho_0\gg\Delta \rho$, we can just consider the time independent part of $\rho$ in Equation \ref{eq:density_wave}
 We now evaluate Equation~\ref{solve_for_K} to find $Q$ at $r=a$, that is at the output of the port where the area is a hemisphere pointing out to space:
-\begin{align}
-\lim_{r\rightarrow 0} \left[ 2\pi r^2\left(\frac{k\,K}{\omega \rho r} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr}\right) \right] &= A\hat{v}=\hat{Q}_0\\
-K&=\frac{i\omega \rho \hat{Q}_0}{2\pi}
-\end{align}
+
+%\begin{align}
+%\frac{\hat{p}_a}{\rho c} \left(1 - \frac{i}{ k a} \right) &= \hat{v}_a=\frac{\hat{Q}_0}{2\pi a^2 }\\
+%\hat{p}_a &= \frac{\rho c \hat{Q}_0}{2\pi a^2}\frac{ka}{ka - i}=\frac{\rho c \hat{Q}_0}{2\pi a^2}\frac{(ka)^2+ika}{(ka)^2 + 1}\\
+%\hat{p}_a &= \frac{\rho c \hat{Q}_0}{2\pi a^2}\frac{ka}{ka - i}=\frac{\rho c \hat{Q}_0}{2\pi }\left(\frac{k^2}{(ka)^2 + 1}+\frac{i\frac{k}{a}}{(ka)^2 + 1}\right)
+%\end{align}
+
+%see above this one is where i left off
+%\begin{align}
+%\frac{k\,K}{\omega \rho a} e^{-ika} - \frac{iK}{\omega \rho a^2} e^{-ika} &= \hat{v}_a=\frac{\hat{Q}_0}{2\pi a^2 }\\
+%K&=\frac{i\omega \rho \hat{Q}_0}{2\pi}
+%\end{align}
 \begin{align}
 \frac{kr\,K}{\omega \rho r^2} e^{-ikr} - \frac{iK}{\omega \rho r^2} e^{-ikr} &= \frac{1}{2\pi a^2} \hat{Q}_0\\
 K &= \frac{\omega\rho}{2\pi({ka-i})} \hat{Q}_0e^{ika}
 \end{align}
 Therefore:
 \begin{align}
-p&=\frac{\omega\rho \hat{Q}_0}{2\pi r(ka-i)} e^{i(\omega t - k (r-a))}\\
-\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{\omega \rho}{2\pi r(ka-i)}=\frac{\omega^2 \rho }{2\pi c(k^2a^2+1)}+\frac{i \rho \omega }{2\pi r (k^2a^2+1)}
+p_{r=a}&=\frac{\omega\rho \hat{Q}_0}{2\pi a(ka-i)} e^{i(\omega t - k (r-a))}\\
+\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{\omega \rho}{2\pi r(ka-i)}=\frac{\omega^2 \rho }{2\pi c(k^2a^2+1)}+\frac{i \rho \omega }{2\pi a (k^2a^2+1)}
 \end{align}
+%\begin{align}
+%p&=\frac{i\omega\rho \hat{Q}_0}{2\pi r} e^{i(\omega t - k r)}\\
+%Q&=(1+ikr)\hat{Q}_0e^{i(\omega t- kr)}\\
+%\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{i\omega \rho}{2\pi r(1+ikr)}=\frac{\omega^2 \rho }{2\pi c(1+(kr)^2)}+\frac{i \omega \rho}{2\pi r (1+(kr)^2)}
+%\end{align}
+%Time average acoustic power can be found:
+%\begin{align}
+%\left\langle P \right\rangle &=\frac{\Re\left\{ \hat{Q}\hat{p}^*\right\}}{2}=\frac{k\omega\rho }{4\pi}\left|\hat{Q}_0 \right|^2\\
+%\left\langle P \right\rangle &=\frac{\left|\hat{p}\right|^2}{R}=\omega^2\rho^2
+%\end{align}
+That is, the impedance a volume velocity of $Q_0$ feels at the output of the port, approximated by $r=a$. Now we consider $(ka)^2\ll 1$ by assuming $\lambda\gg 2 \pi a$:
 \begin{align}
-p&=\frac{i\omega\rho \hat{Q}_0}{2\pi r} e^{i(\omega t - k r)}\\
-Q&=(1+ikr)\hat{Q}_0e^{i(\omega t- kr)}\\
-\hat{Z}&=\frac{\hat{p}}{\hat{Q}}=\frac{i\omega \rho}{2\pi r(1+ikr)}=\frac{\omega^2 \rho }{2\pi c(1+(kr)^2)}+\frac{i \omega \rho}{2\pi r (1+(kr)^2)}
+\hat{Z}_{rad}=\frac{\omega^2 \rho }{2\pi c}+\frac{i\rho\omega \frac{a}{2}}{\pi a^2}=R_{rad}+i\omega L_{rad} && L_{rad}=\frac{\rho\frac{a}{2}}{\pi a^2}
 \end{align}
-Time average acoustic power can be found:
-\begin{align}
-\left\langle P \right\rangle &=\frac{\Re\left\{ \hat{Q}\hat{p}^*\right\}}{2}=\frac{k\omega\rho }{4\pi}\left|\hat{Q}_0 \right|^2\\
-\left\langle P \right\rangle &=\frac{\left|\hat{p}\right|^2}{R}=\omega^2\rho^2
-\end{align}
-Now we consider $(ka)^2\ll 1$ by assuming $\lambda\gg 2 \pi a$, and by considering wave propagation to the far field $r\gg\frac{\lambda}{2\pi}$
-\begin{align}
-\hat{Z}_{rad}&=\frac{\omega^2 \rho }{2\pi c}
-\end{align}
+
+There is a radiative (power transmitted as sound) and inductive (air mass being pushed) components, which follow forms very similar to Table~\ref{table:acoustic}. Inductance for example, is modelled as extending the vent tube (with radius $a_v$ and area $\pi a_v^2$) by a length $a_v/2$ or increasing the mass of the diaphragm by $\frac{\rho S_d a_d}{2}$ (with diaphragm radius of $a_d$ and area $S_d$). This additional mass is commonly lumped in with the diaphragm mass $M_{ms}=M_{md}+S_d^2 L_{rad}$ or acoustic mass $L_{avt}=L_{av}+L_{rad}$.
 
 
 We now have all the tools to model the acoustic system as a circuit. When the speaker driver moves with velocity $v$ (as determined in Section~\ref{mechanical_section}, It will create a $Q_d=v_dS_d$. This $Q_d$ radiates as sound and also drives air into the enclosure box $Q_b$. The increased volume of air in the box increases the pressure in the box. Increased pressure drives air to leak out of the box; and the box increase in box pressure causes flow and radiation out of the vented port. This complete model is described in Figure~\ref{acoustic_model}. The forward speaker radiation $p_f$ is in reverse polarity to indicate the radiation is $180^\circ$ out of phase from $Q_d$ since $Q_d$ is defined as positive when pushing air in to the enclosure. $R_{ab}$ is included to account for pressure loss due to filling material in the enclosure. Figure~\ref{acoustic_model_simple} shows a commonly employed simplified model; we will see in Section~\ref{sec:combined_model} that several terms will be able to be combined to yield this simplified model.
@@ -555,12 +568,12 @@ First, we combine the acoustic model with the mechanical using Equations~\ref{eq
 \begin{circuitikz}[yscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
   to[open,v^>=$F$,o-o] (-2,4) % The voltage source
-  to[L=$M_{ms}$] (0,4)
+  to[L=$M_{md}$] (0,4)
   to[R=$R_{ms}$] (1.5,4)
   to[C=$C_{ms}$] (2.5,4)
-  to[R=$S_d^2 Z_{rad}$] (4,4)
+  to[generic=$S_d^2 Z_{rad}$] (4,4)
   to[short] (4,4)
-  to[C=$S_d^2 C_{ab}$] (4,2)
+  to[C=$\frac{C_{ab}}{S_d^2 }$] (4,2)
   to[R=$S_d^2 R_{ab}$] (4,0)
   to[short] (-2,0);
   \draw (4,4)
@@ -570,13 +583,13 @@ First, we combine the acoustic model with the mechanical using Equations~\ref{eq
   \draw (6,4)
   to[R=$S_d^2 R_{av}$] (8,4)
   to[L=$S_d^2 L_{av}$] (8,2)
-  to[R=$S_d^2 Z_{rad}$] (8,0)
+  to[generic=$S_d^2 Z_{rad}$] (8,0)
   to[short] (6,0);
 \end{circuitikz}
 \caption{Mechanical-Acoustic Circuit Model}\label{mech-acoustic_model}
 \end{figure}
 
-Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impedances to electrical $Z_e=(B\ell)^2Z_m^{-1}$. That means we have to find the dual of Figure~\ref{mech-acoustic_model} and place that circuit in Figure~\ref{electrical_model}. The resulting equivalent circuit model is presented in Figure~\ref{elec-mech-acoustic_model}; variables are defined in Table~\ref{table:variables}.
+Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impedances to electrical $Z_e=(B\ell)^2Z_m^{-1}$. That means we have to find the dual of Figure~\ref{mech-acoustic_model} and place that circuit in Figure~\ref{electrical_model}. The resulting equivalent circuit model is presented in Figure~\ref{elec-mech-acoustic_model}; variables are defined in Tables \ref{table:acoustic-variables}, \ref{table:mech-variables}, and \ref{table:variables}.
 
 \begin{figure}
 \centering
@@ -623,50 +636,264 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
 \toprule
 Variable & Definition & Description \\
 \midrule
+$Z_a$ & $\frac{p}{Q}$ & Acoustic impedance\\
+$S_d$ & & Speaker driver area\\
+$R_{rad}$ & $\frac{\omega^2 \rho}{2\pi c}$ & Acoustic impedance of monopole radiation in to a hemisphere\\
+$L_{rad}$ & $\frac{\rho \frac{a}{2}}{A_v}$ & Acoustic inductance of monopole radiation in to a hemisphere\\
+$C_{ab}$ & $\frac{V}{\rho c^2}$ & Acoustic compliance from compression of air in a box with volume $V$\\
+$R_{ab}$ & & Equivalent electrical resistance of acoustic dampening from fill material in box\\
+$R_{al}$ & $\frac{\mu l}{\kappa A}$ & Acoustic resistance from air leakage out of the enclosure with surface area $A$ and wall thickness $l$\\
+$L_{av}$ & $\frac{A_v}{\rho l_v}$ & Equivalent electrical capacitance from a mass of air flowing through a vent/port of area $A_v$ and length $l_v$\\
+$R_{av}$ & $\frac{\mu l_v}{\kappa A_v}$ & Equiv. electrical resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A_v$ and length $l_v$\\
+\bottomrule
+\end{tabularx}
+\caption{Acoustic Variable Definitions}\label{table:acoustic-variables}
+\end{table}
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} ll X @{}}
+\toprule
+Variable & Definition & Description \\
+\midrule
+$Z_m$ & $\frac{F}{v}=S_d^2 Z_a$ & Mechanical impedance\\
+$M_{md}$ & & Mass of the diaphragm and coil\\
+$M_{ms}$ &$M_{md}+S_d^2L_{rad}$ & Mass of the diaphragm, coil, and acoustic load\\
+$R_{ms}$ & & Mechanical resistance from dampening in the speaker suspension\\
+$C_{ms}$ &  & Mechanical compliance of speaker suspension\\
+$V_{as}$ & $\rho c^2 S_d^2 C_{ms}$  & $C_{ms}$ is commonly given in terms of the volume of air with equivalent mechanical compliance\\
+$B\ell$ & & Magnetic flux density of speaker driver magnets times length of wire in voice coil\\
+\bottomrule
+\end{tabularx}
+\caption{Mechanical Variable Definitions}\label{table:mech-variables}
+\end{table}
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} ll X @{}}
+\toprule
+Variable & Definition & Description \\
+\midrule
 $R_e$ & & Electrical resistance of the voice coil\\
 $L_e$ & & Electrical inductance of the voice coil\\
 $R_{eddy}$ & & Losses due to inductive currents near voice coil\\
-$C_{es}$ & $\frac{(B\ell)^2}{M_{ms}}$ & Equivalent electrical capacitance from diaphragm and voice coil mass\\
-$B$ & & Magnetic flux density of speaker driver magnets\\
-$\ell$ & & Total length of wire in voice coil\\
-$R_{es}$ & $\frac{(B\ell)^2}{R_{ms}+S_d^2Z_{rad}}$ & Equiv. electrical resistance from mechanical dampening in the speaker suspension and front front acoustic radiation\\
-$S_d$ & & Speaker driver area\\
-$Z_{rad}$ & $\frac{\omega^2 \rho}{2\pi c}$ & 1/2 of acoustic impedance of monopole radiation\\
-$L_{ces}$ & $\frac{(B\ell)^2}{C_{ms}}$ & Equivalent electrical inductance of the suspension's mechanical compliance\\
-$L_{ceb}$ & $\frac{(B\ell)^2}{S_d^2} \frac{\rho c^2}{V}$ & Equivalent electrical inductance of the compression of air in a box with volume $V$\\
+$C_{es}$ & $\frac{M_{ms}}{(B\ell)^2}$ & Equivalent electrical capacitance from diaphragm and voice coil mass\\
+$R_{es}$ & $\frac{(B\ell)^2}{R_{ms}+S_d^2R_{rad}}$ & Equiv. electrical resistance from mechanical dampening in the speaker suspension and front front acoustic radiation\\
+$L_{ces}$ & $(B\ell)^2C_{ms}$ & Equivalent electrical inductance of the suspension's mechanical compliance\\
+$L_{ceb}$ & $\frac{(B\ell)^2}{S_d^2} \frac{V}{\rho c^2}$ & Equivalent electrical inductance of the compression of air in a box with volume $V$\\
 $R_{eb}$ & $\frac{(B\ell)^2}{S_d^2 R_{ab}}$ & Equivalent electrical resistance of acoustic dampening from fill material in box\\
 $R_{el}$ & $\frac{(B\ell)^2}{S_d^2 } \frac{\kappa A}{\mu l}$ & Equivalent electrical resistance of air leakage in the enclosure with surface area $A$ and thickness $l$\\
-$C_{lev}$ & $\frac{(B\ell)^2}{S_d^2}\frac{A}{\rho l}$ & Equivalent electrical capacitance from a mass of air flowing through a vent/port of area $A$ and length $l$\\
-$R_{ev}$ & $\frac{(B\ell)^2}{S_d^2\left( \frac{\mu l}{\kappa A}+Z_{rad}\right)}$ & Equiv. electrical resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A$ and length $l$\\
+$C_{lev}$ & $\frac{S_d^2}{(B\ell)^2}\frac{\rho \left(l+\frac{a_v}{2}\right)}{A}$ & Equivalent electrical capacitance from a mass of air flowing through a vent/port of area $A$ and length $l$ with additional length of 1/2 radius ($a/2$) from vent radiation\\
+$R_{ev}$ & $\frac{(B\ell)^2}{S_d^2\left( \frac{\mu l}{\kappa A}+R_{rad}\right)}$ & Equiv. electrical resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A$ and length $l$\\
+$R_{er}$ & $\frac{(B\ell)^2}{S_d^2}\frac{2\pi c}{\omega^2 \rho}$& Equiv. electrical resistance of acoustic radiation\\
 \bottomrule
 \end{tabularx}
-\caption{Variable Definitions}\label{table:variables}
+\caption{Electric Variable Definitions}\label{table:variables}
 \end{table}
 
+Figure \ref{elec-mech-acoustic_model} describes a vented box, but can easily be modified for sealed box or open baffle by the conversion described in \ref{table:sealed-openbaffle}.
 
-\textbf{circuit is general, can remove vent, or entire box as would be done in measurements typically}
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{} lll @{}}
+\toprule
+Variable & Sealed & Open Box \\
+\midrule
+$L_{ceb}$ & Yes & No (short)\\
+$R_{eb}$ & Yes & No (open)\\
+$R_{el}$ & Yes & No (open)\\
+$C_{lev}$ & No (open) & No (open)\\
+$R_{ev}$ & No (open) & No (open)\\
+\bottomrule
+\end{tabular}
+\caption{Vented Box Model conversion to sealed and open baffle}\label{table:sealed-openbaffle}
+\end{table}
 
-efficiency is proportional to difference in voltage over res and voltage over rev (assuming vent losses are low). voltage is transferred to Q
+In all cases, several simple conclusions can be drawn. To maximize output efficiency, make all non-radiative losses small: fully seal the box $R_{el}=0$; make the port area as large as possible so $R_{ev}$ is limited to acoustic radiation;  choose efficient drivers (low eddy current effects, high-$Q$ drivers); and use as little filler material as necessary $R_{eb}$. The guidelines lead to the common simplified model as seen in Figure \ref{fig:elec-mech-acoustic_model-simple}. Additionally, port radiation through $R_{ev}$ is relatively low, therefore $R_{ev}$ is large and removed from the model. Port volume velocity can still be found since it is proportional to the electrical potential over $C_{lev}$
 
-\textbf{output power rev should be maximized, proportional to voltage across it, so rel should be made as small as possible. Same with Res}
+\begin{figure}
+\centering
+\begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+  \draw (-2,0)
+  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[R=$R_e$] (0,2)
+  to[L=$L_e$] (2,2)
+  to[C=$C_{mes}$,mirror] (2,0)
+  to[short] (-2,0);
+  \draw (2,2)
+  to[short] (4,2)
+  to[R=$R_{es}$] (4,0)
+  to[short] (2,0);
+  \draw (4,2)
+  to[short] (6,2)
+  to[L=$L_{ces}$] (6,0)
+  to[short] (4,0);
+  \draw (6,2)
+  to[L=$L_{ceb}$] (8,2)
+  to[C=$C_{lev}$] (8,0)
+  to[short] (6,0);
+\end{circuitikz}
+\caption{Simplified Electro-Mechanical-Acoustic Circuit Model}\label{fig:elec-mech-acoustic_model-simple}
+\end{figure}
 
-\textbf{in vented box, Rel is low (well sealed - acoustic resistance is high), rev is high (air moves easily, not viscous flow through vent), Reb polyfill can be tuned to help increase size of box (more on that next) but can assume Reb large (acoustic resistance is low)}
 
-\textbf{sealed box, rel still tiny}
 
+\subsubsection{How to design the box}
+\textbf{Speaker in Free Air}: 
+We can use our understanding and model in Figure \ref{fig:elec-mech-acoustic_model-simple} to come up with the why and how we need speaker enclosures. Consider, at first, a speaker driver sitting in free air in Figure \ref{fig:freeair-model}. The right two resistors have the same value and represent acoustic power transmitted as sound. Although they are much larger than $R_{es}$, they are included to show the back and rear polarities are opposite. As such, total output power is \textit{zero}. Not exactly the world's best speakers!
+
+Still, there is some insight to be gained about system performance. Prior ubiquitous computing and measurement techniques, the easiest responses to measure were the peak frequency response and bandwidth, simply by measuring acoustic audio output versus input frequency.  We can find the expressions for resonance frequency $f_s$ and $f_s/\Delta f = Q$ of power dissipated in the mechanical resonator.
+\begin{align}
+\left\langle P\right\rangle=\frac{\left|F_R \right|^2}{2R}\\
+F_R=\frac{R}{i\omega M_{ms}+R_{ms}+\frac{1}{i\omega C_{ms}}}\\
+\omega_s M_{ms}-\frac{1}{\omega_s C_{ms}}=0\\
+\omega_s=\frac{1}{\sqrt{M_{ms}C_{ms}}}\\
+f_s=\frac{1}{2\pi\sqrt{M_{ms}C_{ms}}}
+\end{align}
+$Q$ can also computed as $Q=2\pi\times\frac{W_{store}}{W_{loss/cycle}}=\omega_s\frac{W}{P}$ (ratio of energy stored in resonator to $2\pi\times$ energy loss per cycle). At resonance, the total energy stored is the same as the peak energy stored in either the capacitor or inductor ($\frac{1}{2}LI_p^2$ or $\frac{1}{2}CV_p^2$), and time average power loss is $\frac{1}{2}RI_p^2$ or $\frac{1}{2}\frac{V_p^2}{R}$. To solve for $Q$, use the component that corresponds to whether $R$ sees the same $I$ or $V$ as the resonator (i.e., in series or parallel, respectively). There are two reasons for energy loss: mechanical ($R_{es}$) and electrical ($R_{e}$). Commonly these are separated independently, then combined. This was done because $R_e$ was easy to measure with a multimeter, and therefore measuring the combined $Q_t$ while knowing $Q_e$ gave people a way to indirectly measure $R_{es}$:
+\begin{align}
+Q_{ms}=\omega_s\frac{v^2M_{ms}}{v^2R_{ms}}=\frac{2\pi f_s M_{ms}}{R_{ms}}
+\end{align}
+Now we can find the expression for electrical power dissipated from the mechanical resonance, thus only considering electrical losses. Since $R_e$ and $C_{mes}$ see the same $I_{peak}$: 
+\begin{align}
+Q_{es}&=\omega_s\frac{I^2 C_{mes}}{I^2/R_e}=2\pi f_s R_{e} C_{mes}=\frac{2\pi f_s R_{e} M_{mms}}{(B\ell)^2}
+\end{align}
+Since $Q$ is energy stored per power dissipated, if a resonator has two ways of dissipating energy but one way of storing it, then the combined $Q$ can be found:
+\begin{align}
+Q_{ts}=\frac{\omega W_{store}}{P_e+P_m}=\left(\frac{P_e}{\omega W_{store}}+\frac{P_m}{\omega W_{store}}\right)^{-1}=\frac{Q_{es}Q_{ms}}{Q_{es}+Q_{ms}}
+\end{align}
+
+\textbf{Speaker with an Infinite Baffle:} The problem with our free space speaker was the interference of the sound from the front and back of the speaker driver. We can block the sound from the back of the driver by walling off the space between the front and back of the driver. Figure \ref{fig:freeair-model} stays the same, but our output acoustic power is solely from the front of the driver. We can compute the output acoustic power of this system as a function of frequency:
+\begin{align}
+P_a=\frac{\left| v_f \right|^2}{R_{er}}\\
+v_f=v_0\times\frac{\hat{Z}_e}{R_e+i\omega L_e+\hat{Z_e}}\\
+P_a=\frac{\left| v_o \right|^2 \left| \hat{Z}_e \right|^2 }{R_{rad}\left| R_e+i\omega L_e+\hat{Z}_e\right|^2}\\
+P_a=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
+2\pi c (B\ell)^2 
+}\left| \frac{ \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2\\
+P_a(\omega)=\frac{\left| v_o \right|^2S_d^ \rho}{
+2\pi c (B\ell)^2 
+}\left| \frac{\omega  \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2 \label{eq:acostic-power}
+\end{align}
+The term on the right of Equation \ref{eq:acostic-power} is the power transfer function. The form of the function is seen in Figure \ref{fig:power-transfer}. It peaks at $f_s$, and in the presence of $L_e$ (red) decreases output at higher frequencies. However, to gain some more insight, we will ignore the effects of $L_e$.
+
+\begin{figure}
+\centering
+\includegraphics[width=.75\textwidth]{matlab/infiniteBafflePower.png}
+\caption{Infinite Baffle Power Transfer Function for $R_e=7$.
+$C_{es}=1e-3$, $L_{es}=1e-3$, $R_{es}=30$. Red curve:$L_e=1e-4$, Blue curve: $L_e=0$}\label{fig:power-transfer}
+\end{figure}
+
+Looking into the power transfer function:
+\begin{align}
+G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
+\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\omega^2 C_{es}L_{es}+i\omega L_{es}\left( R_e^{-1}+R_{es}^{-1} \right) +1}
+\end{align}
+
+We can recognize $\omega_s=\frac{1}{\sqrt{C_es L_es}}$ and take the approximation from $R_e\gg R_{es}$ since $Q_e\ll Q_{ms}$ in typical speakers:
+\begin{align}
+G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
+\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\frac{\omega^2}{\omega_s^2} +\frac{i \omega}{\omega_s}\frac{ L_{es}}{R_{es}\sqrt{C_{es}L_{es}} } +1}\label{eq:freeair-transfer}
+\end{align}
+Which has the form of a second-order high-pass filter... Can we use this to turn the system in to a Butterworth filter with a flat pass-band and phase response? For a second order Butterworth filter:
+\begin{align}
+G(\omega)=\frac{\omega^4}{1+\left( \frac{\omega}{\omega_s} \right)^4}=\left| \frac{\omega^2}{-\left(\frac{\omega}{\omega_s} \right)^2 +\sqrt{2}\frac{i\omega}{\omega_s} +1} \right|^2
+\end{align}
+So if we can get $\frac{ L_{es}}{R_{es}\sqrt{C_{es}L_{es}}} =\sqrt{2}$, our speaker will have a flat pass band and phase response! How can we do that? Well, if you put the back of the speaker in a sealed and enclosed area, there will be a $L_{ceb}$ in parallel to $L_{es}$ from the compliance (springy-ness) of the air in the box -- we can use that to make our Butterworth filter by choosing the correct box volume!
+
+\textbf{Sealed Box Enclosure:} We're now able to attempt optimizing our sealed box replacing $L_{es}\rightarrow L_t=\left(L_{es}^{-1}+L_{ceb}^{-1}\right)^{-1}$ in Equation \ref{eq:freeair-transfer} and set it to the 2nd order Butterworth condition:
+\begin{align}
+\frac{ L_{t}}{R_{es}\sqrt{C_{es}L_{t}} } =\sqrt{2}\\
+L_t=2R_{es}^2C_{es}\\
+\frac{L_{es}L_{ceb}}{L_{es}+L_{ceb}}=2R_{es}^2C_{es}\\
+L_{ceb}=\frac{2R_{es}^2C_{es}L_{es}}{L_{es}-2R_{es}^2C_{es}}\\
+V_b=\frac{\rho c^2 S_d^2}{(B\ell)^2}\frac{2R_{es}^2C_{es}L_{es}}{L_{es}-2R_{es}^2C_{es}}
+\end{align}
+
+A perhaps more clear expression is:
+\begin{align}
+\frac{1}{L_{ceb}}=\frac{1}{2R_{es}^2C_{es}}-\frac{1}{L_{es}}
+\end{align}
+
+$L_{es}$ is commonly given in acoustic units of $V_{as}=\rho c^2 S_d^2 L_{es}/(B\ell)^2$. Converting other terms to acoustic units yields:
+\begin{align}
+\frac{\rho c^2 S_d^2}{V_{b} (B\ell)^2}=\frac{R_{ms}^2}{2M_{ms}(B\ell)^2}
+-\frac{\rho c^2 S_d^2}{V_{as} (B\ell)^2}
+\end{align}
+using $Q_{ms}=\frac{\omega_s M_{ms}}{R_{ms}}$, $\omega_s=\frac{1}{\sqrt{M_{ms}C_{ms}}}$, and $C_{ms}=L_{es}/(B\ell)^2$:
+\begin{align}
+\frac{\rho c^2 S_d^2}{V_{b} (B\ell)^2}=\frac{\omega_s^2M_{ms}}{2Q_{ms}^2(B\ell)^2}
+-\frac{\rho c^2 S_d^2}{V_{as} (B\ell)^2}\\
+\frac{\rho c^2 S_d^2}{V_{b}}=\frac{1}{2C_{ms}Q_{ms}^2}
+-\frac{\rho c^2 S_d^2}{V_{as}}\\
+\frac{\rho c^2 S_d^2}{V_{b}}=\frac{\rho c^2 S_d^2}{2V_{as}Q_{ms}^2}
+-\frac{\rho c^2 S_d^2}{V_{as}}\\
+\frac{1}{V_{b}}=\frac{1}{2V_{as}Q_{ms}^2}
+-\frac{1}{V_{as}}\\
+V_{b}=V_{as}\frac{2Q_{ms}^2}{1-2Q_{ms}^2}
+\end{align}
+
+
+Can do other 2nd order filters to obtain specific design criteria (e.g., more low-frequency response at expense of ripples), but this second-order Butterworth filter is most common.
+
+
+
+
+
+\begin{figure}
+\centering
+\begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+  \draw (-2,0)
+  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[R=$R_e$] (0,2)
+  to[L=$L_e$] (2,2)
+  to[C=$C_{mes}$,mirror] (2,0)
+  to[short] (-2,0);
+  \draw (2,2)
+  to[short] (4,2)
+  to[R=$R_{es}$] (4,0)
+  to[short] (2,0);
+  \draw (4,2)
+  to[short] (6,2)
+  to[L=$L_{ces}$] (6,0)
+  to[short] (4,0);
+  \draw (6,2)
+  to[short] (8,2)
+  to[R,v^=$v_b$] (8,0)
+  to[short] (6,0);
+  \draw (8,2)
+  to[short] (10,2)
+  to[R=$\frac{(B\ell)^2}{S_d^2 R_{rad}}$,v>=$v_f$] (10,0)
+  to[short] (8,0);
+\end{circuitikz}
+\caption{Simplified Model of Speaker Driver in Free Air}\label{fig:freeair-model}
+\end{figure}
+
+
+Back to model - get rid of backwards waves with a big baffle, now we are delivering energy.
+
+efficiency: simply $(v_rad^2/Rrad) / (vin^2/totalR)$
+
+The goal is to delivery energy to the acoustic transmission, can we help impedance match? elements you need for impedance match = Helmholtz resonator! get vent 180 degrees out of phase for free! Get all electrical energy on to real part (both mechanical resistance and sound). Good = more efficient, bad=what if system has bad Q? too much energy(forces) on resistors/mechanical elements? impedance mismatch with Re Le?
+
+well designed box, minimize electronic impedance matching!
+
+Why sealed box? impedance match mass.
 
 
 \hrule
+
+efficiency is proportional to difference in voltage over res and voltage over rev (assuming vent losses are low). voltage is transferred to Q
 
 \textbf{when there is no box, $Q_b=Q_l=0$, load is inductive and added to $M_ms$}
 
 should i make inductors all value of M?
 
-\textbf{thiele does not have factor of two in resistance of vent}
 
 \textbf{$\mu$ for air is $1.56\times10^{-5}$m$^2$/s.}
-
-\textbf{Compliance is V/rho csquared}
 
 \textbf{split variable definitions in to electrical/mechanical/acoustic? Also derived variables?}
 
