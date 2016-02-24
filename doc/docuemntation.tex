@@ -1,5 +1,7 @@
-\documentclass[10pt,letterpaper]{article}
+\documentclass[10pt,letterpaper]{book}
 %\usepackage[a5paper]{geometry}%if printed as book
+\usepackage[papersize={6in,9in},right=.5in,left=.5in,top=.5in,bottom=.5in,bindingoffset=.375in,heightrounded]{geometry}
+\usepackage{layout}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -12,33 +14,34 @@
 \title{Scimpy:\\ \textbf{S}ound \textbf{C}ard based \textbf{I}mpedance \textbf{M}easurements in \textbf{Py}thon}
 \date{Last Revision: \today}
 \begin{document}
+\layout
 \maketitle
 \tableofcontents
-\section{Introduction}
+\chapter{Introduction}
+``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." -- A. N. Thiele
+\chapter{Usage}
 test
-\section{Usage}
-test
-\subsection{How to Connect Hardware}
+\section{How to Connect Hardware}
 Headphones are typically 32 ohms, so want to use 20 ohm resistor to protect circuits?
 
 line out? does it have enough current?
 
 line in: 600-47 kOhms (low impedance)
 microphone, more sensitive but powered (need AC coupling?)
-\subsection{How to Use the Software}
-\subsubsection{Taking Data}
-\subsubsection{Interpreting Data}
-\section{Theory}
-The mathematical description of loudspeakers is crucial to high-performance audio. This section describes and summarizes a common mathematical model, which is used by this program. This approach was developed by the pioneers Neville Thiele of the Australian Broadcasting Commission, and Richard H. Small of the University of Sydney, and the parameters are commonly known as the ``Thiele/Small Parameters."
-\subsection{Impedance}\label{Impedance}
+\section{How to Use the Software}
+\subsection{Taking Data}
+\subsection{Interpreting Data}
+\chapter{Theory}
+This section describes and summarizes a common mathematical model for aiding loudspeaker design. This approach was developed by the pioneers Neville Thiele of the Australian Broadcasting Commission, and Richard H. Small of the University of Sydney, and the parameters are commonly known as the ``Thiele/Small Parameters."
+\section{Impedance}\label{Impedance}
 Speaker impedance represents how much voltage will be needed to drive 1~A of current  through the speaker voice coil. Higher resistance means that speaker response will drop, as it is harder to push current through it. Due to electrical, mechanical, and acoustical effects, impedance changes with frequency -- thus changing how the speaker sounds. If speaker impedance drops too low, more current will be needed from the amplifier. Over-driving the speaker amplifier risks distortion and overheating the amplifier. Additionally, passive cross-over circuits (i.e., what splits the signal to tweeter and woofer) are designed to work with loads whose impedance do not change with frequency; poor impedance matching reduces cross-over performance
 
 However, this can be compensated for by adding an ``impedance matching" circuit right at the speaker. The circuit is designed such that the combined impedance of the speaker and circuit us the same for all frequencies, and thus avoiding signal distortion and amplifier damage.
 
 Impedance circuits can be classified as active or passive. Active circuits are easier to design but are expensive and require additional power. Passive circuits are cheaper, but a well designed circuit will perform as well as an active system. However, designing such circuits requires specialized equipment and software. Thus the motivation for this project: develop a widely available, easy-to-use tool to measure impedance and provide impedance matching circuit designs.
 
-Section~\ref{Impedance} will talk about how we describe and measure impedance, generally. Section~\ref{loudspeakers} will then build a model of loudspeaker impedance.
-\subsubsection{Electrical Impedance}
+Section \ref{Impedance} will describe how to measure impedance. Section \ref{loudspeakers} will then build a model of loudspeaker performance.
+\subsection{Electrical Impedance}
 Voltage ($V$) and current ($I$) are related to each other through the following expressions describing resistors (with resistance $R$), capacitors (with capacitance $C$), and inductors (with inductance, $L$):
 \begin{align}\label{electrical_eqs}
 V&=IR & V&=L\frac{\partial I}{\partial t} & I=C\frac{\partial V}{\partial t}
@@ -104,12 +107,13 @@ Using standard circuit analysis, you can calculate the current coming out of the
 Z=\left(\frac{1}{Z_R}+\frac{1}{Z_C}+\frac{1}{Z_L}\right)^{-1}
 \end{align}
 \begin{align}
-\hat{I}=\hat{V}\left(\frac{Z_CZ_L+Z_RZ_L+Z_RZ_C}{Z_R+Z_C+Z_L}\right)=V_0e^{i\omega t}\left( \frac{L/C+i\left( -R/(\omega C)+\omega RL\right)}{R+i\left(\omega L - \omega/C\right)} \right)\label{complex_imp}
+\hat{I}&=\hat{V}\left(\frac{Z_CZ_L+Z_RZ_L+Z_RZ_C}{Z_R+Z_C+Z_L}\right)\\
+\hat{I}&=V_0e^{i\omega t}\left( \frac{L/C+i\left( -R/(\omega C)+\omega RL\right)}{R+i\left(\omega L - \omega/C\right)} \right)\label{complex_imp}
 \end{align}
 
 Current, $I$, can now be found by taking the real part of $\hat{I}$.
 
-\subsubsection{Impedance Matching}
+\subsection{Impedance Matching}
 Our challenge is to design a circuit that makes the impedance constant for all frequencies. For example, a speaker has an impedance $Z=R+Z_0$, which represents a DC ($\omega=0$) resistance of $R$ and a frequency dependant impedance $Z_0$. to match impedance, a circuit with impedance $Z_1$ is added in parallel to the speaker, as depicted in Figure~\ref{simplespeaker}. The equivalent impedance is $Z=\frac{Z_1(R+Z_0)}{Z_1+Z_0+R}$. Setting $Z=R$ and solving for $Z_1$ yields:
 \begin{align}\label{impmatching}
 Z_1=R+\frac{R^2}{Z_0}
@@ -139,7 +143,7 @@ Equation \ref{impmatching} represents how we will design our impedance matching 
 \caption{Speaker impedance matching}\label{simplespeaker}
 \end{figure}
 
-\subsubsection{Measuring Impedance}
+\subsection{Measuring Impedance}
 Impedance testing is actually relatively straight forward. A function generator creates voltage to a circuit that has a resistor (of accurately known resistance $R_{test}$) in series with the speaker. The function generator creates a sinusoidal voltage with constant amplitude $V_0$ at different frequencies $\omega$. A volt meter measures the voltage across the test resistor, $v_r$, as a function of frequency $\omega$. The generic test system is described in Figure~\ref{imp_measure}. Speaker impedance can be found with the Equation~\ref{generic_imp}, below:
 \begin{align}\label{generic_imp}
 \hat{v}_s=\frac{ \hat{Z}_s V_0 }{ R_{test} + \hat{Z}_s } && \hat{i}_s=\hat{i}_r=\frac{\hat{v}_r}{R_{test}} && \hat{Z}_s=\frac{\hat{v}_s}{\hat{i}_s}=R_{test}\left( \frac{V_0}{\hat{v}_r} -1 \right)
@@ -159,7 +163,7 @@ Commonly, time-sensitive measurements are impractical as hobbyist typically only
 \hat{\left|Z_s\right|}=\frac{\left| v_s \right| R_{test}}{\left| v_r \right|}
 \end{align}
 
-It is important to note how Equation~\ref{generic_imp_mag} differs from many hobbyist impedance measurement techniques (incorrectly: $\left| Z_s \right| = R\left(\frac{ \left| V_0 \right|}{\left| v_r \right|}-1\right) $) which ignores the fact that phases of each of the voltages are not the same!
+Note: Equation \ref{generic_imp_mag} differs from some hobbyist impedance measurement techniques\footnote{Sometimes incorrectly given as: $\left| Z_s \right| = R\left(\frac{ \left| V_0 \right|}{\left| v_r \right|}-1\right) $} which ignores the fact that phases of each of the voltages are not the same!
 
 \begin{figure}
 \centering
@@ -204,7 +208,7 @@ It is important to note how Equation~\ref{generic_imp_mag} differs from many hob
 
 Once $\hat{Z}$ or $\left| \hat{Z} \right|$ is found for different frequencies $\omega$, you can fit the data to the models in Section~\ref{loudspeakers} to extract the values needed to make the impedance matching circuit.
 
-\subsubsection{Crossover Circuits and Impedance}
+\subsection{Crossover Circuits and Impedance}
 Cross-over circuits are needed to separate the sound signal into high and low frequency components. Ideally for dipole speakers, you want a ``switch" that sends low frequency below some cross-over frequency $\omega_c$ only to the woofer and higher frequencies only to the tweeter. Practically, some leakage will occur in separating the signals such that some low frequencies will end up at the tweeter, and high at the woofer.  These negative effects define the engineering problem.
 
 Cross-over circuits are either classified as active (powered) or passive (unpowered). \textit{Active cross-overs} use operational amplifiers (op amps) that can drive loads with complex $\hat{Z}$ uniformly across all frequencies and thus do not need impedance matching circuits. However, they tend to be a bit complicated, expensive, and require additional power. \textit{Passive cross-overs} are cheaper, simpler, and don't require extra power -- but do require extra care in design to achieve the same same theoretical performance as active cross-overs. Since we have the tools to properly design cross-overs, we will consider passive cross-overs.
@@ -228,11 +232,9 @@ The first step is to impedance match the speaker, which we have done by measurin
 The transfer function ($\hat{H}$, the ratio of output to input voltage) can be found for $\hat{Z}=i\omega L$ and $\hat{Z}=\frac{1}{i\omega C}$
 \begin{align}
 \hat{H}_{LP}(\omega)=\left( {1+\frac{i\omega L}{R}} \right)^{-1}
-=\left( {1+\frac{i\omega}{\omega_c}} \right)^{-1}
 &=\left( {1+\frac{\omega^2}{ \omega_c^2}}\right)^{-\frac{1}{2}} e^{\tan^{-1}\left( \frac{\omega}{\omega_c}\right)}\\
 \hat{H}_{HP}(\omega)
 =\left( {1+\frac{1}{i \omega R C}} \right)^{-1}
-=\left( {1+\frac{\omega_c}{i \omega}} \right)^{-1}
 &=\left( {1+\frac{\omega_c^2}{\omega^2 }}\right)^{-\frac{1}{2}} e^{\tan^{-1}\left( \frac{\omega_c}{\omega}\right)}
 \end{align}
 
@@ -275,13 +277,13 @@ You can see that the LR2 filter has many positive features compared to our simpl
 
 
 
-\subsubsection{Correct for difference in efficiency L-pad}
+\subsection{Correct for difference in efficiency L-pad}
 
-\subsection{How Do Loudspeakers Work?}\label{loudspeakers}
+\section{How Do Loudspeakers Work?}\label{loudspeakers}
 A loudspeaker converts electrical signals to sound waves by using the signal electrical voltage to drive a current which applies a force on a speaker membrane that in turn pushes a volume air. This pushed volume of air propagates as a sound wave to the listener.
 
 To understand this process, we will break down the electrical, mechanical, and acoustical systems individually. We will also describe how each are connected. From the individual system models and our understanding of how they are connected, we will finally integrate them in to a complete single model which can be used to describe how loudspeakers work.
-\subsubsection{Electrical Model}
+\subsection{Electrical Model}
 A loudspeaker driver is fundamentally a system that translates electrical current to motion. Current through a coil of wires (called the voice coil) interacts with a permanent magnet, as described in Figure~\ref{speaker_diagram}\footnote{By Iain, png by Rohitbd (SVG version of en:Image:Speaker cross section.PNG) [CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0/)], via Wikimedia Commons}. Wire, itself, is a resistor; when coiled a wire a an inductor; and the time varying magnetic field created by and inductor induces ``eddy currents" in nearby conductors which act as a resistor in parallel with the inductor. This electrical current is then can be coupled to the mechanical vibrations (discussed in Section~\ref{mechanical_section}). The electrical model is thus described in Figure~\ref{electrical_model}. Where $R_{vc}$ is the DC resistance of the voice coil, $L_{vc}$ is the inductance of the voice coil, $\hat{Z}_e$ is the electrical impedance equivalent to the mechanical impedance due to the electrical-mechanical coupling, and $R_{eddy}$ is the effective resistance due to eddy currents which is typically very high and frequently ignored in models. Finally, the current $i_e$ is the current that couples to mechanical motion described by $\hat{Z}_e$ as described in Section~\ref{mechanical_section}.
 
 \begin{figure}
@@ -310,7 +312,7 @@ A loudspeaker driver is fundamentally a system that translates electrical curren
 \end{figure}
 
 
-\subsubsection{Mechanical Model}\label{mechanical_section}
+\subsection{Mechanical Model}\label{mechanical_section}
 Electric current is coupled to mechanical motion through the Loretnz Force equation:
 \begin{align}
 \mathbf{F}=Q\mathbf{E}+Q\mathbf{v}\times \mathbf{B}=Q\mathbf{E}+Q\ell\mathbf{I}\times \mathbf{B}
@@ -359,7 +361,7 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 
 
 
-\subsubsection{Acoustical Model}\label{sec:acoustic_model}
+\subsection{Acoustical Model}\label{sec:acoustic_model}
 From Section~\ref{mechanical_section}, we found a way to find the velocity the diaphragm will move as a function of input current. The moving diaphragm will push air and create a pressure wave, which is what we will hear. The speaker diaphragm pushes the following $V$ of air per second:
 \begin{align}
 Q=S_dv\label{eq:volume_velocity}
@@ -558,14 +560,14 @@ We now have all the tools to model the acoustic system as a circuit. When the sp
 
 \textbf{bass reflect out of phase!? yes/no!?}
 
-\subsubsection{Combined Model}\label{sec:combined_model}
+\subsection{Combined Model}\label{sec:combined_model}
 In this section, we will combine our models into a single model, then show how measurements can extract values for each of the components.
 
 First, we combine the acoustic model with the mechanical using Equations~\ref{eq:volume_velocity} and \ref{eq:acoustic-to-mech_imp} to generate Figure~\ref{mech-acoustic_model}.
 
 \begin{figure}
 \centering
-\begin{circuitikz}[yscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+\begin{circuitikz}[scale=.8, transform shape]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
   to[open,v^>=$F$,o-o] (-2,4) % The voltage source
   to[L=$M_{md}$] (0,4)
@@ -593,7 +595,7 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
 
 \begin{figure}
 \centering
-\begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+\begin{circuitikz}[xscale=.6]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
   to[open,v^>=$v_0$,o-o] (-2,2)
   to[R=$R_e$] (0,2)
@@ -660,7 +662,7 @@ Variable & Definition & Description \\
 $Z_m$ & $\frac{F}{v}=S_d^2 Z_a$ & Mechanical impedance\\
 $M_{md}$ & & Mass of the diaphragm and coil\\
 $M_{ms}$ &$M_{md}+S_d^2L_{rad}$ & Mass of the diaphragm, coil, and acoustic load\\
-$R_{ms}$ & & Mechanical resistance from dampening in the speaker suspension\\
+$R_{ms}$ & & Mechanical dampening of the speaker suspension\\
 $C_{ms}$ &  & Mechanical compliance of speaker suspension\\
 $V_{as}$ & $\rho c^2 S_d^2 C_{ms}$  & $C_{ms}$ is commonly given in terms of the volume of air with equivalent mechanical compliance\\
 $B\ell$ & & Magnetic flux density of speaker driver magnets times length of wire in voice coil\\
@@ -741,111 +743,17 @@ In all cases, several simple conclusions can be drawn. To maximize output effici
 
 
 
-\subsubsection{How to design the box}
+\subsection{How to design the box}
 \textbf{Speaker in Free Air}: 
 We can use our understanding and model in Figure \ref{fig:elec-mech-acoustic_model-simple} to come up with the why and how we need speaker enclosures. Consider, at first, a speaker driver sitting in free air in Figure \ref{fig:freeair-model}. The right two resistors have the same value and represent acoustic power transmitted as sound. Although they are much larger than $R_{es}$, they are included to show the back and rear polarities are opposite. As such, total output power is \textit{zero}. Not exactly the world's best speakers!
 
-Still, there is some insight to be gained about system performance. Prior ubiquitous computing and measurement techniques, the easiest responses to measure were the peak frequency response and bandwidth, simply by measuring acoustic audio output versus input frequency.  We can find the expressions for resonance frequency $f_s$ and $f_s/\Delta f = Q$ of power dissipated in the mechanical resonator.
-\begin{align}
-\left\langle P\right\rangle=\frac{\left|F_R \right|^2}{2R}\\
-F_R=\frac{R}{i\omega M_{ms}+R_{ms}+\frac{1}{i\omega C_{ms}}}\\
-\omega_s M_{ms}-\frac{1}{\omega_s C_{ms}}=0\\
-\omega_s=\frac{1}{\sqrt{M_{ms}C_{ms}}}\\
-f_s=\frac{1}{2\pi\sqrt{M_{ms}C_{ms}}}
-\end{align}
-$Q$ can also computed as $Q=2\pi\times\frac{W_{store}}{W_{loss/cycle}}=\omega_s\frac{W}{P}$ (ratio of energy stored in resonator to $2\pi\times$ energy loss per cycle). At resonance, the total energy stored is the same as the peak energy stored in either the capacitor or inductor ($\frac{1}{2}LI_p^2$ or $\frac{1}{2}CV_p^2$), and time average power loss is $\frac{1}{2}RI_p^2$ or $\frac{1}{2}\frac{V_p^2}{R}$. To solve for $Q$, use the component that corresponds to whether $R$ sees the same $I$ or $V$ as the resonator (i.e., in series or parallel, respectively). There are two reasons for energy loss: mechanical ($R_{es}$) and electrical ($R_{e}$). Commonly these are separated independently, then combined. This was done because $R_e$ was easy to measure with a multimeter, and therefore measuring the combined $Q_t$ while knowing $Q_e$ gave people a way to indirectly measure $R_{es}$:
-\begin{align}
-Q_{ms}=\omega_s\frac{v^2M_{ms}}{v^2R_{ms}}=\frac{2\pi f_s M_{ms}}{R_{ms}}
-\end{align}
-Now we can find the expression for electrical power dissipated from the mechanical resonance, thus only considering electrical losses. Since $R_e$ and $C_{mes}$ see the same $I_{peak}$: 
-\begin{align}
-Q_{es}&=\omega_s\frac{I^2 C_{mes}}{I^2/R_e}=2\pi f_s R_{e} C_{mes}=\frac{2\pi f_s R_{e} M_{mms}}{(B\ell)^2}
-\end{align}
-Since $Q$ is energy stored per power dissipated, if a resonator has two ways of dissipating energy but one way of storing it, then the combined $Q$ can be found:
-\begin{align}
-Q_{ts}=\frac{\omega W_{store}}{P_e+P_m}=\left(\frac{P_e}{\omega W_{store}}+\frac{P_m}{\omega W_{store}}\right)^{-1}=\frac{Q_{es}Q_{ms}}{Q_{es}+Q_{ms}}
-\end{align}
-
-\textbf{Speaker with an Infinite Baffle:} The problem with our free space speaker was the interference of the sound from the front and back of the speaker driver. We can block the sound from the back of the driver by walling off the space between the front and back of the driver. Figure \ref{fig:freeair-model} stays the same, but our output acoustic power is solely from the front of the driver. We can compute the output acoustic power of this system as a function of frequency:
-\begin{align}
-P_a=\frac{\left| v_f \right|^2}{R_{er}}\\
-v_f=v_0\times\frac{\hat{Z}_e}{R_e+i\omega L_e+\hat{Z_e}}\\
-P_a=\frac{\left| v_o \right|^2 \left| \hat{Z}_e \right|^2 }{R_{rad}\left| R_e+i\omega L_e+\hat{Z}_e\right|^2}\\
-P_a=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
-2\pi c (B\ell)^2 
-}\left| \frac{ \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2\\
-P_a(\omega)=\frac{\left| v_o \right|^2S_d^ \rho}{
-2\pi c (B\ell)^2 
-}\left| \frac{\omega  \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2 \label{eq:acostic-power}
-\end{align}
-The term on the right of Equation \ref{eq:acostic-power} is the power transfer function. The form of the function is seen in Figure \ref{fig:power-transfer}. It peaks at $f_s$, and in the presence of $L_e$ (red) decreases output at higher frequencies. However, to gain some more insight, we will ignore the effects of $L_e$.
-
-\begin{figure}
-\centering
-\includegraphics[width=.75\textwidth]{matlab/infiniteBafflePower.png}
-\caption{Infinite Baffle Power Transfer Function for $R_e=7$.
-$C_{es}=1e-3$, $L_{es}=1e-3$, $R_{es}=30$. Red curve:$L_e=1e-4$, Blue curve: $L_e=0$}\label{fig:power-transfer}
-\end{figure}
-
-Looking into the power transfer function:
-\begin{align}
-G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
-\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\omega^2 C_{es}L_{es}+i\omega L_{es}\left( R_e^{-1}+R_{es}^{-1} \right) +1}
-\end{align}
-
-We can recognize $\omega_s=\frac{1}{\sqrt{C_es L_es}}$ and take the approximation from $R_e\gg R_{es}$ since $Q_e\ll Q_{ms}$ in typical speakers:
-\begin{align}
-G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
-\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\frac{\omega^2}{\omega_s^2} +\frac{i \omega}{\omega_s}\frac{ L_{es}}{R_{es}\sqrt{C_{es}L_{es}} } +1}\label{eq:freeair-transfer}
-\end{align}
-Which has the form of a second-order high-pass filter... Can we use this to turn the system in to a Butterworth filter with a flat pass-band and phase response? For a second order Butterworth filter:
-\begin{align}
-G(\omega)=\frac{\omega^4}{1+\left( \frac{\omega}{\omega_s} \right)^4}=\left| \frac{\omega^2}{-\left(\frac{\omega}{\omega_s} \right)^2 +\sqrt{2}\frac{i\omega}{\omega_s} +1} \right|^2
-\end{align}
-So if we can get $\frac{ L_{es}}{R_{es}\sqrt{C_{es}L_{es}}} =\sqrt{2}$, our speaker will have a flat pass band and phase response! How can we do that? Well, if you put the back of the speaker in a sealed and enclosed area, there will be a $L_{ceb}$ in parallel to $L_{es}$ from the compliance (springy-ness) of the air in the box -- we can use that to make our Butterworth filter by choosing the correct box volume!
-
-\textbf{Sealed Box Enclosure:} We're now able to attempt optimizing our sealed box replacing $L_{es}\rightarrow L_t=\left(L_{es}^{-1}+L_{ceb}^{-1}\right)^{-1}$ in Equation \ref{eq:freeair-transfer} and set it to the 2nd order Butterworth condition:
-\begin{align}
-\frac{ L_{t}}{R_{es}\sqrt{C_{es}L_{t}} } =\sqrt{2}\\
-L_t=2R_{es}^2C_{es}\\
-\frac{L_{es}L_{ceb}}{L_{es}+L_{ceb}}=2R_{es}^2C_{es}\\
-L_{ceb}=\frac{2R_{es}^2C_{es}L_{es}}{L_{es}-2R_{es}^2C_{es}}\\
-V_b=\frac{\rho c^2 S_d^2}{(B\ell)^2}\frac{2R_{es}^2C_{es}L_{es}}{L_{es}-2R_{es}^2C_{es}}
-\end{align}
-
-A perhaps more clear expression is:
-\begin{align}
-\frac{1}{L_{ceb}}=\frac{1}{2R_{es}^2C_{es}}-\frac{1}{L_{es}}
-\end{align}
-
-$L_{es}$ is commonly given in acoustic units of $V_{as}=\rho c^2 S_d^2 L_{es}/(B\ell)^2$. Converting other terms to acoustic units yields:
-\begin{align}
-\frac{\rho c^2 S_d^2}{V_{b} (B\ell)^2}=\frac{R_{ms}^2}{2M_{ms}(B\ell)^2}
--\frac{\rho c^2 S_d^2}{V_{as} (B\ell)^2}
-\end{align}
-using $Q_{ms}=\frac{\omega_s M_{ms}}{R_{ms}}$, $\omega_s=\frac{1}{\sqrt{M_{ms}C_{ms}}}$, and $C_{ms}=L_{es}/(B\ell)^2$:
-\begin{align}
-\frac{\rho c^2 S_d^2}{V_{b} (B\ell)^2}=\frac{\omega_s^2M_{ms}}{2Q_{ms}^2(B\ell)^2}
--\frac{\rho c^2 S_d^2}{V_{as} (B\ell)^2}\\
-\frac{\rho c^2 S_d^2}{V_{b}}=\frac{1}{2C_{ms}Q_{ms}^2}
--\frac{\rho c^2 S_d^2}{V_{as}}\\
-\frac{\rho c^2 S_d^2}{V_{b}}=\frac{\rho c^2 S_d^2}{2V_{as}Q_{ms}^2}
--\frac{\rho c^2 S_d^2}{V_{as}}\\
-\frac{1}{V_{b}}=\frac{1}{2V_{as}Q_{ms}^2}
--\frac{1}{V_{as}}\\
-V_{b}=V_{as}\frac{2Q_{ms}^2}{1-2Q_{ms}^2}
-\end{align}
-
-
-Can do other 2nd order filters to obtain specific design criteria (e.g., more low-frequency response at expense of ripples), but this second-order Butterworth filter is most common.
-
 
 
 
 
 \begin{figure}
 \centering
-\begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
+\begin{circuitikz}[xscale=.65]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
   to[open,v^>=$v_0$,o-o] (-2,2)
   to[R=$R_e$] (0,2)
@@ -872,7 +780,266 @@ Can do other 2nd order filters to obtain specific design criteria (e.g., more lo
 \caption{Simplified Model of Speaker Driver in Free Air}\label{fig:freeair-model}
 \end{figure}
 
+Still, there is some insight to be gained about system performance. Prior ubiquitous computing and measurement techniques, the easiest responses to measure were the peak frequency response and bandwidth, simply by measuring acoustic audio output versus input frequency.  We can find the expressions for resonance frequency $f_s$ and $f_s/\Delta f = Q$ of power dissipated in the mechanical resonator.
+\begin{align}
+\left\langle P\right\rangle=\frac{\left|F_R \right|^2}{2R}\\
+F_R=\frac{R}{i\omega M_{ms}+R_{ms}+\frac{1}{i\omega C_{ms}}}\\
+\omega_s M_{ms}-\frac{1}{\omega_s C_{ms}}=0\\
+\omega_s=\frac{1}{\sqrt{M_{ms}C_{ms}}}\\
+f_s=\frac{1}{2\pi\sqrt{M_{ms}C_{ms}}}
+\end{align}
+$Q$ can also computed as $Q=2\pi\times\frac{W_{store}}{W_{loss/cycle}}=\omega_s\frac{W}{P}$ (ratio of energy stored in resonator to $2\pi\times$ energy loss per cycle). At resonance, the total energy stored is the same as the peak energy stored in either the capacitor or inductor ($\frac{1}{2}LI_p^2$ or $\frac{1}{2}CV_p^2$), and time average power loss is $\frac{1}{2}RI_p^2$ or $\frac{1}{2}\frac{V_p^2}{R}$. To solve for $Q$, use the component that corresponds to whether $R$ sees the same $I$ or $V$ as the resonator (i.e., in series or parallel, respectively). There are two reasons for energy loss: mechanical ($R_{es}$) and electrical ($R_{e}$). Commonly these are separated independently, then combined. This was done because $R_e$ was easy to measure with a multimeter, and therefore measuring the combined $Q_t$ while knowing $Q_e$ gave people a way to indirectly measure $R_{es}$:
+\begin{align}
+Q_{ms}=\omega_s\frac{v^2M_{ms}}{v^2R_{ms}}=\frac{2\pi f_s M_{ms}}{R_{ms}}
+\end{align}
+Now we can find the expression for electrical power dissipated from the mechanical resonance, thus only considering electrical losses. Since $R_e$ and $C_{mes}$ see the same $I_{peak}$: 
+\begin{align}
+Q_{es}&=\omega_s\frac{I^2 C_{mes}}{I^2/R_e}=2\pi f_s R_{e} C_{mes}=\frac{2\pi f_s R_{e} M_{mms}}{(B\ell)^2}
+\end{align}
+Since $Q$ is energy stored per power dissipated, if a resonator has two ways of dissipating energy but one way of storing it, then the combined $Q$ can be found:
+\begin{align}
+Q_{ts}=\frac{\omega W_{store}}{P_e+P_m}=\left(\frac{P_e}{\omega W_{store}}+\frac{P_m}{\omega W_{store}}\right)^{-1}=\frac{Q_{es}Q_{ms}}{Q_{es}+Q_{ms}}\label{eq:Qts}
+\end{align}
 
+\textbf{Speaker with an Infinite Baffle:} The problem with our free space speaker was the interference of the sound from the front and back of the speaker driver. We can block the sound from the back of the driver by walling off the space between the front and back of the driver. Figure \ref{fig:freeair-model} stays the same, but our output acoustic power is solely from the front of the driver. We can compute the output acoustic power of this system as a function of frequency:
+\begin{align}
+P_a=\frac{\left| v_f \right|^2}{2R_{er}}\\
+v_f=v_0\times\frac{\hat{Z}_e}{R_e+i\omega L_e+\hat{Z_e}}\\
+P_a=\frac{\left| v_o \right|^2 \left| \hat{Z}_e \right|^2 }{2R_{er}\left| R_e+i\omega L_e+\hat{Z}_e\right|^2}\\
+P_a=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
+4\pi c (B\ell)^2 
+}\left| \frac{ \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2\\
+P_a(\omega)=\frac{\left| v_o \right|^2S_d^2 \rho}{
+4\pi c (B\ell)^2 
+}\left| \frac{\omega  \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2 \label{eq:acostic-power}
+\end{align}
+The term on the right of Equation \ref{eq:acostic-power} is the power transfer function. The form of the function is seen in Figure \ref{fig:power-transfer}. It peaks at $f_s$, and in the presence of $L_e$ (red) decreases output at higher frequencies. However, to gain some more insight, we will ignore the effects of $L_e$.
+
+\begin{figure}
+\centering
+\includegraphics[width=.75\textwidth]{matlab/infiniteBafflePower.eps}
+\caption{Infinite Baffle Power Transfer Function for $R_e=7$.
+$C_{es}=1e-3$, $L_{es}=1e-3$, $R_{es}=30$. Red curve:$L_e=1e-4$, Blue curve: $L_e=0$}\label{fig:power-transfer}
+\end{figure}
+
+Looking into the power transfer function:
+\begin{align}
+G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
+\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\omega^2 C_{es}L_{es}+i\omega L_{es}\left( R_e^{-1}+R_{es}^{-1} \right) +1}
+\end{align}
+
+We can recognize $\omega_s=\frac{1}{\sqrt{C_{es} L_{es}}}$ and for simplicity define $R_t=\frac{R_eR_{es}}{R_e+R_{es}}$:
+\begin{align}
+\hat{H}(\omega) =\frac{i }{R_eC_{es}}\frac{(\omega/\omega_s)^2}{-\frac{\omega^2}{\omega_s^2} +\frac{i \omega}{\omega_s}\frac{1}{R_t}\sqrt{\frac{ L_{es}}{C_{es}}} +1}\label{eq:freeair-transfer}
+\end{align}
+And, in the great reveal, we examine Equation \ref{eq:Qts} to find $Q_{ts}$ in terms of $R_{e}$, $R_{es}$, $L_{es}$, and $C_{es}$:
+\begin{align}
+Q_{ts}=\frac{R_e R_{es}}{R_e+R_{es}}\sqrt{\frac{C_{es}}{L_{es}}}\\
+\hat{H}(\omega) =\frac{i \omega_s}{Q_{es}}\frac{(\omega/\omega_s)^2}{-\frac{\omega^2}{\omega_s^2} +\frac{i \omega}{\omega_s}\frac{1}{Q_{ts}}+1}
+\end{align}
+
+Which is the form of a second-order high-pass filter! Can we use this to turn the system in to a Butterworth filter with a flat pass-band and phase response? For a second order Butterworth filter:
+\begin{align}
+G(\omega)=\frac{\omega^4}{1+\left( \frac{\omega}{\omega_s} \right)^4}=\left| \frac{\omega^2}{-\left(\frac{\omega}{\omega_s} \right)^2 +\sqrt{2}\frac{i\omega}{\omega_s} +1} \right|^2
+\end{align}
+So if we can get $\frac{ L_{es}}{R_{es}\sqrt{C_{es}L_{es}}} =\sqrt{2}$, our speaker will have a flat pass band and phase response! How can we do that? Well, if you put the back of the speaker in a sealed and enclosed area, there will be a $L_{ceb}$ in parallel to $L_{es}$ from the compliance (``springy-ness") of the air in the box -- we can use that to make our Butterworth filter by choosing the correct box volume!
+
+\textbf{Sealed Box Enclosure:} We're now able to attempt optimizing our sealed box replacing $L_{es}\rightarrow L_t=\left(L_{es}^{-1}+L_{ceb}^{-1}\right)^{-1}$ in Equation \ref{eq:freeair-transfer} and set it to the 2nd order Butterworth condition:
+\begin{align}
+\frac{ 1}{R_{t}}\sqrt{\frac{L_t}{C_{es}} } =\sqrt{2}\\
+L_t=2R_{t}^2C_{es}\\
+\frac{L_{es}L_{ceb}}{L_{es}+L_{ceb}}=2R_{t}^2C_{es}\\
+L_{ceb}=\frac{2R_{t}^2C_{es}L_{es}}{L_{es}-2R_{t}^2C_{es}}\\
+V_b=\frac{\rho c^2 S_d^2}{(B\ell)^2}\frac{2R_{t}^2C_{es}L_{es}}{L_{es}-2R_{t}^2C_{es}}
+\end{align}
+
+A perhaps more clear expression is:
+\begin{align}
+\frac{1}{L_{ceb}}=\frac{1}{2R_{t}^2C_{es}}-\frac{1}{L_{es}}
+\end{align}
+
+$L_{es}$ is commonly given in acoustic units of:
+\begin{align}
+V_{as}&=\rho c^2 S_d^2 L_{es}/(B\ell)^2\\
+&=\rho c^2 S_d^2 L_{ms}
+\end{align}
+Converting the remaining terms to acoustic units yields:
+\begin{align}
+\frac{\rho c^2 S_d^2}{V_{b} (B\ell)^2}=\frac{1}{2C_{ms}Q_{ts}^2(B\ell)^2}
+-\frac{\rho c^2 S_d^2}{V_{as} (B\ell)^2}\\
+\frac{\rho c^2 S_d^2}{V_{b}}=\frac{\rho c^2 S_d^2}{2V_{as}Q_{ts}^2}
+-\frac{\rho c^2 S_d^2}{V_{as}}\\
+\frac{1}{V_{b}}=\frac{1}{2V_{as}Q_{ts}^2}
+-\frac{1}{V_{as}}\\
+V_{b}=V_{as}\frac{2Q_{ts}^2}{1-2Q_{ts}^2}
+\end{align}
+And generally, you can see the number 2 comes from $1/Q_t^2$ where $Q_t$ is the desired total system $Q$, therefore
+\begin{align}
+V_{b}=V_{as}\frac{(Q_{ts}/Q_{t})^2}{1-(Q_{ts}/Q_{t})^2}
+\end{align}
+
+That's it! Some important notes: sealed boxes only work if the current $Q_{t}$ is less than the desired $Q_{ts}<Q_{t}$, which for a 2nd order Butterworth filter is $\approx 0.7$. Also, it is possible to use other 2nd order filters to obtain specific design criteria by choosing a different desired $Q_{t}$ (e.g., more low-frequency response at expense of a peak at $\omega_s$). The effect of choice of $Q$ is dipicted in Figure \ref{fig:sealedBoxQ}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{matlab/sealedBoxQ.eps}
+\caption{Normalized Acoustic Power in a Sealed Box Versus $Q$}\label{fig:sealedBoxQ}
+\end{figure}
+
+In this example, we only touched $L$, but it is also possible to similarly affect $R_t$ by adding an additional electric resistance in parallel with (or acoustic resistance in series with) the box compliance. That is the equivalent of filling the box with an acoustically absorbing material. This does two things: it properly adds compliance while keeping the speaker compact and it does not negatively effect efficiency, as seen in the previous discussion.
+
+System resonance and roll-off frequency $f_3$ (corresponding to where response is $1/2$ of the peak value, or -3 dB, which describes the minimum frequency output of the system) will be changed. The new center frequency $\omega_0$ and $f_3$ can be found with the addition of box compliance $C_{mb}$:
+\begin{align}
+\omega_0=\left( \sqrt{\frac{C_{ms}C_{mb}}{C_{ms}+C_{mb}}M_{ms}}  \right)^{-1}=\omega_s\sqrt{\frac{C_{ms}}{C_{mb}}+1}
+\end{align}
+and to find $\omega_3$:
+\begin{align}
+G(\omega_3)=1/2\\
+\frac{(\omega_3/\omega_0 )^4}{
+\left[ -\left( \frac{\omega_3}{\omega_0} \right)^2 +\frac{1}{Q_t}\frac{i\omega_3}{\omega_0}+1\right]^{2}} = \frac{1}{2}\\
+\left( \frac{\omega_3}{\omega_0} \right)^4 +\left( 2 -\frac{1}{Q_t^2}\right)\left(\frac{\omega_3}{\omega_0} \right)^2-1=0\\
+\omega_3=\omega_0 \left[ \frac{  \frac{1}{Q_{t}^2}-2  \pm \sqrt{\left( 2- \frac{1}{Q_{t}^2}\right)^2+4}}{2}\right]^{1/2}
+\end{align}
+Absolute values and $\pm$ is from finding the roots of a polynomial of order$w_3^4$, and allows for both peaked and low-pass responses.
+
+Finally, actual box dimensions can be chosen now that we know $V_b$. The most important thing is to choose irrational numbers to prevent standing waves. For example, the golden ratio ($0.6:1:1.6$) or ${2}^{-1/2}:{2}^{0}:{2}^{1/2}$ are sometimes used.
+
+\textbf{Vented/Ported/Bass-Reflex Enclosures}: Similar to the sealed box case, we can find the output power of a vented enclosure as seen in Figure \ref{bass_reflex} and \ref{fig:elec-mech-acoustic_model-simple}. Output power is thus:
+\begin{align}
+P_0=\frac{\left| v_s -v_{C_{lev}} \right|^2}{2R_{er}}=\frac{\left| v_{L_{cev}} \right|^2}{2R_{er}}=\frac{S_d^2 \rho\left| \omega \, v_{L_{cev}} \right|^2}{4\pi c (B \ell)^2}=\frac{S_d^2 \rho}{4\pi c (B \ell)^2}\left| \hat{H}_\omega \right|^2
+\end{align}
+and represents the fact that the front and back mechanical motions are $180^\circ$ out of phase.
+
+
+\begin{verbatim}
+Ze:(1/Rs+%i*\omega*Cs+1/(%i*\omega*Ls)
+    +1/(%i*\omega *Lb +1/(%i*\omega*Cv)) )^-1;
+full:(Ze/(Re+Ze))*(%i*\omega *Lb)/
+    (%i*\omega *Lb+1/(%i*\omega*Cv));
+factor((declare(\omega,mainvar),full));
+\end{verbatim}
+
+\begin{align}
+\hat{H}_\omega=\omega \, v_{L_{cev}}= \frac{
+-i  C_{ev} L_{ceb} R_{es} L_{es} \omega^4}
+{A'_4\omega^4-iA'_3\omega^3-A'_2\omega^2+iA'_1\omega+A'_0}\\
+A'_4=C_{lev} L_{ceb} R_e R_{es}  C_{es} L_{es}\\
+A'_3=C_{lev} L_{ceb} R_{es} L_{es}
++ C_{lev} L_{ceb} R_e L_{es}\\
+A'_2=R_e R_{es}  C_{es} L_{es}+C_{lev} R_e R_{es} L_{es}+C_v L_{ceb} R_e R_{es}\\
+A'_1=R_{es} L_{es}+R_e L_{es}\\
+A'_0=R_e R_{es}
+\end{align}
+normalizing by $A'_0$ and defining $R_t=\frac{R_eR_{es}}{R_{es}+R_e}$, $Q_{t}=R_t\sqrt{\frac{C_{es}}{L_{es}}}$, $\omega_s=\frac{1}{\sqrt{C_{es}L_{es}}}$, and $\omega_b=\frac{1}{\sqrt{C_{lev}L_{ceb}}}$
+\begin{align}
+\hat{H}(\omega)=\omega \, v_{L_{cev}}= \frac{
+-i  C_{ev} L_{ceb} L_{es} \omega^4/R_e}
+{A_4\omega^4-iA_3\omega^3-A_2\omega^2+iA_1\omega+1}\\
+A_4=C_{lev} L_{ceb} C_{es} L_{es}=\frac{1}{\omega_b^2\omega_s^2}\\
+A_3=\frac{C_{lev} L_{ceb} L_{es}}{R_t}=\frac{1}{\omega_b^2\omega_s Q_{t}}\\
+A_2=C_{es} L_{es}+C_{lev} L_{es}+C_{lev} L_{ceb}=\frac{1}{\omega_s^2}+\frac{1}{\omega_b^2}+\frac{L_{es}}{L_{eb}}\frac{1}{\omega_b^2}\\
+A_1=\frac{L_{es}}{R_t}=\frac{1}{Q_{t}\omega_s}
+\end{align}
+
+This can be seen as a 4th order filter, we just have to choose our the variables to properly ``align" with the audio response we want. Thiele observed that for drivers with $Q_t=0.383$, a ``perfect" fourth order Butterworth filter can be made if $\omega_b$ and $V_b$ are chosen properly; when $Q_t<0.383$, you can get a ``Quasi-Butterworth Third Order" alignment; and for drivers $Q_t>0.383$ a ``Fourth Order Chebyschev" alignment is suitable. Both Thiele and Small created tables and graphical tools to aid design. Modern computers give us an alternative tool which is especially helpful for two- or three-way speakers (multiple drivers in the same box). For completeness, we will find the analytical expressions then describe how computers can be used.
+
+\textbf{Fourth Order Butterworth Filter (B4):} A fourth order Butterworth filter produces a power response of the form:
+\begin{align}
+\left|  \hat{H}(\omega) \right|^2\propto \frac{(\omega/\omega_c)^8}{1+\left(\frac{\omega}{\omega_c}\right)^8}\label{eq:transfer_func}\\
+\hat{H}(\omega)=\frac{(\frac{\omega}{\omega_c})^4}{(\frac{\omega}{\omega_c})^4-i2.6132(\frac{\omega}{\omega_c})^3-3.414(\frac{\omega}{\omega_c})^2+i2.613(\frac{\omega}{\omega_c})+1}
+\end{align}
+
+This gives us the dimensions we need!
+\begin{align}
+\omega_c=\omega_s=\omega_b\\
+Q_t=0.383\\
+\frac{L_{es}}{L_{eb}}=1.414
+\end{align}
+which allows us to write $\hat{H}(\omega)$ as:
+\begin{align}
+\hat{H}(\omega)=\frac{-i\omega_c}{Q_{es}}\frac{(\omega/\omega_c)^4}
+{\left(\frac{\omega}{\omega_c}\right)^4-i\frac{1}{Q_t}\left(\frac{\omega}{\omega_c}\right)^3-\left(2+\frac{L_{es}}{L_{eb}}\right)\left(\frac{\omega}{\omega_c}\right)^2+i\frac{1}{Q_t}\frac{\omega}{\omega_c}+1}
+\end{align}
+
+To make a forth order Butterworth box:
+\begin{enumerate}
+\item Make the box volume is: $V_b=\frac{1}{\sqrt{2}}V_{as}$
+\item The vent dimensions are: $\frac{A_v}{l_v}=\frac{\omega_s^2 V_{as}}{c^2\sqrt{2}}$. This is found from $\omega_b^2=\omega_s^2=\frac{1}{C_{ev}L_{eb}}=\frac{1}{V_b l_v/(c^2 A_v)}=\frac{\sqrt{2}c^2 A_v}{V_{as}l_v}$
+\item $Q_t$ will need to be tuned by placing a resistor in series with the speaker, thus effectively increasing $R_e$. Therefore, in this alignment (i.e., this choice of filter parameters), only $Q_{ts}>0.383$ are easily implemented. However, this technique of using a resistor to decrease $Q_{es}$ is rarely\footnote{rarely=never} done since it also reduces output power when similar results can be found with another alignment.
+\end{enumerate}
+
+The fourth order Butterworth (i.e., ``B4") filter only really is suitable for $Q_t=0.383$ drivers. Other alignments make vented boxes for other $Q_t$ possible.
+
+\textbf{Chebyschev for $Q_t>0.383$ (C4 ):} Thiele uses the fact that Chebyschev filters are Butterworth filters where the real part of the Butterworth filter poles (i.e., the roots of the denominator) are multiplied by the same factor $k$. For example, in a B4 filter (with $s=i\omega/\omega_c$), the poles are the roots of the denominator of the low-pass transfer function:
+\begin{align}
+\hat{H}(s)=\frac{1}{
+s^4+2.6132s^3+3.414s^2+2.613s+1}\\
+s=\{-0.3827\pm 0.9239i;-0.9239 \pm 0.3827i\}\label{eq:cheby_roots}
+\end{align}
+We can therefore convert the B4 filter to a Chebyshev filter form by multiplying the real part of each of the roots by $k$ which gives us a low-pass Chebyshev filter of the form:
+\begin{align}
+\hat{H}(s)= \prod_i \frac{-1}{ s/p_i-1 }= \prod_i  \frac{-p_i}{ s-p_i }
+\end{align}
+where $i$ is the index of the $i$th pole.
+
+The low-pass Chebyshev filter that has the same roots described in Equation \ref{eq:cheby_roots} is:
+\begin{align}
+\hat{H}(s)=\frac{a_4}{s^4+a_1s^3+a_2s^2+a_3s+a_4}\label{eq:cheby_low}
+\end{align}
+where:
+\begin{align}
+\begin{split}
+a_1&=2.6131k\\
+a_2&=2.4143k^2+1\\
+a_3&=0.9239k^3+1.6892k\\
+a_4&=0.1250k^4+0.7500k^2+0.1250\\
+\end{split}
+\end{align}
+Transforming Equation \ref{eq:cheby_low} to a high-pass filter means changing all $s\rightarrow s^{-1}$:
+\begin{align}
+\hat{H}(s)=\frac{a_4s^4}{1+a_1s+a_2s^2+a_3s^3+a_4s^4}
+\end{align}
+The frequency response ($s=i\omega/\omega_c$) is therefore:
+\begin{align}
+\hat{H}(s)=\frac{a_4\left(\frac{\omega}{\omega_c}\right)^4}{1+i a_1\left(\frac{\omega}{\omega_c}\right)-a_2\left(\frac{\omega}{\omega_c}\right)^2-ia_3\left(\frac{\omega}{\omega_c}\right)^3+a_4\left(\frac{\omega}{\omega_c}\right)^4}
+\end{align}
+and defining a new $\omega'_c=\omega_c /a_4^{1/4}$:
+\begin{align}
+\hat{H}(s)&=\frac{\left(\frac{\omega}{\omega'_c}\right)^4}{1+i\frac{a_1}{a_4{1/4}}\left(\frac{\omega}{\omega'_c}\right)-\frac{a_2}{a_4{1/2}}\left(\frac{\omega}{\omega'_c}\right)^2-i\frac{a_3}{a_4{3/4}}\left(\frac{\omega}{\omega'_c}\right)^3+\left(\frac{\omega}{\omega'_c}\right)^4}\\
+&=\frac{\left(\frac{\omega}{\omega'_c}\right)^4}{1+iA_1 \left(\frac{\omega}{\omega'_c}\right)-A_2\left(\frac{\omega}{\omega'_c}\right)^2-iA_3\left(\frac{\omega}{\omega'_c}\right)^3+\left(\frac{\omega}{\omega'_c}\right)^4}
+\end{align}
+where:
+\begin{align}
+A_1&=\frac{2.6131k}{(0.1250k^4+0.7500k^2+0.1250)^{1/4}}\\
+A_2&=\frac{2.4143k^2+1}{(0.1250k^4+0.7500k^2+0.1250)^{2/4}}\\
+A_3&=\frac{0.9239k^3+1.6892k}{(0.1250k^4+0.7500k^2+0.1250)^{3/4}}
+\end{align}
+
+When $k=1$, you can see that the $A_1$, $A_2$, $A_3$ are the same as the B4 coefficient alignments when $k=1$. We can now use this to design the box by using Equation \ref{eq:transfer_func}. First we need to find what $k$ corresponds to our speaker. This can be found from $Q_t$:
+\begin{align}
+Q_t=\frac{1}{\sqrt{A_1A_3}}
+\end{align}
+Next, find the required $\omega_b$ (i.e., the dimensions of the port as a function of box volume) from:
+\begin{align}
+\frac{\omega_b}{\omega_s}=\frac{A_1}{A_3}
+\end{align}
+and finally the volume of the box from $V_{as}/V_{b}=L_{es}/L_{eb}$:
+%A2=A3/A1+Vas/Vb A3/A1+A4/(A3/A1)
+%(A2-A3/A1-A4A1/A3)A1/A3=VasVb
+%A1A2/A3-1-A4A1^2/A3
+%(A2-A4A1)A1/A3-1
+\begin{align}
+\frac{V_{as}}{V_{ab}}=\frac{A_1A_2A_3-A_1^2-A_3^2}{A_3^2}
+\end{align}
+
+
+
+\textbf{Computer Design:} Given a user defined ``range of interest" of frequencies (e.g., 20 Hz-20 kHz), and driver specifications, minimize RMS error of SPL given a constraint of max box size. Simultaneously optimize for two speakers (similar efficiencies).
+
+
+
+
+\textbf{efficiency}
 Back to model - get rid of backwards waves with a big baffle, now we are delivering energy.
 
 efficiency: simply $(v_rad^2/Rrad) / (vin^2/totalR)$
@@ -895,21 +1062,12 @@ should i make inductors all value of M?
 
 \textbf{$\mu$ for air is $1.56\times10^{-5}$m$^2$/s.}
 
-\textbf{split variable definitions in to electrical/mechanical/acoustic? Also derived variables?}
+\textbf{split variable definitions in to electrical mechanical acoustic Also derived variables?}
 
 \textbf{EBP - compare efficiency of sealed to vented, when does one win?}
 
-\subsubsection{Monopole Radiation}
+\subsection{Monopole Radiation}
 
 
-%                                         #1 + ZL2 w - R 1i
-%---------------------------------------------------------------------------------------------------
-%                                 2                2                       3                    4
-%ZL1 w - R 1i + ZL2 w + C1 R ZL1 w  1i + C2 R ZL1 w  1i + #1 - C1 ZL1 ZL2 w  - C1 C2 R ZL1 ZL2 w  1i
-%
-%where
-%
-%                   2
-%   #1 == C2 R ZL2 w  1i
  
 \end{document}
