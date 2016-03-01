@@ -1,7 +1,9 @@
-\documentclass[10pt,letterpaper]{book}
-%\usepackage[a5paper]{geometry}%if printed as book
-%\usepackage[papersize={6in,9in},right=.5in,left=.5in,top=.75in,bottom=.5in,bindingoffset=.375in,heightrounded]{geometry}
+\documentclass[10pt]{book}
+
+%\usepackage[paper=letterpaper,layoutsize={6in,9in},right=.5in,left=.5in,top=.75in,bottom=.5in,bindingoffset=.375in,heightrounded, showframe, showcrop]{geometry}
+
 \usepackage[paper=letterpaper,layoutsize={6in,9in},bindingoffset=.375in, heightrounded, showframe, showcrop]{geometry}%default geometry pretty close to golden ratio, guttenburg Tschichold's "golden canon of page construction"
+
 %\usepackage[papersize={6in,9in},layoutsize={6in,9in},bindingoffset=.375in, heightrounded]{geometry}%this is for printing
 
 %\usepackage{layout}
@@ -38,7 +40,14 @@ test
 \mainmatter
 \part{Using Scimpy}
 \chapter{Introduction}
-``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." -- A. N. Thiele
+test test
+\begin{quote}
+``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." \\-- A. N. Thiele
+\end{quote}
+test
+
+test
+
 \chapter{Usage}
 test
 \section{How to Connect Hardware}
@@ -185,12 +194,14 @@ which illustrates two potential problems. (1) If $R_g > \hat{Z}_L$, then the vol
 \caption{Amplifier Output Impedance}\label{fig:amp-out-imp}
 \end{figure}
 
-Originally, valve amplifiers (tube amps) were commonly used to amplify the small signal from audio sources, and exhibited $R_g$ of $100$s of $\Omega$ or more. As such it was important that $\hat{Z}_L$ remain real constant over all frequencies so that the tube does not burn out and performance remain consistent over all frequencies. Impedance matching achieved those goals. However, modern solid-state transistor-based amplifiers have near zero output impedance and therefore deliver the needed $\hat{v}_L$ without impedance matching. In essence, low $R_g$ allows solid-state amplifiers to output large $\hat{i}_L$ in order to maintain $v_L=v_0$.
+Originally, valve amplifiers (tube amps) were commonly used to amplify the small signal from audio sources, and exhibited $R_g$ of $100$s of $\Omega$ or more ($\gg \hat{Z}_L$). As such it was important that $\hat{Z}_L$ remain real constant over all frequencies so that the tube does not burn out and performance remain consistent over all frequencies. Impedance matching achieved those goals. However, modern solid-state transistor-based amplifiers have near zero output impedance and therefore deliver the needed $\hat{v}_L$ without impedance matching. In essence, low $R_g$ allows solid-state amplifiers to output large $\hat{i}_L$ in order to maintain $v_L=v_0$.
 
 \textbf{Impedance and Cross-Over Design:} Impedance matching also helps cross-over design, as a flat and real load is assumed. However, if the cross-over frequency is chosen to be away from any resonance (such as choosing a cross-over frequency of an octave larger than the speaker resonance $2\times f_s$), then impedance matching becomes less important as the load is essentially flat over the pass-band.
 
+\textbf{Time Average Power at the Speaker:} On some DIY speaker forums, some point out the the average power delivered to the speaker \textit{decreases} at speaker resonance if you use a solid-state amplifier, and then attribute this to a decrease in performance. While power delivered to the speaker does decrease at resonances, this does not necessarily translate to a decrease in output acoustic power. Output acoustic power is a function of $v_L$, not of the power delivered to the load, as will be seen in Chapter \ref{loudspeakers}. A tube amp's large $R_g$ makes the voltage delivered to the speaker vary as you approach resonance, which \textit{does} distort the audio signal. A solid-state amplifier's $\hat{v}_L$ is independent of $\hat{Z}_L$, and thus of frequency. In fact, this decrease in power is exactly what should happen: speaker efficiency is increasing (less current is needed for the same amount of mechanical deviation) therefore less current is required to achieve the same acoustic output power. The decrease in power delivered to the speaker at resonance is not the reason why solid-state amplifiers do not perform the same as tube amps, and in fact is one of the areas solid-state amplifiers may out-perform tube-amps. 
+
 \subsection{Why Impedance Matching Still Matters}
-Valve/tube amplifiers are popular among some audiophiles because they deliver a ``warmth" unlike solid-state amps. Usage in audio circuits requires impedance matching. That said, some commercial tube amplifier systems know modern speakers are not commonly impedance matched. That's why you see amplifiers using tube amplifiers as pre-amplifiers and solid-state amplifiers as buffers to drive speakers as an attempt to get the best of both worlds.
+Valve/tube amplifiers are popular among audiophiles because they deliver a ``warmth" unlike solid-state amps. Usage of these amplifiers in audio circuits requires impedance matching due to the large output impedance $R_g$. That said, some commercial tube amplifier systems know modern speakers are not commonly impedance matched. That's why you see amplifiers using tube amplifiers as pre-amplifiers and solid-state amplifiers as buffers to drive speakers as an attempt to get the best of both worlds.
 
 A well matched circuit ensures that maximum power is delivered to the load across all frequencies. Using impedance matching means the amplifier will not have to ``work as hard," and thus improve efficiency. If your amplifier is operating near the maximum output rating, it could be good to impedance match the system to ensure expected performance. However, it might be cheaper and easier to buy a bigger amplifier!
 
@@ -855,11 +866,11 @@ f_s=\frac{1}{2\pi\sqrt{M_{ms}C_{ms}}}
 \end{align}
 $Q$ can also computed as $Q=2\pi\times\frac{W_{store}}{W_{loss/cycle}}=\omega_s\frac{W}{P}$ (ratio of energy stored in resonator to $2\pi\times$ energy loss per cycle). At resonance, the total energy stored is the same as the peak energy stored in either the capacitor or inductor ($\frac{1}{2}LI_p^2$ or $\frac{1}{2}CV_p^2$), and time average power loss is $\frac{1}{2}RI_p^2$ or $\frac{1}{2}\frac{V_p^2}{R}$. To solve for $Q$, use the component that corresponds to whether $R$ sees the same $I$ or $V$ as the resonator (i.e., in series or parallel, respectively). There are two reasons for energy loss: mechanical ($R_{es}$) and electrical ($R_{e}$). Commonly these are separated independently, then combined. This was done because $R_e$ was easy to measure with a multimeter, and therefore measuring the combined $Q_t$ while knowing $Q_e$ gave people a way to indirectly measure $R_{es}$:
 \begin{align}
-Q_{ms}=\omega_s\frac{v^2M_{ms}}{v^2R_{ms}}=\frac{2\pi f_s M_{ms}}{R_{ms}}
+Q_{ms}=\omega_s\frac{v^2M_{ms}}{v^2R_{ms}}=\frac{2\pi f_s M_{ms}}{R_{ms}}=2\pi f_s R_{es}C_{es}
 \end{align}
 Now we can find the expression for electrical power dissipated from the mechanical resonance, thus only considering electrical losses. Since $R_e$ and $C_{mes}$ see the same $I_{peak}$: 
 \begin{align}
-Q_{es}&=\omega_s\frac{I^2 C_{mes}}{I^2/R_e}=2\pi f_s R_{e} C_{mes}=\frac{2\pi f_s R_{e} M_{mms}}{(B\ell)^2}
+Q_{es}&=\omega_s\frac{I^2 C_{es}}{I^2/R_e}=2\pi f_s R_{e} C_{es}=\frac{2\pi f_s R_{e} M_{ms}}{(B\ell)^2}
 \end{align}
 Since $Q$ is energy stored per power dissipated, if a resonator has two ways of dissipating energy but one way of storing it, then the combined $Q$ can be found:
 \begin{align}
