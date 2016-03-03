@@ -882,15 +882,19 @@ The problem with our free space speaker was the interference of the sound from t
 \begin{align}
 P_a=\frac{\left| v_f \right|^2}{2R_{er}}\\
 v_f=v_0\times\frac{\hat{Z}_e}{R_e+i\omega L_e+\hat{Z_e}}\\
-P_a=\frac{\left| v_o \right|^2 \left| \hat{Z}_e \right|^2 }{2R_{er}\left| R_e+i\omega L_e+\hat{Z}_e\right|^2}\\
-P_a=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
-4\pi c (B\ell)^2 
-}\left| \frac{ \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2\\
-P_a(\omega)=\frac{\left| v_o \right|^2S_d^2 \rho}{
-4\pi c (B\ell)^2 
-}\left| \frac{\omega  \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2 \label{eq:acostic-power}
+P_a=\frac{\left| v_o \right|^2 \left| \hat{Z}_e \right|^2 }{2R_{er}\left| R_e+i\omega L_e+\hat{Z}_e\right|^2}
 \end{align}
-The term on the right of Equation \ref{eq:acostic-power} is the power transfer function. The form of the function is seen in Figure \ref{fig:power-transfer}. It peaks at $f_s$, and in the presence of $L_e$ (red) decreases output at higher frequencies. However, to gain some more insight, we will ignore the effects of $L_e$.
+We then do something that may appear silly, but will help us out a lot later - we multiply the right term by $\left[ \left(\frac{R_{e} C_{es}}{R_{e}C_{es}}\right)^2\left( \frac{-(i^2)}{-(i^2)} \right) \right] $ and bring $\omega^2$ into the right term:
+\begin{align}
+P_a=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
+4\pi c (B\ell)^2 R_{e}^2 C_{es}^2
+}\left| \frac{ -i R_{e} C_{es} \omega \hat{Z}_e }{ R_e+i\omega L_e+\hat{Z}_e} \right|^2\\
+P_a(\omega)=\frac{\left| v_o \right|^2S_d^2\omega^2 \rho}{
+4\pi c (B\ell)^2 R_{e}^2 C_{es}^2
+}\left| \hat{H}(\omega) \right|^2 \label{eq:acostic-power}
+\end{align}
+
+The term on the right of Equation \ref{eq:acostic-power} is the power transfer function $\left| \hat{H}(\omega)\right|^2$. The form of the function is seen in Figure \ref{fig:power-transfer}. It peaks at $f_s$, and in the presence of $L_e$ (red) decreases output at higher frequencies. However, to gain some more insight, we will ignore the effects of $L_e$.
 
 \begin{figure}
 \centering
@@ -901,18 +905,18 @@ $C_{es}=1e-3$, $L_{es}=1e-3$, $R_{es}=30$. Red curve:$L_e=1e-4$, Blue curve: $L_
 
 Looking into the power transfer function:
 \begin{align}
-G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
-\hat{H}(\omega) =\frac{i L_{es}}{R_e}\frac{\omega^2}{-\omega^2 C_{es}L_{es}+i\omega L_{es}\left( R_e^{-1}+R_{es}^{-1} \right) +1}
+G(\omega)=\left| \hat{H}(\omega)\right|^2 =\left| \frac{-iR_{e}C_{es}\omega  \hat{Z}_e }{ R_e+\hat{Z}_e} \right|^2\\
+\hat{H}(\omega) =\frac{\omega^2}{-\omega^2 C_{es}L_{es}+i\omega L_{es}\left( R_e^{-1}+R_{es}^{-1} \right) +1}
 \end{align}
 
 We can recognize $\omega_s=\frac{1}{\sqrt{C_{es} L_{es}}}$ so we set the characteristic frequency $\omega_c=\omega_s$, and for clarity define $R_t=\frac{R_eR_{es}}{R_e+R_{es}}$:
 \begin{align}
-\hat{H}(\omega) =\frac{i }{R_eC_{es}}\frac{(\omega/\omega_c)^2}{-\frac{\omega^2}{\omega_c^2} +\frac{i \omega}{\omega_c}\frac{1}{R_t}\sqrt{\frac{ L_{es}}{C_{es}}} +1}\label{eq:freeair-transfer}
+\hat{H}(\omega) =\frac{(\omega/\omega_c)^2}{-\frac{\omega^2}{\omega_c^2} +\frac{i \omega}{\omega_c}\frac{1}{R_t}\sqrt{\frac{ L_{es}}{C_{es}}} +1}\label{eq:freeair-transfer}
 \end{align}
 And, in the great reveal, we examine Equation \ref{eq:Qts} to find $Q_{ts}$ in terms of $R_{e}$, $R_{es}$, $L_{es}$, and $C_{es}$:
 \begin{align}
 Q_{ts}=\frac{R_e R_{es}}{R_e+R_{es}}\sqrt{\frac{C_{es}}{L_{es}}}\\
-\hat{H}(\omega) =\frac{i \omega_s}{Q_{es}}\frac{(\omega/\omega_c)^2}{-\frac{\omega^2}{\omega_c^2} +\frac{i \omega}{\omega_c}\frac{1}{Q_{ts}}+1}
+\hat{H}(\omega) =\frac{(\omega/\omega_c)^2}{-\frac{\omega^2}{\omega_c^2} +\frac{i \omega}{\omega_c}\frac{1}{Q_{ts}}+1}\label{eq:general_transfer_function}
 \end{align}
 
 Which is the form of a second-order high-pass filter! Can we use this to turn the system in to a Butterworth filter with a flat pass-band and phase response? For a second order Butterworth filter:
@@ -996,8 +1000,8 @@ Finally, actual box dimensions can be chosen now that we know $V_b$. The most im
 
 \begin{align}
 \begin{split}
-\left\langle P_{ao} \right\rangle &=\frac{\left| v_s -v_{C_{lev}} \right|^2}{2R_{er}}=\frac{\left| v_{L_{cev}} \right|^2}{2R_{er}}=\frac{S_d^2 \rho\left| \omega \, v_{L_{cev}} \right|^2}{4\pi c (B \ell)^2}\\
-&=\frac{S_d^2 \rho}{4\pi c (B \ell)^2}\left| \hat{H}_\omega \right|^2
+\left\langle P_{ao} \right\rangle &=\frac{\left| v_s -v_{C_{lev}} \right|^2}{2R_{er}}=\frac{\left| v_{L_{cev}} \right|^2}{2R_{er}}=\frac{S_d^2 \omega^2 \rho\left| v_{L_{cev}} \right|^2}{4\pi c (B \ell)^2R_{e}^2C_{es}^2}\\
+&=\frac{S_d^2 \rho}{4\pi c (B \ell)^2R_{e}^2C_{es}^2}\left| \hat{H}_\omega \right|^2
 \end{split}
 \end{align}
 and represents the fact that the front and back mechanical motions are $180^\circ$ out of phase.
@@ -1012,7 +1016,7 @@ and represents the fact that the front and back mechanical motions are $180^\cir
 %\end{verbatim}
 
 \begin{align}
-\hat{H}_\omega=\omega \, v_{L_{cev}}= \frac{
+\hat{H}_\omega=(-i R_e C_{es} \omega) \omega \, v_{L_{cev}}= \frac{
 -i  C_{ev} L_{ceb} R_{es} L_{es} \omega^4}
 {A'_4\omega^4-iA'_3\omega^3-A'_2\omega^2+iA'_1\omega+A'_0}\\
 A'_4=C_{lev} L_{ceb} R_e R_{es}  C_{es} L_{es}\\
@@ -1024,8 +1028,8 @@ A'_0=R_e R_{es}
 \end{align}
 normalizing by $A'_0$ and defining $R_t=\frac{R_eR_{es}}{R_{es}+R_e}$, $Q_{t}=R_t\sqrt{\frac{C_{es}}{L_{es}}}$, $\omega_s=\frac{1}{\sqrt{C_{es}L_{es}}}$, and $\omega_b=\frac{1}{\sqrt{C_{lev}L_{ceb}}}$
 \begin{align}
-\hat{H}(\omega)=\omega \, v_{L_{cev}}= \frac{
--i  C_{ev} L_{ceb} L_{es} \omega^4/R_e}
+\hat{H}(\omega)=(-i Re C_{es} \omega) \times v_{L_{cev}}= \frac{
+(-i Re C_{es} \omega)(-i  C_{ev} L_{ceb} L_{es}) \omega^4/R_e}
 {A_4\omega^4-iA_3\omega^3-A_2\omega^2+iA_1\omega+1}\\
 \hat{H}(\omega)= \frac{-i\omega_s}{Q_{es}}\frac{\omega^4/\omega_b^2 \omega_s^2}
 {A_4\omega^4-iA_3\omega^3-A_2\omega^2+iA_1\omega+1}\\
@@ -1079,7 +1083,7 @@ Q_t=0.383\\
 \end{align}
 which allows us to write $\hat{H}(\omega)$ as:
 \begin{align}
-\hat{H}(\omega)=\frac{\left(\frac{-i\omega_c}{Q_{es}}\right)\left(\frac{\omega}{\omega_c}\right)^4}
+\hat{H}(\omega)=\frac{\left(\frac{\omega}{\omega_c}\right)^4}
 {\left(\frac{\omega}{\omega_c}\right)^4-i\frac{1}{Q_t}\left(\frac{\omega}{\omega_c}\right)^3-\left(2+\frac{L_{es}}{L_{eb}}\right)\left(\frac{\omega}{\omega_c}\right)^2+i\frac{1}{Q_t}\frac{\omega}{\omega_c}+1}
 \end{align}
 
@@ -1251,7 +1255,53 @@ Prof. Small is attributed to have given the following guidelines to interpret EB
 
 \section{Excursion and Power ratings?}
 
-\section{Efficiency?}
+\section{Efficiency}
+From our calculation of acoustic power Equation \ref{eq:acostic-power} with the transfer function Equation \ref{eq:general_transfer_function}.
+
+\begin{align}
+\left\langle P_a(\omega) \right\rangle =\frac{\left| v_o \right|^2S_d^2 \rho}{
+4\pi c (B\ell)^2 
+R_e^2C_{es}^2}\left| \hat{H}(\omega) \right|^2
+\end{align}
+
+where $\hat{H}(\omega)$ is a function normalized to $1$ when $\omega>\omega_c$. The electrical power dissipated  is nearly entirely dissipated in the voice coil ($Q_{es}<Q_{ms}$), and as such the electrical power delivered is:
+\begin{align}
+\left\langle P_e \right\rangle =\frac{\left| v_o \right|^2}{2 R_e}
+\end{align}
+from which efficiency can be found:
+\begin{align}
+\eta=\frac{\left\langle P_a \right\rangle}{\left\langle P_e \right\rangle}=\frac{S_d^2 \rho}{
+2\pi c (B\ell)^2 
+R_eC_{es}^2}\left| f(\omega) \right|^2=\eta_{_0}\left| f(\omega) \right|^2
+\end{align}
+where $f(\omega)$ is a function that becomes $1$ when $\omega>\omega_c$ and $\eta_0$ is the reference efficiency:
+\begin{align}
+\eta_{_0}=\frac{S_d^2 \rho}{
+2\pi c (B\ell)^2 
+R_eC_{es}^2}=\frac{\rho}{2\pi c}\frac{(B\ell)^2 S_d^2 }{R_eM_{ms}^2}=\frac{4\pi f_s^3 V_{as}}{c^2Q_{es}}
+\end{align}
+which is the maximum percent of electrical power available to be converted acoustic power.
+
+\section{Sound Power Level (SWL) and Sound Pressure Level (SPL)}
+Sound power level (SWL) is defined as:
+\begin{align}
+L_W&=10 \log_{10}\left( \frac{P_a}{P_0} \right) \mbox{ dB}
+\end{align}
+where $P_0$ is some reference level (i.e., defines $0$ dB).
+
+Sound power is the total power output of a speaker, independent of distance from acoustic source. Another common description of speaker power is sound pressure level (SPL) $L_p=10\log_10\left( \frac{I}{I_0} \right)$, a function of the intensity of the sound wave which is in itself a function of distance from the source. Recognizing $P_a=AI$ where $A$ is area and $I$ is sound intensity, sound power level can be written as:
+\begin{align}
+L_p&=10\log_10\left( \frac{I}{I_0} \right) = 10\log_{10}\left( \frac{P_a/A}{P_0/A_0} \right)\\
+&=10\log_{10}\left( \frac{P_a}{P_0}\right) -10\log_{10} \left( \frac{A}{A_0} \right)\\
+&=10\log_{10}\left( \frac{\eta P_e}{P_0}\right) -10\log_{10} \left( \frac{A}{A_0} \right)\\
+L_p&=10\log_{10}\left( \eta \right)+10\log_{10}\left( \frac{P_e}{P_0}\right) -10\log_{10} \left( \frac{A}{A_0} \right)
+\end{align}
+
+Reference values are chosen such that 0 dB is the smallest signal audible to a human. For this, $P_0$ is chosen to be the output power required to generate a pressure wave such that the amplitude of the pressure wave is 20 $\mu$pascals when 1 m away from a reference point source when the point source radiates into a hemisphere ($A_0=2\pi$ m$^2$). The electrical power reference is chosen to be $P_e=1$ W, and the area of the acoustic sound is also reference to the area of a hemisphere with a radius of 1 m ($A=2\pi$ m$^2$). Therefore, the SPL referenced to 1 watt electrical power dissipated and SPL measured 1 meter from the source is:
+\begin{align}
+L_p&=10\log_{10}\left( \eta \right)+112.1 \mbox{ dB 1W 1m}
+\end{align}
+
 
 \section{Including effects of loss?}
 
