@@ -9,8 +9,8 @@ Created on Thu Feb  4 17:20:04 2016
 import sys
 from PyQt4 import QtGui
 import pyaudio
-import speakertest
-import speakermodel
+import scimpy.speakertest as speakertest
+import scimpy.speakermodel as speakermodel
 import numpy as np
 from math import sqrt
 

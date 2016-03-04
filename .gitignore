@@ -6,3 +6,7 @@ doc/*.pdf
 doc/*.synctex.gz
 doc/*.aux
 doc/*.toc
+build
+env
+dist
+*.egg-info
