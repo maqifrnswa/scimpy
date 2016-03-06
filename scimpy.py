@@ -7,12 +7,13 @@ Created on Thu Feb  4 17:20:04 2016
 """
 
 import sys
-from PyQt4 import QtGui
+from PySide import QtGui
 import pyaudio
 import scimpy.speakertest as speakertest
 import scimpy.speakermodel as speakermodel
 import numpy as np
 from math import sqrt
+
 
 class ImpTester(QtGui.QWidget):
     def __init__(self):
@@ -96,7 +97,7 @@ class ImpTester(QtGui.QWidget):
         layout = QtGui.QGridLayout()
 
         infotext = QtGui.QLabel()
-        #  TODO do I want group box here? is that the right thing to use?
+        #  TODO make each widget its own class, with get/set functions to access data
         formwidget = QtGui.QGroupBox("Measurement Parameters")
         formwidgetlayout = QtGui.QFormLayout()
         test2lineedit = QtGui.QLineEdit()
@@ -141,13 +142,105 @@ class ImpTester(QtGui.QWidget):
         framegeo.moveCenter(centerpoint)
         self.move(framegeo.topLeft())
 
+class SealedBoxWidget(QtGui.QGroupBox):
+    def __init__(self,
+                 title,
+                 fslineedit,
+                 qtslabel,
+                 vasllineedit,
+                 vasflineedit,
+                 relineedit,
+                 cmslineedit,
+                 mmslineedit,
+                 rmslineedit,
+                 sdlineedit,
+                 bllineedit):  # eventually just pass the while widget
+                 # or we can keep an object somewhere that keeps all of these and pass that object to each widget
 
-class SpeakerModel(QtGui.QWidget):
+        def set_f3():
+            qt = float(qtlabel.text())
+            alpha =float(vasflineedit.text())/float(vbflineedit.text())
+            f3 =   float(fslineedit.text()) * sqrt(alpha +1) * sqrt((1/qt**2-2+sqrt((2-1/qt**2)**2+4))/2)
+            f3lineedit.setText("{0:.0f}".format(f3))
+
+        def calcIdealParams():
+            alpha_inv = 2*float(qtslabel.text())**2/(1-2*float(qtslabel.text())**2)
+            f3 =  float(fslineedit.text()) * sqrt(1/alpha_inv +1)
+            vbflineedit.setText("{0:.2g}".format(
+                float(vasflineedit.text())*alpha_inv ))
+            self.vbllineedit.setText("{0:.2g}".format(
+                float(vasllineedit.text())*alpha_inv ))
+            qtlabel.setText("{0:0.2g}".format(1/sqrt(2)))
+            # f3lineedit.setText("{0:.0f}".format(f3))
+            set_f3()
+            
+        def vbflineedit_callback():
+            alpha =float(vasflineedit.text())/float(vbflineedit.text())
+            qt = float(qtslabel.text()) * sqrt(alpha+1)
+            qtlabel.setText("{0:0.2g}".format(qt))
+            self.vbllineedit.setText("{0:0.2g}".format(float(vbflineedit.text())*0.0283168*1000))
+            set_f3()
+
+        def vbllineedit_callback():
+            alpha =float(vasllineedit.text())/float(self.vbllineedit.text())
+            qt = float(qtslabel.text()) * sqrt(alpha+1)
+            qtlabel.setText("{0:0.2g}".format(qt))
+            vbflineedit.setText("{0:0.2g}".format(float(self.vbllineedit.text())/0.0283168/1000 ))
+            set_f3()
+
+        def calcParamsf3():
+            print("TESTING STUB")
+            print(speakermodel.cheby_find_k(float(qtslabel.text())))
+            print(speakermodel.sealed_find_vb_qt(vas=float(vasllineedit.text())/1000,
+                                                 fs=float(fslineedit.text()),
+                                                 f3=float(f3lineedit.text()),
+                                                 qts=float(qtslabel.text())))
+            
+        def resetParams():
+            self.vbllineedit.setText("inf")
+            vbflineedit.setText("inf")
+            f3lineedit.setText("")
+            qt = float(qtslabel.text())
+            qtlabel.setText("{0:0.2g}".format(qt))
+            set_f3()
+
+        super(SealedBoxWidget, self).__init__(title)
+        layout = QtGui.QFormLayout()
+        self.vbllineedit = QtGui.QLineEdit()
+        self.vbllineedit.editingFinished.connect(vbllineedit_callback)
+        layout.addRow("Box Volume (Vb) litres:", self.vbllineedit)
+        vbflineedit = QtGui.QLineEdit()
+        vbflineedit.editingFinished.connect(vbflineedit_callback)
+        layout.addRow("Box Volume (Vb) ft^3:", vbflineedit)
+        qtlabel = QtGui.QLabel()
+        layout.addRow("Qt:", qtlabel)
+        f3lineedit = QtGui.QLineEdit()
+        layout.addRow("Cutoff Frequency (f3) Hz:", f3lineedit)
+        idealbtn = QtGui.QPushButton("Set to Ideal Closed Box")
+        idealbtn.clicked.connect(calcIdealParams)
+        f3btn = QtGui.QPushButton("Calculate Parameters Given f3 && Vb")
+        f3btn.clicked.connect(calcParamsf3)
+        resetbtn = QtGui.QPushButton("Set to Infinite Baffle")
+        resetbtn.clicked.connect(resetParams)
+        layout.addRow(idealbtn)
+        layout.addRow(f3btn)
+        layout.addRow(resetbtn)
+        resetParams()
+        self.setLayout(layout)
+
+
+class SpeakerModelWidget(QtGui.QWidget):
     def __init__(self):
-        super(SpeakerModel, self).__init__()
+        super(SpeakerModelWidget, self).__init__()
         self.init_ui()
 
     def init_ui(self):
+        def set_eta0(sd, re, mms, bl):
+            efficiency = sd**2 * 1.18/345/2/np.pi/re/(mms/bl**2)**2/bl**2
+            eta0label.setText("{0:2.1f} %".format(efficiency*100))
+            spllabel.setText(
+                "{0:.0f} dB 1w1m".format(112.1+10*np.log10(efficiency)))
+
         def find_enclosure():
             speakermodel.calc_impedance(re=float(relineedit.text()),
                                         le=float(lelineedit.text())/1000,
@@ -155,13 +248,8 @@ class SpeakerModel(QtGui.QWidget):
                                         mms=float(mmslineedit.text())/1000,
                                         rms=float(rmslineedit.text()),
                                         sd=float(sdlineedit.text())/(100*100),
-                                        bl=float(bllineedit.text()))
-
-        def set_eta0(sd, re, mms, bl):
-            efficiency = sd**2 * 1.18/345/2/np.pi/re/(mms/bl**2)**2/bl**2
-            eta0label.setText("{0:2.1f} %".format(efficiency*100))
-            spllabel.setText(
-                "{0:.0f} dB 1w1m".format(112.1+10*np.log10(efficiency)))
+                                        bl=float(bllineedit.text()),
+                                        vb=float(sealedboxwidg.vbllineedit.text())/1000)
 
         def calc_component_params():
             try:
@@ -182,9 +270,10 @@ class SpeakerModel(QtGui.QWidget):
                 cmslineedit_set()
 
                 set_eta0(sd, re, mms, bl)
+
+                qtslabel.setText("{0:.2g}".format(qms*qes/(qms+qes)))
             except ValueError:
                 pass  # might not be set yet
-
 
         def calc_system_params():
             try:
@@ -276,10 +365,10 @@ class SpeakerModel(QtGui.QWidget):
         formwidget.setLayout(formwidgetlayout)
 
         runbtn = QtGui.QPushButton(
-            'Model Speaker Impedance and Infinite Baffle Performance')
+            'Model Speaker Impedance and Infinite Baffle Performance (need Vb=inf)')
         runbtn.clicked.connect(find_enclosure)
 
-        systemformwidget = QtGui.QGroupBox("System T/S Parameters")
+        systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
         systemformwidgetlayout = QtGui.QFormLayout()
         fslineedit = QtGui.QLineEdit("300")
         fslineedit.editingFinished.connect(calc_component_params)
@@ -288,8 +377,7 @@ class SpeakerModel(QtGui.QWidget):
         systemformwidgetlayout.addRow("Qts:", qtslabel)
         qeslineedit = QtGui.QLineEdit("1")
         qeslineedit.editingFinished.connect(calc_component_params)
-        systemformwidgetlayout.addRow("on textchange update qts Qes:",
-                                      qeslineedit)
+        systemformwidgetlayout.addRow("Qes:", qeslineedit)
         qmslineedit = QtGui.QLineEdit("1")
         qmslineedit.editingFinished.connect(calc_component_params)
         systemformwidgetlayout.addRow("Qms:", qmslineedit)
@@ -302,9 +390,25 @@ class SpeakerModel(QtGui.QWidget):
 
         systemformwidget.setLayout(systemformwidgetlayout)
 
+        sealedboxwidg = SealedBoxWidget("Enclosure Parameters",
+                                        fslineedit,
+                                        qtslabel,
+                                        vasllineedit,
+                                        vasflineedit,
+                                        relineedit,
+                                        cmslineedit,
+                                        mmslineedit,
+                                        rmslineedit,
+                                        sdlineedit,
+                                        bllineedit)
+        sealedboxbtn = QtGui.QPushButton("Calculate Sealed Box Performace")
+        sealedboxbtn.clicked.connect(find_enclosure)
+
+        layout.addWidget(runbtn, 1, 0, 1, 2)
         layout.addWidget(formwidget, 0, 0, 1, 1)
         layout.addWidget(systemformwidget, 0, 1, 1, 1)
-        layout.addWidget(runbtn, 1, 0, 1, 2)
+        layout.addWidget(sealedboxwidg,0,2,1,1)
+        layout.addWidget(sealedboxbtn,1,2,1,1)
         self.setLayout(layout)
 
         self.setWindowTitle('Speaker Performance')
@@ -320,8 +424,8 @@ class SpeakerModel(QtGui.QWidget):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    imptester = ImpTester()
-    speakermodel = SpeakerModel()
+    _ = ImpTester()
+    _ = SpeakerModelWidget()
     sys.exit(app.exec_())
 
 

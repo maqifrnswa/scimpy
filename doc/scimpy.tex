@@ -1,10 +1,13 @@
 \documentclass[10pt]{book}
 
-%\usepackage[paper=letterpaper,layoutsize={6in,9in},right=.5in,left=.5in,top=.75in,bottom=.5in,bindingoffset=.375in,heightrounded, showframe, showcrop]{geometry}
+%8.5x11 PRINTING
+%\usepackage[paper=letterpaper, heightrounded]{geometry}
 
-\usepackage[paper=letterpaper,layoutsize={6in,9in},bindingoffset=.375in, heightrounded, showframe, showcrop]{geometry}%default geometry pretty close to golden ratio, guttenburg Tschichold's "golden canon of page construction"
+%EDITING:
+%\usepackage[paper=letterpaper,layoutsize={6in,9in},bindingoffset=.375in, heightrounded, showframe, showcrop, twoside]{geometry}
 
-%\usepackage[papersize={6in,9in},layoutsize={6in,9in},bindingoffset=.375in, heightrounded]{geometry}%this is for printing
+%BOOK PRINTING:
+\usepackage[papersize={6in,9in},layoutsize={6in,9in},bindingoffset=.375in, heightrounded, twoside]{geometry}
 
 %\usepackage{layout}
 \usepackage[utf8]{inputenc}
@@ -16,31 +19,56 @@
 \usepackage{hyperref}
 \usepackage{tabularx}
 \usepackage{booktabs}
-
 \usepackage{listings}
 
-\author{Scott Howard scott@scimpy.com}
-\title{Scimpy:\\ \textbf{S}ound \textbf{C}ard based \textbf{I}mpedance \textbf{M}easurements in \textbf{Py}thon}
+\author{Scott Howard}
+\title{Scimpy:\\ \textbf{S}ound \textbf{C}ard Based \textbf{I}mpedance \textbf{M}easurements in \textbf{Py}thon}
 \date{Last Revision: \today}
 \begin{document}
 \frontmatter
 
 %\layout
 \maketitle
+\null
+\vfill
+\subsection*{Copyright}
+© Copyright Scott Howard 2016
 
-\section*{Copyright}
-test
+\subsection*{License}
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit:
+\begin{center}
+\url{http://creativecommons.org/licenses/by-sa/4.0/}
 
-\section*{License}
-test
+\includegraphics[scale=1]{cc-by-sa.eps}
+\end{center}
+
 
 
 \tableofcontents
 
+
+\chapter{Preface}
+\section*{Purpose of this Book}
+DIY speaker building is a great combination of art and science that is accessible to a very wide population. Proper speaker design and characterization, however, typically require technical expertise and tools. The goal of this project is to provide an open-sourced platform to characterize electro-acousto-mechanical properties of speakers using a standard computer ADC/DAC, as well as a speaker design tool.
+
+Commercial and closed-source software tools are available to characterize and aid design, but no open-source software and hardware projects exists. A few free tools exist, but are not open-source and are built on platforms that are no longer maintained. Open-source software projects enable users to add features \& fix-bugs as needed as well as make long-term software maintenance possible even if the original author is no longer involved in the project.
+
+
+
+\section*{About the Author}
+Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and has preformed post-doctoral work at Princeton and Cornell University prior to appointment at Notre Dame.
+
+At Notre Dame, Professor Howard has taught undergraduate-level ``Electromagnetic Fields and Waves" and graduate courses in photonics and optics. He is the director of the Biomedical Photonics Research Laboratory and is funded by the National Science Foundation, US Department of Homeland Security, and US Department of Agriculture.
+
+Dr. Howard is also a strong supporter of open-source software and hardware projects, as well as open and collaborative education. He is a Debian Developer and a contributor to several large projects including Arduino, LibreCAD, GNOME, and Ubuntu.
+
+
 \mainmatter
 \part{Using Scimpy}
 \chapter{Introduction}
-test test
+
+This is largely a presentation of the ideas from Thiele and Small's papers, we'll 
+
 \begin{quote}
 ``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." \\-- A. N. Thiele
 \end{quote}
@@ -985,9 +1013,7 @@ G(\omega_3)=1/2\\
 \left( \frac{\omega_3}{\omega_c} \right)^4 +\left( 2 -\frac{1}{Q_t^2}\right)\left(\frac{\omega_3}{\omega_c} \right)^2-1=0\\
 \omega_3=\omega_c \left[ \frac{  \frac{1}{Q_{t}^2}-2  \pm \sqrt{\left( 2- \frac{1}{Q_{t}^2}\right)^2+4}}{2}\right]^{1/2}
 \end{align}
-Absolute values and $\pm$ is from finding the roots of a polynomial of order $w_3^4$, and allows for both peaked and low-pass responses.
-
-
+Absolute values and $\pm$ is from finding the roots of a polynomial of order $w_3^4$, and allows for both peaked and low-pass responses. It's important to see that and $\omega_3$ is a minimum when $Q_t=1/\sqrt{2}$ -- the B2 alignment!
 
 Therefore, for a B2 closed-box alignment:
 \begin{align}
@@ -1026,7 +1052,7 @@ A'_2=R_e R_{es}  C_{es} L_{es}+C_{lev} R_e R_{es} L_{es}+C_v L_{ceb} R_e R_{es}\
 A'_1=R_{es} L_{es}+R_e L_{es}\\
 A'_0=R_e R_{es}
 \end{align}
-normalizing by $A'_0$ and defining $R_t=\frac{R_eR_{es}}{R_{es}+R_e}$, $Q_{t}=R_t\sqrt{\frac{C_{es}}{L_{es}}}$, $\omega_s=\frac{1}{\sqrt{C_{es}L_{es}}}$, and $\omega_b=\frac{1}{\sqrt{C_{lev}L_{ceb}}}$
+normalizing by $A'_0$ and defining $R_t=\frac{R_eR_{es}}{R_{es}+R_e}$, $Q_{ts}=R_t\sqrt{\frac{C_{es}}{L_{es}}}$, $\omega_s=\frac{1}{\sqrt{C_{es}L_{es}}}$, and $\omega_b=\frac{1}{\sqrt{C_{lev}L_{ceb}}}$
 \begin{align}
 \hat{H}(\omega)=(-i Re C_{es} \omega) \times v_{L_{cev}}= \frac{
 (-i Re C_{es} \omega)(-i  C_{ev} L_{ceb} L_{es}) \omega^4/R_e}
@@ -1034,9 +1060,9 @@ normalizing by $A'_0$ and defining $R_t=\frac{R_eR_{es}}{R_{es}+R_e}$, $Q_{t}=R_
 \hat{H}(\omega)= \frac{-i\omega_s}{Q_{es}}\frac{\omega^4/\omega_b^2 \omega_s^2}
 {A_4\omega^4-iA_3\omega^3-A_2\omega^2+iA_1\omega+1}\\
 A_4=C_{lev} L_{ceb} C_{es} L_{es}=\frac{1}{\omega_b^2\omega_s^2}\\
-A_3=\frac{C_{lev} L_{ceb} L_{es}}{R_t}=\frac{1}{\omega_b^2\omega_s Q_{t}}\\
+A_3=\frac{C_{lev} L_{ceb} L_{es}}{R_t}=\frac{1}{\omega_b^2\omega_s Q_{ts}}\\
 A_2=C_{es} L_{es}+C_{lev} L_{es}+C_{lev} L_{ceb}=\frac{1}{\omega_s^2}+\frac{1}{\omega_b^2}+\frac{L_{es}}{L_{eb}}\frac{1}{\omega_b^2}\\
-A_1=\frac{L_{es}}{R_t}=\frac{1}{Q_{t}\omega_s}
+A_1=\frac{L_{es}}{R_t}=\frac{1}{Q_{ts}\omega_s}
 \end{align}
 
 %\begin{verbatim}
@@ -1047,9 +1073,9 @@ A_1=\frac{L_{es}}{R_t}=\frac{1}{Q_{t}\omega_s}
 %factor((declare(\omega,mainvar),full));
 %\end{verbatim}
 
-This can be seen as a 4th order filter, we just have to choose our the variables to properly ``align" with the audio response we want. Thiele observed that for drivers with $Q_t=0.383$, a ``perfect" fourth order Butterworth filter can be made if $\omega_b$ and $V_b$ are chosen properly; when $Q_t<0.383$, you can get a ``Quasi-Butterworth Third Order" alignment; and for drivers $Q_t>0.383$ a ``Fourth Order Chebyschev" alignment is suitable. Both Thiele and Small created tables and graphical tools to aid design. Modern computers give us an alternative tool which is especially helpful for two- or three-way speakers (multiple drivers in the same box). For completeness, we will find the analytical expressions then describe how computers can be used.
+This can be seen as a 4th order filter, we just have to choose our the variables to properly ``align" with the audio response we want. Thiele observed that for drivers with $Q_{ts}=0.383$, a ``perfect" fourth order Butterworth filter can be made if $\omega_b$ and $V_b$ are chosen properly; when $Q_{ts}t<0.383$, you can get a ``Quasi-Butterworth Third Order" alignment; and for drivers $Q_{ts}>0.383$ a ``Fourth Order Chebyschev" alignment is suitable. Both Thiele and Small created tables and graphical tools to aid design. Modern computers give us an alternative tool which is especially helpful for two- or three-way speakers (multiple drivers in the same box). For completeness, we will find the analytical expressions then describe how computers can be used.
 
-\subsection{Fourth Order Butterworth Filter (B4) \texorpdfstring{\\$Q_t=0.383$}{Qt=0.383}} A fourth order Butterworth filter produces a power response of the form:
+\subsection{Fourth Order Butterworth Filter (B4) \texorpdfstring{\\$Q_{ts}=0.383$}{Qts=0.383}} A fourth order Butterworth filter produces a power response of the form:
 \begin{align}
 \left|  \hat{H}(\omega) \right|^2&\propto \frac{(\omega/\omega_c)^8}{1+\left(\frac{\omega}{\omega_c}\right)^8}\label{eq:transfer_func}\\
 \begin{split}
@@ -1061,9 +1087,9 @@ This can be seen as a 4th order filter, we just have to choose our the variables
 We can now use this to design the box by using Equation \ref{eq:transfer_func} to generate the following relationships:
 \begin{align}
 \omega_c&=\sqrt{\omega_b \omega_s}=\omega_3\\
-A_1/\omega_c&=1/Q_t\omega_s\\
+A_1/\omega_c&=1/Q_{ts}\omega_s\\
 A_2/\omega_c^2&=1/\omega_s^2+1\omega_b^2+(L_{es}/L_{eb})(1/\omega_b^2)\\
-A_3/\omega_c^3&=1/\omega_b^2\omega_sQ_t
+A_3/\omega_c^3&=1/\omega_b^2\omega_sQ_{ts}
 \end{align}
 where $\omega_c$ is the characteristic frequency of the box, which in the case of the B4 filter is also the frequency where Equation \ref{eq:transfer_func} is $1/2$ of the maximum value (i.e., 3dB lower, $\omega_3$). This gives us our dimensions for the box!
 
@@ -1072,7 +1098,7 @@ where $\omega_c$ is the characteristic frequency of the box, which in the case o
 \frac{\omega_b}{\omega_s}&=\frac{A_1}{A_3}=h\\
 \omega_b&=(C_{ev}L_{eb})^{-1}=\frac{c^2A_v}{V_bl_v}=h\omega_s\\
 \frac{l_v}{A_v}&=\frac{\alpha c^2}{V_{as} h \omega_s}\\
-Q_t&=\frac{1}{\sqrt{A_1A_3}}\label{eq:dimensions-end}
+Q_{ts}&=\frac{1}{\sqrt{A_1A_3}}\label{eq:dimensions-end}
 \end{align}
 
 For a B4 alignment, yields:
@@ -1091,12 +1117,12 @@ To make a forth order Butterworth box:
 \begin{enumerate}
 \item Make the box volume is: $V_b=\frac{1}{\sqrt{2}}V_{as}$
 \item The vent dimensions are: $\frac{A_v}{l_v}=\frac{\omega_s^2 V_{as}}{c^2\sqrt{2}}$. This is found from $\omega_b^2=\omega_s^2=\frac{1}{C_{ev}L_{eb}}=\frac{1}{V_b l_v/(c^2 A_v)}=\frac{\sqrt{2}c^2 A_v}{V_{as}l_v}$
-\item $Q_t$ will need to be tuned by placing a resistor in series with the speaker, thus effectively increasing $R_e$. Therefore, in this alignment (i.e., this choice of filter parameters), only $Q_{ts}>0.383$ are easily implemented. However, this technique of using a resistor to decrease $Q_{es}$ is rarely\footnote{rarely=never} done since it also reduces output power when similar performance can be found with the Chebyschev (C4) alignment described below.
+\item $Q_{ts}$ will need to be tuned by placing a resistor in series with the speaker, thus effectively increasing $R_e$. Therefore, in this alignment (i.e., this choice of filter parameters), only $Q_{ts}>0.383$ are easily implemented. However, this technique of using a resistor to decrease $Q_{es}$ is rarely\footnote{rarely=never} done since it also reduces output power when similar performance can be found with the Chebyschev (C4) alignment described below.
 \end{enumerate}
 
-The fourth order Butterworth (i.e., ``B4") filter only really is suitable for $Q_t=0.383$ drivers. Other alignments make vented boxes for other $Q_t$ possible.
+The fourth order Butterworth (i.e., ``B4") filter only really is suitable for $Q_{ts}=0.383$ drivers. Other alignments make vented boxes for other $Q_{ts}$ possible.
 
-\subsection{Fourth Order Chebyschev (C4) \texorpdfstring{\\$Q_t>0.383$}{Qt>0.383}}
+\subsection{Fourth Order Chebyschev (C4) \texorpdfstring{\\$Q_{ts}>0.383$}{Qts>0.383}}
 Thiele uses the fact that Chebyschev filters are Butterworth filters where the real part of the Butterworth filter poles (i.e., the roots of the denominator) are multiplied by the same factor $k$. For example, in a B4 filter (with $s=i\omega/\omega_c$), the poles are the roots of the denominator of the low-pass transfer function:
 \begin{align}
 \hat{H}(s)=\frac{1}{
@@ -1144,9 +1170,9 @@ A_3&=\frac{0.9239k^3+1.6892k}{(0.1250k^4+0.7500k^2+0.1250)^{3/4}}
 \end{align}
 When $k=1$, you can see that the $A_1$, $A_2$, $A_3$ are the same as the B4 coefficient alignments when $k=1$.
 
-We can now find the dimensions and performance specifications for our speaker! First we need to find what $k$ corresponds to our speaker. This can be found from our driver's specified $Q_t$ and solving for $k$:
+We can now find the dimensions and performance specifications for our speaker! First we need to find what $k$ corresponds to our speaker. This can be found from our driver's specified $Q_{ts}$ and solving for $k$:
 \begin{align}
-Q_t=\frac{1}{\sqrt{A_1A_3}}
+Q_{ts}=\frac{1}{\sqrt{A_1A_3}}
 \end{align}
 Next we find the volume of the box from $V_{as}/V_{b}=L_{es}/L_{eb}$:
 \begin{align}
@@ -1181,7 +1207,7 @@ where $d=(\omega_3/\omega_c')^2$. Taking the largest real root of $d$ yields:
 \frac{\omega_3}{\omega_s}=\sqrt{dh}
 \end{align}
 
-\subsection{Third Order Quasi-Butterworth (QB3) \texorpdfstring{\\$Q_t<0.383$}{Qt<0.383}} When $Q_t<0.38$, you can use a ``Third Order Quasi-Butterworth" alignment. This filter is described by the transfer function:
+\subsection{Third Order Quasi-Butterworth (QB3) \texorpdfstring{\\$Q_{ts}<0.383$}{Qts<0.383}} When $Q_{ts}<0.38$, you can use a ``Third Order Quasi-Butterworth" alignment. This filter is described by the transfer function:
 \begin{align}
 \left| \hat{H}(s) \right|^2 &=\frac{(\omega/\omega_c)^8}{(\omega/\omega_c)^8+B^2(\omega/\omega_c)^2+1}
 \end{align}
@@ -1203,9 +1229,9 @@ A_1&=\frac{2+A_2^2}{2 A_3}=\frac{2+A_2^2}{2 \sqrt{2 A_2}}
 
 Using equations \ref{eq:dimensions-start}--\ref{eq:dimensions-end} with \ref{eq:qb3-start}--\ref{eq:qb3-end} yields:
 \begin{align}
-\frac{w_b}{w_s}&= \frac{1}{Q_t\sqrt{8-8Q_t^2}}=h\\
+\frac{w_b}{w_s}&= \frac{1}{Q_{ts}\sqrt{8-8Q_{ts}^2}}=h\\
 \omega_c&=\sqrt{\omega_s \omega_b}\\
-A_2&=\frac{1}{2 Q_t^2 h}=\sqrt{2(1/Q_t^2-1)}\label{eq:qb3-power}
+A_2&=\frac{1}{2 Q_{ts}^2 h}=\sqrt{2(1/Q_{ts}^2-1)}\label{eq:qb3-power}
 \end{align}
 from which $A_1$, $A_3$, and $B$ can be calculated, and which will give us the box dimensions.
 
@@ -1232,7 +1258,7 @@ We also can model the box's performance. The low frequency cut-off $\omega_3$ (i
 \end{figure}
 
 \subsection{Closed or Vented Box?}
-The choice between the closed/sealed or vented/ported design is based on the available driver specifications and desired frequency response. For example, Figure \ref{fig:sealed_vs_ported_design} shows a comparison of performance and design values between a B2 closed box(thin lines) and a QB3-B4-C4 vented box (thick lines). Some conclusions can be drawn: (1) vented boxes always have a lower $\omega_3$ than closed boxes for a given $Q_t$ and (2) closed boxes are smaller than vented boxes when $Q_t<0.6$.
+The choice between the closed/sealed or vented/ported design is based on the available driver specifications and desired frequency response. For example, Figure \ref{fig:sealed_vs_ported_design} shows a comparison of performance and design values between a B2 closed box(thin lines) and a QB3-B4-C4 vented box (thick lines). Some conclusions can be drawn: (1) vented boxes always have a lower $\omega_3$ than closed boxes for a given $Q_{ts}$ and (2) closed boxes are smaller than vented boxes when $Q_{ts}<0.6$.
 
 
 
@@ -1241,14 +1267,14 @@ An additional too to aid decisions is to look at the \textit{efficiency bandwidt
 \mbox{EBP}=\frac{\omega_s}{2\pi Q_{es}}=\frac{f_s}{Q_{es}}
 \end{align}
 
-Prof. Small is attributed to have given the following guidelines to interpret EBP: a speaker with an EBP$>100$ is well suited for a ported design, EBP$<50$ is well suited for a closed design, and $50<$EBP$<100$ could be either. This can be seen as an interpretation of Figure \ref{fig:sealed_vs_ported_design}. If a speaker has high $f_s$, you want to use the ported design to get the lowest $\omega_c$. If a speaker has a high $Q_{es}$ and thus a high $Q_t$, $\omega_c$ will be already be low, so using the smaller sealed box can be convenient.
+Prof. Small is attributed to have given the following guidelines to interpret EBP: a speaker with an EBP$>100$ is well suited for a ported design, EBP$<50$ is well suited for a closed design, and $50<$EBP$<100$ could be either. This can be seen as an interpretation of Figure \ref{fig:sealed_vs_ported_design}. If a speaker has high $f_s$, you want to use the ported design to get the lowest $\omega_c$. If a speaker has a high $Q_{es}$ and thus a high $Q_{ts}$, $\omega_c$ will be already be low, so using the smaller sealed box can be convenient.
 
 
 
 \begin{figure}
 \centering
 \includegraphics[width=.75\textwidth]{matlab/sealed_vs_ported_design.eps}
-\caption{Relationship between compression ratio ($\alpha$), normalized cut-off frequencies ($\omega_3$) for a given $Q_t$ (vented box, thick lines); $\alpha$, $\omega_3/\omega_s$, and $Q_{ts}$ (closed box, thin lines)}\label{fig:sealed_vs_ported_design}
+\caption{Relationship between compression ratio ($\alpha$), normalized cut-off frequencies ($\omega_3$) for a given $Q_{ts}$ (vented box, thick lines); $\alpha$, $\omega_3/\omega_s$, and $Q_{ts}$ (closed box, thin lines)}\label{fig:sealed_vs_ported_design}
 \end{figure}
 
 \section{Group Delay?}
@@ -1369,6 +1395,8 @@ time avg power
 \left\langle P_L \right\rangle &= \frac{\left| \hat{v}_L \right|^2}{2\left| \hat{Z}_L\right|}\cos\phi_{\hat{Z}_L}=\left| \hat{v}_0 \right|^2\frac{\left| \hat{Z}_L\right|}{2\left| R_g+\hat{Z}_L\right|^2}\cos\phi_{\hat{Z}_L}\label{eq:time-avg-pwr-load}
 \end{align}
 where $\hat{Z}_L=\left| \hat{Z}_L \right| e^{i\phi_{\hat{Z}_L}}$.
+
+\section{excursion? Max power?}
 
 \chapter{QB3, C4 Alignment Code}\label{appendix:qt-matlab}
 %\lstinputlisting[language=Matlab]{matlab/vented_design.m}

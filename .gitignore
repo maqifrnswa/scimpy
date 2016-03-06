@@ -2,7 +2,6 @@ __pycache__
 doc/*.aux
 doc/*.log
 doc/*.out
-doc/*.pdf
 doc/*.synctex.gz
 doc/*.aux
 doc/*.toc
