@@ -7,7 +7,10 @@ Created on Thu Feb  4 17:20:04 2016
 """
 
 import sys
-from PySide import QtGui
+try:
+    from PyQt4 import QtGui
+except:
+    from PySide import QtGui
 import pyaudio
 import scimpy.speakertest as speakertest
 import scimpy.speakermodel as speakermodel
@@ -25,7 +28,8 @@ class ImpTester(QtGui.QWidget):
         def update_textbox(current, previous):
             new_row = listwidg.row(current)
             print(sc_info[new_row])
-            infotext.setText("Name: {0}\n"
+            infotext.setText("NOTE: For now we just use default device!\n"
+                             "Name: {0}\n"
                              "Default Sampling Rate (Hz): {1}\n"
                              "Max Input Channels: {2}\n"
                              "Max Output Channels: {3}\n"
@@ -73,6 +77,7 @@ class ImpTester(QtGui.QWidget):
 
         def run_measurement():
             print(test2lineedit.text())
+            # TODO Need to use chosen (not default) device
             self.measurement_engine.run(
                 framesize=int(test3lineedit.text()),
                 datarate=int(float(test2lineedit.text())),

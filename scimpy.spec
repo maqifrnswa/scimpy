@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['scimpy.py'],
-             pathex=['/home/showard/scimpy/scimpy'],
+             pathex=['C:\\Users\\showard\\Desktop\\speakers\\scimpy'],
              binaries=None,
              datas=None,
              hiddenimports=[],
