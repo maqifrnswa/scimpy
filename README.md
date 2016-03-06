@@ -7,7 +7,8 @@ Python 3, Qt4, PortAudio
 
 Python Requirements: scipy, pyaudio, pyside, matplotlib (pyqt4 works easily too, just change the import)
 
-windows python: install anaconda, open anaconda console and "pip install pyaudio"
+windows python: install anaconda, open anaconda console and then in the anaconda console run "pip install pyaudio"
+
 https://www.continuum.io/downloads
 
 Book: latex
