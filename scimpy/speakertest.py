@@ -114,10 +114,10 @@ class SpeakerTestEngine():
 #            dtype=np_type)  # this works because fixed-width ints wrap
 
         # print(self.data.shape)
-        self.data = (scipy.signal.chirp(np.arange(0,duration,1/self.datarate),
-                                        0,
-                                        duration,
-                                        20000,
+        self.data = (scipy.signal.chirp(t=np.arange(0,duration,1/self.datarate),
+                                        f0=0,
+                                        t1=duration,
+                                        f1=20000,
                                         method='lin',
                                         phi=-90
                     )*((2**(8*width))/2-1))#.astype(dtype=np_type,copy=False)
@@ -182,6 +182,8 @@ class SpeakerTestEngine():
         # print(inputdata2)
         # plt.magnitude_spectrum(inputdata2, Fs=self.datarate)
         # self.input_data=scipy.signal.savgol_filter(self.input_data,11,3)
+        plt.ion()
+        plt.figure()
         plt.subplot(2, 2, 1)
         plt.plot(self.input_data[:, 0])  # left
         plt.subplot(2, 2, 2)

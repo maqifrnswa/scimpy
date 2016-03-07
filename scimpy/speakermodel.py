@@ -78,6 +78,7 @@ def calc_impedance(re, le, cms, mms, rms, sd, bl, vb=np.inf, loverA=np.inf):
         transferfunc = transferfunc*(1j*omega*leb)/(1j*omega*leb+1/(1j*omega*cev))
         print("yeps")
 
+    plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(211)
 

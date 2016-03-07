@@ -32,17 +32,17 @@ class ImpTester(QtGui.QWidget):
                              "Default Sampling Rate (Hz): {1}\n"
                              "Max Input Channels: {2}\n"
                              "Max Output Channels: {3}\n"
-                             "Suggested Output Buffer (frames): {4}-{5}\n"
+                             "Suggested Input Buffer (frames): {4}-{5}\n"
                              .format(sc_info[new_row]["name"],
                                      sc_info[new_row]["defaultSampleRate"],
                                      sc_info[new_row]["maxInputChannels"],
                                      sc_info[new_row]["maxOutputChannels"],
                                      int(sc_info[new_row][
-                                         "defaultLowOutputLatency"] *
+                                         "defaultLowInputLatency"] *
                                          sc_info[new_row]["defaultSampleRate"]
                                         ),
                                      int(sc_info[new_row][
-                                         "defaultHighOutputLatency"] *
+                                         "defaultHighInputLatency"] *
                                          sc_info[new_row]["defaultSampleRate"])
                                     ))
             test2lineedit.setText(str(sc_info[new_row]["defaultSampleRate"]))
@@ -527,8 +527,8 @@ class SpeakerModelWidget(QtGui.QWidget):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    _ = ImpTester()
-    _ = SpeakerModelWidget()
+    _1 = ImpTester()
+    _2 = SpeakerModelWidget()
     sys.exit(app.exec_())
 
 
