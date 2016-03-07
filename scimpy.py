@@ -25,11 +25,10 @@ class ImpTester(QtGui.QWidget):
         self.init_ui()
 
     def init_ui(self):
-        def update_textbox(current, previous):
-            new_row = listwidg.row(current)
+        def update_input_textbox(current, previous):
+            new_row = inlistwidg.row(current)
             print(sc_info[new_row])
-            infotext.setText("NOTE: For now we just use default device!\n"
-                             "Name: {0}\n"
+            in_infotext.setText("Name: {0}\n"
                              "Default Sampling Rate (Hz): {1}\n"
                              "Max Input Channels: {2}\n"
                              "Max Output Channels: {3}\n"
@@ -47,6 +46,30 @@ class ImpTester(QtGui.QWidget):
                                          sc_info[new_row]["defaultSampleRate"])
                                     ))
             test2lineedit.setText(str(sc_info[new_row]["defaultSampleRate"]))
+            self.measurement_engine.set_input_device_ndx(new_row)
+
+        def update_output_textbox(current, previous):
+            new_row = outlistwidg.row(current)
+            print(sc_info[new_row])
+            out_infotext.setText("Name: {0}\n"
+                             "Default Sampling Rate (Hz): {1}\n"
+                             "Max Input Channels: {2}\n"
+                             "Max Output Channels: {3}\n"
+                             "Suggested Output Buffer (frames): {4}-{5}\n"
+                             .format(sc_info[new_row]["name"],
+                                     sc_info[new_row]["defaultSampleRate"],
+                                     sc_info[new_row]["maxInputChannels"],
+                                     sc_info[new_row]["maxOutputChannels"],
+                                     int(sc_info[new_row][
+                                         "defaultLowOutputLatency"] *
+                                         sc_info[new_row]["defaultSampleRate"]
+                                        ),
+                                     int(sc_info[new_row][
+                                         "defaultHighOutputLatency"] *
+                                         sc_info[new_row]["defaultSampleRate"])
+                                    ))
+            test2lineedit.setText(str(sc_info[new_row]["defaultSampleRate"]))
+            self.measurement_engine.set_output_device_ndx(new_row)                        
 
         def get_sc_info():
             pya = pyaudio.PyAudio()
@@ -61,11 +84,11 @@ class ImpTester(QtGui.QWidget):
             try:
                 supported = pya.is_format_supported(
                     rate=float(test2lineedit.text()),
-                    input_device=listwidg.row(listwidg.currentItem()),
+                    input_device=inlistwidg.row(inlistwidg.currentItem()),
                     input_channels=2,
                     input_format=pya.get_format_from_width(
                         int(test4combobox.currentText())/8),
-                    output_device=listwidg.row(listwidg.currentItem()),
+                    output_device=outlistwidg.row(outlistwidg.currentItem()),
                     output_channels=2,
                     output_format=pya.get_format_from_width(
                         int(test4combobox.currentText())/8))
@@ -101,8 +124,10 @@ class ImpTester(QtGui.QWidget):
 
         layout = QtGui.QGridLayout()
 
-        infotext = QtGui.QLabel()
-        #  TODO make each widget its own class, with get/set functions to access data
+        in_infotext = QtGui.QLabel()
+        out_infotext = QtGui.QLabel()
+
+                #  TODO make each widget its own class, with get/set functions to access data
         formwidget = QtGui.QGroupBox("Measurement Parameters")
         formwidgetlayout = QtGui.QFormLayout()
         test2lineedit = QtGui.QLineEdit()
@@ -122,17 +147,51 @@ class ImpTester(QtGui.QWidget):
         formwidgetlayout.addRow("Measurement Duration (s):", test6lineedit)
         formwidget.setLayout(formwidgetlayout)
 
-        listwidg = QtGui.QListWidget()
+        inputcardgroup = QtGui.QGroupBox("Input Device")
+        # Input sound card list
+        inlistwidg = QtGui.QListWidget()
         for k in sc_info:
-            listwidg.addItem("%s" % k["name"])
-        listwidg.currentItemChanged.connect(update_textbox)
-        listwidg.setCurrentItem(listwidg.item(default_device))
+            if k['maxInputChannels'] > 0:
+                #Just show cards with inputs
+                inlistwidg.addItem("%s" % k["name"])
+            else:
+                #Adding a hidden item for devices with no inputs to maintain the index offset
+                hiddenitem = QtGui.QListWidgetItem()
+                hiddenitem.setText("%s" % k["name"])
+                inlistwidg.addItem(hiddenitem)
+                hiddenitem.setHidden(True)
+        inlistwidg.currentItemChanged.connect(update_input_textbox)
+        inlistwidg.setCurrentItem(inlistwidg.item(default_device))
+        inputcardlayout = QtGui.QVBoxLayout()
+        inputcardlayout.addWidget(inlistwidg)
+        inputcardlayout.addWidget(in_infotext)
+        inputcardgroup.setLayout(inputcardlayout)
 
-        layout.addWidget(listwidg, 0, 0)
+        outputcardgroup = QtGui.QGroupBox("Output Device")
+        # Output sound card list
+        outlistwidg = QtGui.QListWidget()
+        for k in sc_info:
+            if k['maxOutputChannels'] > 0:
+                #Just show cards with outputs
+                outlistwidg.addItem("%s" % k["name"])
+            else:
+                #Adding a hidden item for devices with no outputs to maintain the index offset
+                hiddenitem = QtGui.QListWidgetItem()
+                hiddenitem.setText("%s" % k["name"])
+                outlistwidg.addItem(hiddenitem)
+                hiddenitem.setHidden(True)
+        outlistwidg.currentItemChanged.connect(update_output_textbox)
+        outlistwidg.setCurrentItem(outlistwidg.item(default_device))
+        outputcardlayout = QtGui.QVBoxLayout()
+        outputcardlayout.addWidget(outlistwidg)
+        outputcardlayout.addWidget(out_infotext)
+        outputcardgroup.setLayout(outputcardlayout)
+
+        layout.addWidget(inputcardgroup, 0, 0)
+        layout.addWidget(outputcardgroup, 0, 1)
         layout.addWidget(btn, 1, 0)
         layout.addWidget(runbtn, 2, 0)
-        layout.addWidget(infotext, 0, 1)
-        layout.addWidget(formwidget, 0, 3, 3, 1)
+        layout.addWidget(formwidget, 0, 2, 3, 1)
         layout.addWidget(statusbar, 3, 0, 1, 4)
 
         self.setLayout(layout)
