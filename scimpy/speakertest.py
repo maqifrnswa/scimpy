@@ -35,6 +35,8 @@ class SpeakerTestEngine():
         self.counter = None
         self.input_data = None
         self.framesize = None
+        self.input_device_ndx = 0
+        self.output_device_ndx = 0
 
 #TODO: make this a function, not a class method?
     def cb_stream_processing(self, in_data, frame_count, time_info, status):
@@ -59,6 +61,12 @@ class SpeakerTestEngine():
               )
         return(data_out, pyaudio.paContinue)
 
+    def set_input_device_ndx( self, dev ):
+        self.input_device_ndx = dev
+        
+    def set_output_device_ndx( self, dev ):
+        self.output_device_ndx = dev
+        
     def run(self,
             framesize=0,
             datarate=44100,
@@ -128,13 +136,15 @@ class SpeakerTestEngine():
 
         self.counter = 0
 
-        
+        print("Opening input device %d and output device %d" % ( self.input_device_ndx, self.output_device_ndx ))
 
         self.stream = pya.open(format=pa_format,
                           channels=2,
                           rate=self.datarate,
                           output=True,
                           input=True,
+                          input_device_index = self.input_device_ndx,
+                          output_device_index = self.output_device_ndx,
                           stream_callback=self.cb_stream_processing,
                           frames_per_buffer=self.framesize)
 
