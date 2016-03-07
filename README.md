@@ -7,7 +7,13 @@ Python 3, Qt4, PortAudio
 
 ### General Python Requirements:
 
-scipy, pyaudio, matplotlib, pyqt4 or pyside
+scipy, pyaudio, matplotlib, and either pyqt4 or pyside
+
+### Debian/Ubuntu development environment:
+
+```
+sudo apt-get install python3-scipy python3-pyaudio python3-matplotlib python3-pyside
+```
 
 ### Windows Python environment set-up:
 
