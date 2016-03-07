@@ -68,11 +68,15 @@ def calc_impedance(re, le, cms, mms, rms, sd, bl, vb=np.inf, loverA=np.inf):
     cev = sd**2/bl**2*1.18*loverA
     qes = omegas*res*ces
     omega = np.logspace(1.3, 4.3, 10000)*2*np.pi
-    Yab = -1j /( leb  * omega-1/(omega*cev))  # Ya = 1/ Za
-    Zm = (1/res+1/(omega*les*1j)+omega*ces*1j + Yab)**(-1)
+    Ya = -1j /( leb  * omega-1/(omega*cev))  # Ya = 1/ Za
+    Zm = (1/res+1/(omega*les*1j)+omega*ces*1j + Ya)**(-1)
     Z = Zm+re+omega*le*1j
 
     transferfunc = 1j*(omega*Zm/Z)*re*ces  # TODO need to remove RE and Les that were pullsed out! maybe even correct text?
+    print(loverA)
+    if loverA!=np.inf:
+        transferfunc = transferfunc*(1j*omega*leb)/(1j*omega*leb+1/(1j*omega*cev))
+        print("yeps")
 
     fig = plt.figure()
     ax = fig.add_subplot(211)
@@ -102,7 +106,7 @@ def calc_impedance(re, le, cms, mms, rms, sd, bl, vb=np.inf, loverA=np.inf):
     ax_groupdelay = fig2.add_subplot(313)
     ax_groupdelay.plot(
         omega/2/np.pi,
-        -np.gradient(np.angle(transferfunc))/np.gradient(omega)*1000)
+        -np.gradient(np.unwrap(np.angle(transferfunc)))/np.gradient(omega)*1000)
     ax_power.set_title('Speaker Performance')
     ax_power.set_ylabel('SPL (dB 1W1m)')
     ax_phase.set_ylabel('Phase (degrees)')

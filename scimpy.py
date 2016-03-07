@@ -168,7 +168,17 @@ class SealedBoxWidget(QtGui.QGroupBox):
             f3 =   float(fslineedit.text()) * sqrt(alpha +1) * sqrt((1/qt**2-2+sqrt((2-1/qt**2)**2+4))/2)
             f3lineedit.setText("{0:.0f}".format(f3))
 
+        def resetParams():
+            self.vbllineedit.setText("inf")
+            vbflineedit.setText("inf")
+            f3lineedit.setText("")
+            qt = float(qtslabel.text())
+            qtlabel.setText("{0:0.2g}".format(qt))
+            set_f3()
+            self.loveralineedit.setText("inf")
+
         def calcIdealParams():
+            resetParams()
             alpha_inv = 2*float(qtslabel.text())**2/(1-2*float(qtslabel.text())**2)
             f3 =  float(fslineedit.text()) * sqrt(1/alpha_inv +1)
             vbflineedit.setText("{0:.2g}".format(
@@ -201,6 +211,7 @@ class SealedBoxWidget(QtGui.QGroupBox):
         # not including acoustic radiation effects on acoustic inductance
         # easy to include "radiation correction" later
         def calcIdealPortedParams():  # possibly move this whole vented box part over to another widget
+            resetParams()
             print("TESTING STUB")
             alpha, h = speakermodel.find_sealed_params(float(qtslabel.text()))
             vbflineedit.setText("{0:0.2g}".format(float(vasflineedit.text())/alpha))
@@ -213,15 +224,6 @@ class SealedBoxWidget(QtGui.QGroupBox):
             print("A/l in m = ", area_to_length_ratio, ' for 6" diameter, length = ', (np.pi*(6*0.0254/2)**2/area_to_length_ratio)/0.0254)
             f3lineedit.setText("TBD")
             self.loveralineedit.setText("{0:3.0f}".format(1/area_to_length_ratio))
-
-        def resetParams():
-            self.vbllineedit.setText("inf")
-            vbflineedit.setText("inf")
-            f3lineedit.setText("")
-            qt = float(qtslabel.text())
-            qtlabel.setText("{0:0.2g}".format(qt))
-            set_f3()
-            self.loveralineedit.setText("inf")
 
         super(SealedBoxWidget, self).__init__(title)
         layout = QtGui.QFormLayout()
@@ -407,8 +409,8 @@ class SpeakerModelWidget(QtGui.QWidget):
         formwidget.setLayout(formwidgetlayout)
 
         runbtn = QtGui.QPushButton(
-            'Model Speaker Impedance and Infinite Baffle Performance')
-        runbtn.clicked.connect(find_infinite_baffle_enclosure)
+            'Model Speaker Impedance and Infinite/Closed Baffle Performance')
+        runbtn.clicked.connect(find_enclosure)  # can sepearate these two
 
         systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
         systemformwidgetlayout = QtGui.QFormLayout()
@@ -444,7 +446,7 @@ class SpeakerModelWidget(QtGui.QWidget):
                                         sdlineedit,
                                         bllineedit)
         sealedboxbtn = QtGui.QPushButton("Calculate Sealed Box Performace")
-        sealedboxbtn.clicked.connect(find_enclosure)
+        sealedboxbtn.clicked.connect(find_ported_enclosure)
 
         layout.addWidget(runbtn, 1, 0, 1, 2)
         layout.addWidget(formwidget, 0, 0, 1, 1)
