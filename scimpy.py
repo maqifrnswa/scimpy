@@ -198,7 +198,6 @@ class ImpTester(QtGui.QWidget):
 
         self.setWindowTitle('Impedance Tester')
         self.center()
-        self.show()
 
     def center(self):
         framegeo = self.frameGeometry()
@@ -516,7 +515,6 @@ class SpeakerModelWidget(QtGui.QWidget):
 
         self.setWindowTitle('Speaker Performance')
         self.center()
-        self.show()
 
     def center(self):
         framegeo = self.frameGeometry()
@@ -527,8 +525,10 @@ class SpeakerModelWidget(QtGui.QWidget):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    _1 = ImpTester()
-    _2 = SpeakerModelWidget()
+    imptesterwidg = ImpTester()
+    speakermodelwidg = SpeakerModelWidget()
+    imptesterwidg.show()
+    speakermodelwidg.show()
     sys.exit(app.exec_())
 
 
