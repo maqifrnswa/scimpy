@@ -25,6 +25,16 @@ def chebyQts(k):
 
 def cheby_find_k(qts):
     return scipy.optimize.fsolve(lambda k: qts-chebyQts(k),1)
+
+def find_alpha(k):
+    return ((chebyA1(k)*chebyA2(k)*chebyA3(k)-chebyA1(k)**2-chebyA3(k)**2)/chebyA3(k)**2)[0]
+
+def find_sealed_params(qts):
+    k=cheby_find_k(qts)
+    alpha = find_alpha(k)
+    h = (chebyA1(k)/chebyA3(k))[0]
+    return alpha, h
+    
     
 def sealed_find_vb_qt_func(x, vas, fs, f3, qts): 
     qt = x[0]
@@ -41,19 +51,25 @@ def sealed_find_vb_qt_func(x, vas, fs, f3, qts):
     
 def sealed_find_vb_qt(vas,fs,f3,qts):
     return scipy.optimize.fsolve(sealed_find_vb_qt_func,[qts,vas], args=(vas, fs, f3, qts))
-    
+# usage
+#             print(speakermodel.sealed_find_vb_qt(vas=float(vasllineedit.text())/1000,
+#                                                 fs=float(fslineedit.text()),
+#                                                 f3=float(f3lineedit.text()),
+#                                                 qts=float(qtslabel.text())))
+   
     
 
-def calc_impedance(re, le, cms, mms, rms, sd, bl, vb=np.inf):
+def calc_impedance(re, le, cms, mms, rms, sd, bl, vb=np.inf, loverA=np.inf):
     omegas = 1/math.sqrt(cms*mms)
     res = bl**2/rms
     les = bl**2*cms
     ces = mms/bl**2
     leb = bl**2/sd**2*vb/(1.18*345**2)
+    cev = sd**2/bl**2*1.18*loverA
     qes = omegas*res*ces
     omega = np.logspace(1.3, 4.3, 10000)*2*np.pi
-    Ya = -1j /( leb  * omega)  # Ya = 1/ Za
-    Zm = (1/res+1/(omega*les*1j)+omega*ces*1j + Ya)**(-1)
+    Yab = -1j /( leb  * omega-1/(omega*cev))  # Ya = 1/ Za
+    Zm = (1/res+1/(omega*les*1j)+omega*ces*1j + Yab)**(-1)
     Z = Zm+re+omega*le*1j
 
     transferfunc = 1j*(omega*Zm/Z)*re*ces  # TODO need to remove RE and Les that were pullsed out! maybe even correct text?

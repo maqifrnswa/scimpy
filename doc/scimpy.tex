@@ -751,10 +751,10 @@ $S_d$ & & Speaker driver area\\
 $R_{rad}$ & $\frac{\omega^2 \rho}{2\pi c}$ & Acoustic impedance of monopole radiation in to a hemisphere\\
 $L_{rad}$ & $\frac{\rho \frac{a}{2}}{A_v}$ & Acoustic inductance of monopole radiation in to a hemisphere\\
 $C_{ab}$ & $\frac{V}{\rho c^2}$ & Acoustic compliance from compression of air in a box with volume $V$\\
-$R_{ab}$ & & Equivalent electrical resistance of acoustic dampening from fill material in box\\
+$R_{ab}$ & & Acoustic resistance of acoustic dampening from fill material in box\\
 $R_{al}$ & $\frac{\mu l}{\kappa A}$ & Acoustic resistance from air leakage out of the enclosure with surface area $A$ and wall thickness $l$\\
-$L_{av}$ & $\frac{A_v}{\rho l_v}$ & Equivalent electrical capacitance from a mass of air flowing through a vent/port of area $A_v$ and length $l_v$\\
-$R_{av}$ & $\frac{\mu l_v}{\kappa A_v}$ & Equiv. electrical resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A_v$ and length $l_v$\\
+$L_{av}$ & $\frac{\rho l_v}{A_v}$ & Acoustic Inductance from a mass of air flowing through a vent/port of area $A_v$ and length $l_v$\\
+$R_{av}$ & $\frac{\mu l_v}{\kappa A_v}$ & Acoustic resistance of vent/port acoustic radiation and of viscous air flow through a vent/port of area $A_v$ and length $l_v$\\
 \bottomrule
 \end{tabularx}
 \caption{Acoustic Variable Definitions}\label{table:acoustic-variables}
@@ -786,6 +786,7 @@ $B\ell$ & & Voice coil magnet strength \\
 \toprule
 Variable & Definition & Description \\
 \midrule
+$Z_e$ & $\frac{(B\ell)^2}{Z_m}$ & Electric Impedance\\
 $R_e$ & & Electrical resistance of the voice coil\\
 $L_e$ & & Electrical inductance of the voice coil\\
 $R_{eddy}$ & & Losses due to inductive currents near voice coil\\
@@ -1096,8 +1097,8 @@ where $\omega_c$ is the characteristic frequency of the box, which in the case o
 \begin{align}
 \frac{V_{as}}{V_{b}}&=\frac{A_1A_2A_3-A_1^2-A_3^2}{A_3^2}=\alpha\label{eq:dimensions-start}\\
 \frac{\omega_b}{\omega_s}&=\frac{A_1}{A_3}=h\\
-\omega_b&=(C_{ev}L_{eb})^{-1}=\frac{c^2A_v}{V_bl_v}=h\omega_s\\
-\frac{l_v}{A_v}&=\frac{\alpha c^2}{V_{as} h \omega_s}\\
+\omega_b&=(C_{ev}L_{eb})^{-1/2}=\sqrt{ \frac{c^2A_v}{V_bl_v} } =h\omega_s\\
+\frac{l_v}{A_v}&=\frac{\alpha c^2}{V_{as} h^2 \omega_s^2}\\
 Q_{ts}&=\frac{1}{\sqrt{A_1A_3}}\label{eq:dimensions-end}
 \end{align}
 

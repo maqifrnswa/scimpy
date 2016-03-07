@@ -193,14 +193,27 @@ class SealedBoxWidget(QtGui.QGroupBox):
             vbflineedit.setText("{0:0.2g}".format(float(self.vbllineedit.text())/0.0283168/1000 ))
             set_f3()
 
-        def calcParamsf3():
+        # TODO - one class that all these layout widgets belong to, and this
+        # class also holds all the lineedits and what nots as members so each
+        # member subclass can access them? Or hold all those lineedits and what not
+        # in some other class and they are just assigned to layouts in widgets.
+
+        # not including acoustic radiation effects on acoustic inductance
+        # easy to include "radiation correction" later
+        def calcIdealPortedParams():  # possibly move this whole vented box part over to another widget
             print("TESTING STUB")
-            print(speakermodel.cheby_find_k(float(qtslabel.text())))
-            print(speakermodel.sealed_find_vb_qt(vas=float(vasllineedit.text())/1000,
-                                                 fs=float(fslineedit.text()),
-                                                 f3=float(f3lineedit.text()),
-                                                 qts=float(qtslabel.text())))
-            
+            alpha, h = speakermodel.find_sealed_params(float(qtslabel.text()))
+            vbflineedit.setText("{0:0.2g}".format(float(vasflineedit.text())/alpha))
+            self.vbllineedit.setText("{0:0.2g}".format(float(vasllineedit.text())/alpha))
+            print("fb Hz = ", float(fslineedit.text())*h, " h = ", h, " alpha = ", alpha)
+            wbox=float(fslineedit.text())*h*2*np.pi
+            print(wbox, float(self.vbllineedit.text()))
+            area_to_length_ratio = (wbox**2)*(float(self.vbllineedit.text())/1000)/(345**2)
+            #above matches thiele's paper, don't get why number don't make sense...
+            print("A/l in m = ", area_to_length_ratio, ' for 6" diameter, length = ', (np.pi*(6*0.0254/2)**2/area_to_length_ratio)/0.0254)
+            f3lineedit.setText("TBD")
+            self.loveralineedit.setText("{0:3.0f}".format(1/area_to_length_ratio))
+
         def resetParams():
             self.vbllineedit.setText("inf")
             vbflineedit.setText("inf")
@@ -208,6 +221,7 @@ class SealedBoxWidget(QtGui.QGroupBox):
             qt = float(qtslabel.text())
             qtlabel.setText("{0:0.2g}".format(qt))
             set_f3()
+            self.loveralineedit.setText("inf")
 
         super(SealedBoxWidget, self).__init__(title)
         layout = QtGui.QFormLayout()
@@ -221,15 +235,18 @@ class SealedBoxWidget(QtGui.QGroupBox):
         layout.addRow("Qt:", qtlabel)
         f3lineedit = QtGui.QLineEdit()
         layout.addRow("Cutoff Frequency (f3) Hz:", f3lineedit)
-        idealbtn = QtGui.QPushButton("Set to Ideal Closed Box")
-        idealbtn.clicked.connect(calcIdealParams)
-        f3btn = QtGui.QPushButton("Calculate Parameters Given f3 && Vb")
-        f3btn.clicked.connect(calcParamsf3)
+        self.loveralineedit = QtGui.QLineEdit()
+        layout.addRow("Port/Vent Length over Area (av) m\n Buggy!:", self.loveralineedit)
+
         resetbtn = QtGui.QPushButton("Set to Infinite Baffle")
         resetbtn.clicked.connect(resetParams)
-        layout.addRow(idealbtn)
-        layout.addRow(f3btn)
+        idealbtn = QtGui.QPushButton("Set to Ideal Closed Box")
+        idealbtn.clicked.connect(calcIdealParams)
+        idealportedbtn = QtGui.QPushButton("Set to Ideal QB3-B4-C4 Ported Box")
+        idealportedbtn.clicked.connect(calcIdealPortedParams)
         layout.addRow(resetbtn)
+        layout.addRow(idealbtn)
+        layout.addRow(idealportedbtn)
         resetParams()
         self.setLayout(layout)
 
@@ -255,6 +272,26 @@ class SpeakerModelWidget(QtGui.QWidget):
                                         sd=float(sdlineedit.text())/(100*100),
                                         bl=float(bllineedit.text()),
                                         vb=float(sealedboxwidg.vbllineedit.text())/1000)
+        
+        def find_infinite_baffle_enclosure():
+            speakermodel.calc_impedance(re=float(relineedit.text()),
+                                        le=float(lelineedit.text())/1000,
+                                        cms=float(cmslineedit.text())/1000,
+                                        mms=float(mmslineedit.text())/1000,
+                                        rms=float(rmslineedit.text()),
+                                        sd=float(sdlineedit.text())/(100*100),
+                                        bl=float(bllineedit.text()))
+                                        
+        def find_ported_enclosure():
+            speakermodel.calc_impedance(re=float(relineedit.text()),
+                                        le=float(lelineedit.text())/1000,
+                                        cms=float(cmslineedit.text())/1000,
+                                        mms=float(mmslineedit.text())/1000,
+                                        rms=float(rmslineedit.text()),
+                                        sd=float(sdlineedit.text())/(100*100),
+                                        bl=float(bllineedit.text()),
+                                        vb=float(sealedboxwidg.vbllineedit.text())/1000,
+                                        loverA=float(sealedboxwidg.loveralineedit.text()))
 
         def calc_component_params():
             try:
@@ -334,18 +371,18 @@ class SpeakerModelWidget(QtGui.QWidget):
         formwidgetlayout = QtGui.QFormLayout()
         relineedit = QtGui.QLineEdit("6")
         relineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow("DC Resistance (Re) Ohms:", relineedit)
+        formwidgetlayout.addRow("*DC Resistance (Re) Ohms:", relineedit)
         lelineedit = QtGui.QLineEdit("0.1")
         lelineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow("Voice Coil Inductance (Le) mH:", lelineedit)
+        formwidgetlayout.addRow("*Voice Coil Inductance (Le) mH:", lelineedit)
         sdlineedit = QtGui.QLineEdit("25")
         sdlineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow(
-            "Surface Area of Cone (Sd) cm^2:", sdlineedit)
+            "*Surface Area of Cone (Sd) cm^2:", sdlineedit)
         bllineedit = QtGui.QLineEdit("4.5")
         bllineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow(
-            "Mag. Flux Density - Length (BL) Tm:", bllineedit)
+            "*Mag. Flux Density - Length (BL) Tm:", bllineedit)
         cmslineedit = QtGui.QLineEdit("0.16")
         cmslineedit.editingFinished.connect(cmslineedit_callback)
         formwidgetlayout.addRow(
@@ -370,8 +407,8 @@ class SpeakerModelWidget(QtGui.QWidget):
         formwidget.setLayout(formwidgetlayout)
 
         runbtn = QtGui.QPushButton(
-            'Model Speaker Impedance and Infinite Baffle Performance (need Vb=inf)')
-        runbtn.clicked.connect(find_enclosure)
+            'Model Speaker Impedance and Infinite Baffle Performance')
+        runbtn.clicked.connect(find_infinite_baffle_enclosure)
 
         systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
         systemformwidgetlayout = QtGui.QFormLayout()
