@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
 Created on Thu Feb  4 17:20:04 2016
@@ -53,6 +52,3 @@ def main():
     mainwindow.show()
     sys.exit(app.exec_())
 
-
-if __name__ == '__main__':
-    main()

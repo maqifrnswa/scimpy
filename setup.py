@@ -8,5 +8,9 @@ setup(
     name = "scimpy",
     version = "0.0.dev1",
     packages = find_packages(),
-    scripts = ['scimpy.py']
+    entry_points = {
+        'gui_scripts': [
+            'scimpy = scimpy.scimpyui:main'
+        ]
+    }
 )
