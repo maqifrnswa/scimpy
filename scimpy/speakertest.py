@@ -38,15 +38,9 @@ class SpeakerTestEngine():
         self.input_device_ndx = 0
         self.output_device_ndx = 0
 
-#TODO: make this a function, not a class method?
     def cb_stream_processing(self, in_data, frame_count, time_info, status):
         """PyAudio callback to fill output buffer and handle input buffer"""
         self.input_data.append(in_data)
-        # print(self.input_data[1])
-        # self.input_data=np.append(self.input_data,in_data)
-#        data_out =\
-#            self.data[(self.framesize*2)*self.counter:
-#                      (self.framesize*2)*(self.counter+1)].tostring()  # stereo
         frames_to_write = frame_count
         data_out =\
             self.data[self.counter*2:
@@ -54,19 +48,15 @@ class SpeakerTestEngine():
         self.counter = self.counter+frames_to_write
         print(self.counter, len(self.data)/2-self.counter,
               frames_to_write,
-              len(data_out)
-      #        time_info,
-      #        self.datarate*time_info['input_buffer_adc_time'] +
-      #        frame_count + self.datarate*time_info['output_buffer_dac_time'],
-              )
+              len(data_out))
         return(data_out, pyaudio.paContinue)
 
-    def set_input_device_ndx( self, dev ):
+    def set_input_device_ndx(self, dev):
         self.input_device_ndx = dev
-        
-    def set_output_device_ndx( self, dev ):
+
+    def set_output_device_ndx(self, dev):
         self.output_device_ndx = dev
-        
+
     def run(self,
             framesize=0,
             datarate=44100,
@@ -108,67 +98,54 @@ class SpeakerTestEngine():
         else:
             print("Bit width should be 1, 2, or 4 bytes")
 
-#        self.data = np.array(
-#            np.random.random_integers(0, 2**(8*width)-1,
-#                                      duration*self.datarate),
-#            dtype=np_type)  # this works because fixed-width ints wrap
-
-        # print(self.data.shape)
-        self.data = (scipy.signal.chirp(t=np.arange(0,duration,1/self.datarate),
+        self.data = (scipy.signal.chirp(t=np.arange(0,
+                                                    duration,
+                                                    1/self.datarate),
                                         f0=0,
                                         t1=duration,
                                         f1=20000,
                                         method='lin',
-                                        phi=-90
-                    )*((2**(8*width))/2-1))#.astype(dtype=np_type,copy=False)
+                                        phi=-90)*((2**(8*width))/2-1))
         if width == 1:
-            self.data=self.data+(2**(8*width))/2-1
-        self.data=self.data.astype(dtype=np_type,copy=False)
-        # self.data=scipy.hanning(len(self.data))*self.data
+            self.data = self.data+(2**(8*width))/2-1
+        self.data = self.data.astype(dtype=np_type, copy=False)
+
         # make it stereo
         self.data = np.array([self.data, self.data]).transpose().flatten()
-        # print(self.data.shape)
-
-        # self.input_data=np.array([],dtype=np_type)
 
         # use as a list of byte objects for speed, then convert
         self.input_data = []
 
         self.counter = 0
 
-        print("Opening input device %d and output device %d" % ( self.input_device_ndx, self.output_device_ndx ))
+        print("Opening input device %d and output device %d" % (
+            self.input_device_ndx, self.output_device_ndx))
 
         self.stream = pya.open(format=pa_format,
-                          channels=2,
-                          rate=self.datarate,
-                          output=True,
-                          input=True,
-                          input_device_index = self.input_device_ndx,
-                          output_device_index = self.output_device_ndx,
-                          stream_callback=self.cb_stream_processing,
-                          frames_per_buffer=self.framesize)
-
-        # print(pya.get_default_output_device_info())
-        # print(pya.get_default_input_device_info())
-        # print(p.get_default_host_api_info())
-        # print(p.get_host_api_count())
+                               channels=2,
+                               rate=self.datarate,
+                               output=True,
+                               input=True,
+                               input_device_index=self.input_device_ndx,
+                               output_device_index=self.output_device_ndx,
+                               stream_callback=self.cb_stream_processing,
+                               frames_per_buffer=self.framesize)
 
         while self.stream.is_active():
             time.sleep(0.2)
 
         self.input_data = b''.join(self.input_data)  # [3:]
         self.input_data = np.fromstring(self.input_data, dtype=np_type)
-        print(len(self.input_data),len(self.data))
+        print(len(self.input_data), len(self.data))
         # two channels
         self.input_data =\
             np.reshape(self.input_data, (len(self.input_data)/2, 2))
         self.input_data_fft0 = np.fft.rfft(self.input_data[:, 0])
         self.input_data_fft1 = np.fft.rfft(self.input_data[:, 1])
 
-
         self.data = np.reshape(self.data, (len(self.data)/2, 2))
         self.data = self.data[:, 0]
-        self.data_fft=np.fft.rfft(self.data)
+        self.data_fft = np.fft.rfft(self.data)
         if width == 1:  # stupid 8 bit uints...
             self.input_data_fft0[0] = 0
             self.input_data_fft1[0] = 0
