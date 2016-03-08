@@ -119,7 +119,6 @@ def calc_impedance(re_,
         transferfunc = transferfunc*(1j*omega*leb) / \
             (1j*omega*leb+1/(1j*omega*cev))
 
-    plt.ion()
     fig = plt.figure()
     ax1 = fig.add_subplot(211)
 

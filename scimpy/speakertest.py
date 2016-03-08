@@ -159,7 +159,7 @@ class SpeakerTestEngine():
         # print(inputdata2)
         # plt.magnitude_spectrum(inputdata2, Fs=self.datarate)
         # self.input_data=scipy.signal.savgol_filter(self.input_data,11,3)
-        plt.ion()
+
         plt.figure()
         plt.subplot(2, 2, 1)
         plt.plot(self.input_data[:, 0])  # left
