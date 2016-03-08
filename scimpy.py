@@ -309,6 +309,7 @@ class SealedBoxWidget(QtGui.QGroupBox):
                   ' for 6" diameter, length inches = ',
                   (np.pi*(6*0.0254/2)**2/area_to_length_ratio)/0.0254)
             f3lineedit.setText("TBD")
+            qtlabel.setText("TBD")
             self.loveralineedit.setText(
                 "{0:3.0f}".format(1/area_to_length_ratio))
 
@@ -325,14 +326,14 @@ class SealedBoxWidget(QtGui.QGroupBox):
         f3lineedit = QtGui.QLineEdit()
         layout.addRow("Cutoff Frequency (f3) Hz:", f3lineedit)
         self.loveralineedit = QtGui.QLineEdit()
-        layout.addRow("Port/Vent Length over Area (av) m\n Buggy!:",
+        layout.addRow("Port/Vent Length over Area (av) m^-1:",
                       self.loveralineedit)
 
         resetbtn = QtGui.QPushButton("Set to Infinite Baffle")
         resetbtn.clicked.connect(reset_params)
-        idealbtn = QtGui.QPushButton("Set to Ideal Closed Box")
+        idealbtn = QtGui.QPushButton("Set to B2 Closed Box")
         idealbtn.clicked.connect(calc_ideal_params)
-        idealportedbtn = QtGui.QPushButton("Set to Ideal QB3-B4-C4 Ported Box")
+        idealportedbtn = QtGui.QPushButton("Set to QB3-B4-C4 Ported Box")
         idealportedbtn.clicked.connect(calc_ideal_ported_params)
         layout.addRow(resetbtn)
         layout.addRow(idealbtn)
