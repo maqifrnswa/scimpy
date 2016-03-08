@@ -1074,7 +1074,7 @@ A_1=\frac{L_{es}}{R_t}=\frac{1}{Q_{ts}\omega_s}
 %factor((declare(\omega,mainvar),full));
 %\end{verbatim}
 
-This can be seen as a 4th order filter, we just have to choose our the variables to properly ``align" with the audio response we want. Thiele observed that for drivers with $Q_{ts}=0.383$, a ``perfect" fourth order Butterworth filter can be made if $\omega_b$ and $V_b$ are chosen properly; when $Q_{ts}t<0.383$, you can get a ``Quasi-Butterworth Third Order" alignment; and for drivers $Q_{ts}>0.383$ a ``Fourth Order Chebyschev" alignment is suitable. Both Thiele and Small created tables and graphical tools to aid design. Modern computers give us an alternative tool which is especially helpful for two- or three-way speakers (multiple drivers in the same box). For completeness, we will find the analytical expressions then describe how computers can be used.
+This can be seen as a 4th order filter, we just have to choose our the variables to properly ``align" with the audio response we want. Thiele observed that for drivers with $Q_{ts}=0.383$, a ``perfect" fourth order Butterworth filter can be made if $\omega_b$ and $V_b$ are chosen properly; when $Q_{ts}<0.383$, you can get a ``Quasi-Butterworth Third Order" alignment; and for drivers $Q_{ts}>0.383$ a ``Fourth Order Chebyschev" alignment is suitable. Both Thiele and Small created tables and graphical tools to aid design. Modern computers give us an alternative tool which is especially helpful for two- or three-way speakers (multiple drivers in the same box). For completeness, we will find the analytical expressions then describe how computers can be used.
 
 \subsection{Fourth Order Butterworth Filter (B4) \texorpdfstring{\\$Q_{ts}=0.383$}{Qts=0.383}} A fourth order Butterworth filter produces a power response of the form:
 \begin{align}
@@ -1231,6 +1231,7 @@ A_1&=\frac{2+A_2^2}{2 A_3}=\frac{2+A_2^2}{2 \sqrt{2 A_2}}
 Using equations \ref{eq:dimensions-start}--\ref{eq:dimensions-end} with \ref{eq:qb3-start}--\ref{eq:qb3-end} yields:
 \begin{align}
 \frac{w_b}{w_s}&= \frac{1}{Q_{ts}\sqrt{8-8Q_{ts}^2}}=h\\
+\frac{V_{as}}{V_{b}} & = \frac{A_1A_2A_3-A_1^2-A_3^2}{A_3^2}= \alpha\\
 \omega_c&=\sqrt{\omega_s \omega_b}\\
 A_2&=\frac{1}{2 Q_{ts}^2 h}=\sqrt{2(1/Q_{ts}^2-1)}\label{eq:qb3-power}
 \end{align}

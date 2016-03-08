@@ -8,9 +8,9 @@ Created on Thu Feb  4 17:20:04 2016
 
 import sys
 try:
-    from PyQt4 import QtGui
+    from PyQt4 import QtGui, QtCore
 except ImportError:
-    from PySide import QtGui
+    from PySide import QtGui, QtCore
 import pyaudio
 import scimpy.speakertest as speakertest
 import scimpy.speakermodel as speakermodel
@@ -291,9 +291,12 @@ class SealedBoxWidget(QtGui.QGroupBox):
         def calc_ideal_ported_params():
             """Calculate Values for QB3-B4-C4 ported box"""
             reset_params()
-            print("TESTING STUB")
-            alpha, h__ = speakermodel.find_sealed_params(
-                float(qtslabel.text()))
+            if float(qtslabel.text()) > 0.383:
+                alpha, h__ = speakermodel.find_ported_params_C4(
+                    float(qtslabel.text()))
+            else:
+                alpha, h__ = speakermodel.find_ported_params_QB3(
+                    float(qtslabel.text()))
             vbflineedit.setText(
                 "{0:0.2g}".format(float(vasflineedit.text())/alpha))
             self.vbllineedit.setText(
@@ -576,6 +579,20 @@ class SpeakerModelWidget(QtGui.QWidget):
         self.move(framegeo.topLeft())
 
 
+#class SpeakerModelMainWindow(QtGui.QMainWindow):
+#    """Main application widget"""
+#    def __init__(self):
+#        super(SpeakerModelMainWindow, self).__init__()
+#        placeholder = QtGui.QWidget()
+#        self.setCentralWidget(placeholder)
+#        imptestdock = QtGui.QDockWidget("testing")
+#        imptest = ImpTester()
+#        imptestdock.setWidget(imptest)
+#        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, imptestdock)
+#        imptestdock.setFeatures(QtGui.QDockWidget.DockWidgetMovable)
+#        imptestdock.setFeatures(QtGui.QDockWidget.DockWidgetFloatable)
+
+
 def main():
     """Starts Scimpy Speaker Design Suite"""
     app = QtGui.QApplication(sys.argv)
@@ -583,6 +600,8 @@ def main():
     speakermodelwidg = SpeakerModelWidget()
     imptesterwidg.show()
     speakermodelwidg.show()
+    # mainwindow = SpeakerModelMainWindow()
+    # mainwindow.show()
     sys.exit(app.exec_())
 
 
