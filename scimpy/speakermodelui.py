@@ -88,10 +88,10 @@ class SealedBoxWidget(QtGui.QGroupBox):
             """Calculate Values for QB3-B4-C4 ported box"""
             reset_params()
             if float(qtslabel.text()) > 0.383:
-                alpha, h__ = speakermodel.find_ported_params_C4(
+                alpha, h__ = speakermodel.find_ported_params_c4(
                     float(qtslabel.text()))
             else:
-                alpha, h__ = speakermodel.find_ported_params_QB3(
+                alpha, h__ = speakermodel.find_ported_params_qb3(
                     float(qtslabel.text()))
             vbflineedit.setText(
                 "{0:0.2g}".format(float(vasflineedit.text())/alpha))
@@ -112,7 +112,7 @@ class SealedBoxWidget(QtGui.QGroupBox):
             self.loveralineedit.setText(
                 "{0:3.0f}".format(1/area_to_length_ratio))
 
-        super(SealedBoxWidget, self).__init__()
+        super(SealedBoxWidget, self).__init__(title)
         layout = QtGui.QFormLayout()
         self.vbllineedit = QtGui.QLineEdit()
         self.vbllineedit.editingFinished.connect(vbllineedit_callback)
@@ -282,13 +282,11 @@ class SpeakerModelWidget(QtGui.QWidget):
             cmslineedit_set()
             calc_system_params()
 
-        layout = QtGui.QGridLayout()
-
         formwidget = QtGui.QGroupBox("Component T/S Parameters")
         formwidgetlayout = QtGui.QFormLayout()
         relineedit = QtGui.QLineEdit("6")
         relineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow("*DC Resistance (Re) Ohms:", relineedit)
+        formwidgetlayout.addRow("*DC Resistance (Re) ohms:", relineedit)
         lelineedit = QtGui.QLineEdit("0.1")
         lelineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow("*Voice Coil Inductance (Le) mH:", lelineedit)
@@ -299,19 +297,19 @@ class SpeakerModelWidget(QtGui.QWidget):
         bllineedit = QtGui.QLineEdit("4.5")
         bllineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow(
-            "*Mag. Flux Density - Length (BL) Tm:", bllineedit)
+            "*Mag. Flux Density x Length (BL) Tm:", bllineedit)
         cmslineedit = QtGui.QLineEdit("0.16")
         cmslineedit.editingFinished.connect(cmslineedit_callback)
         formwidgetlayout.addRow(
-            "Mechanical Compliance of Suspension (Cms) mm/N:", cmslineedit)
+            "Driver Compliance (Cms) mm/N:", cmslineedit)
         vasllineedit = QtGui.QLineEdit("0.14")
         vasllineedit.editingFinished.connect(vasllineedit_callback)
         formwidgetlayout.addRow(
-            "Driver Compliance Volume (Vas) litres:", vasllineedit)
+            "Driver Compliance Vol. (Vas) litres:", vasllineedit)
         vasflineedit = QtGui.QLineEdit("0.005")
         vasflineedit.editingFinished.connect(vasflineedit_callback)
         formwidgetlayout.addRow(
-            "Driver Compliance Volume (Vas) ft^3:", vasflineedit)
+            "Driver Compliance Vol. (Vas) ft^3:", vasflineedit)
         mmslineedit = QtGui.QLineEdit("1.8")
         mmslineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow(
@@ -319,12 +317,12 @@ class SpeakerModelWidget(QtGui.QWidget):
         rmslineedit = QtGui.QLineEdit("3.4")
         rmslineedit.editingFinished.connect(calc_system_params)
         formwidgetlayout.addRow(
-            "Mechanical Resistance (Rms) Ns/m=Mech. ohm:", rmslineedit)
+            "Mech. Resist. (Rms) Ns/m=Mech. ohm:", rmslineedit)
 
         formwidget.setLayout(formwidgetlayout)
 
         runbtn = QtGui.QPushButton(
-            'Model Speaker Impedance and Infinite/Closed Baffle Performance')
+            'Plot Impedance && SPL')
         runbtn.clicked.connect(find_enclosure)  # can sepearate these two
 
         systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
@@ -357,11 +355,12 @@ class SpeakerModelWidget(QtGui.QWidget):
         sealedboxbtn = QtGui.QPushButton("Calculate Sealed Box Performace")
         sealedboxbtn.clicked.connect(find_ported_enclosure)
 
-        layout.addWidget(runbtn, 1, 0, 1, 2)
-        layout.addWidget(formwidget, 0, 0, 1, 1)
-        layout.addWidget(systemformwidget, 0, 1, 1, 1)
-        layout.addWidget(sealedboxwidg, 0, 2, 1, 1)
-        layout.addWidget(sealedboxbtn, 1, 2, 1, 1)
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(formwidget)  # , 0, 0, 1, 1)
+        layout.addWidget(systemformwidget)  # , 0, 1, 1, 1)
+        layout.addWidget(sealedboxwidg)  # , 0, 2, 1, 1)
+        # layout.addWidget(sealedboxbtn, 1, 2, 1, 1)
+        layout.addWidget(runbtn)  # , 1, 0, 1, 2)
         self.setLayout(layout)
 
         self.setWindowTitle('Speaker Performance')

@@ -20,7 +20,7 @@ import scipy.signal
 # 2205
 # 3000 600 frames
 # 4000 3600
-# self.framesize=17640, was excatly 17640 too long!
+# framesize=17640, was excatly 17640 too long!
 # full time would be 176400 frames, so time must be integer number of frames
 # time not in second, but integer of #frames (closest integer total # frames?)
 
@@ -28,28 +28,9 @@ import scipy.signal
 class SpeakerTestEngine():
     """Class that will control signal I/O during speaker testing"""
     def __init__(self):
-        self.input_data_fft1 = None
-        self.input_data_fft0 = None
-        self.data = None
-        self.datarate = None
-        self.counter = None
-        self.input_data = None
-        self.framesize = None
         self.input_device_ndx = 0
         self.output_device_ndx = 0
-
-    def cb_stream_processing(self, in_data, frame_count, time_info, status):
-        """PyAudio callback to fill output buffer and handle input buffer"""
-        self.input_data.append(in_data)
-        frames_to_write = frame_count
-        data_out =\
-            self.data[self.counter*2:
-                      (self.counter+frames_to_write)*2].tostring()  # stereo
-        self.counter = self.counter+frames_to_write
-        print(self.counter, len(self.data)/2-self.counter,
-              frames_to_write,
-              len(data_out))
-        return(data_out, pyaudio.paContinue)
+        self.counter = None  # is this necessary to be an atribute?
 
     def set_input_device_ndx(self, dev):
         self.input_device_ndx = dev
@@ -73,11 +54,23 @@ class SpeakerTestEngine():
         Output:
         Input_data_fft0 -- left-channel fft
         input_data_fft1 -- right-channel fft
-         """
-        self.framesize = framesize
-        self.datarate = datarate
+        """
+        # TODO update doc string with output types, and real outputs!
+        def cb_stream_processing(in_data, frame_count, time_info, status):
+            """PyAudio callback to fill output buffer and handle input
+            buffer"""
+            input_data.append(in_data)
+            frames_to_write = frame_count
+            data_out = data[
+                self.counter*2:(self.counter+frames_to_write)*2].tostring()
+            self.counter = self.counter+frames_to_write
+            print(self.counter, len(data)/2-self.counter,
+                  frames_to_write,
+                  len(data_out))
+            return(data_out, pyaudio.paContinue)
+
         pya = pyaudio.PyAudio()
-        # maybe make self.framesize=int(self.datarate/10)
+        # maybe make framesize=int(datarate/10)
         # duration seconds
         # volume max of 1
         # width in bytes, need to update format below, why does 4 not work?
@@ -98,91 +91,88 @@ class SpeakerTestEngine():
         else:
             print("Bit width should be 1, 2, or 4 bytes")
 
-        self.data = (scipy.signal.chirp(t=np.arange(0,
-                                                    duration,
-                                                    1/self.datarate),
-                                        f0=0,
-                                        t1=duration,
-                                        f1=20000,
-                                        method='lin',
-                                        phi=-90)*((2**(8*width))/2-1))
+        data = (scipy.signal.chirp(t=np.arange(0, duration, 1/datarate),
+                                   f0=0,
+                                   t1=duration,
+                                   f1=20000,
+                                   method='lin',
+                                   phi=-90)*((2**(8*width))/2-1))
         if width == 1:
-            self.data = self.data+(2**(8*width))/2-1
-        self.data = self.data.astype(dtype=np_type, copy=False)
+            data = data+(2**(8*width))/2-1
+        data = data.astype(dtype=np_type, copy=False)
 
         # make it stereo
-        self.data = np.array([self.data, self.data]).transpose().flatten()
+        data = np.array([data, data]).transpose().flatten()
 
         # use as a list of byte objects for speed, then convert
-        self.input_data = []
-
-        self.counter = 0
+        input_data = []
 
         print("Opening input device %d and output device %d" % (
             self.input_device_ndx, self.output_device_ndx))
 
+        self.counter = 0
         self.stream = pya.open(format=pa_format,
                                channels=2,
-                               rate=self.datarate,
+                               rate=datarate,
                                output=True,
                                input=True,
                                input_device_index=self.input_device_ndx,
                                output_device_index=self.output_device_ndx,
-                               stream_callback=self.cb_stream_processing,
-                               frames_per_buffer=self.framesize)
+                               stream_callback=cb_stream_processing,
+                               frames_per_buffer=framesize)
 
         while self.stream.is_active():
             time.sleep(0.2)
 
-        self.input_data = b''.join(self.input_data)  # [3:]
-        self.input_data = np.fromstring(self.input_data, dtype=np_type)
-        print(len(self.input_data), len(self.data))
+        input_data = b''.join(input_data)  # [3:]
+        input_data = np.fromstring(input_data, dtype=np_type)
+        print(len(input_data), len(data))
         # two channels
-        self.input_data =\
-            np.reshape(self.input_data, (len(self.input_data)/2, 2))
-        self.input_data_fft0 = np.fft.rfft(self.input_data[:, 0])
-        self.input_data_fft1 = np.fft.rfft(self.input_data[:, 1])
+        input_data =\
+            np.reshape(input_data, (len(input_data)/2, 2))
+        input_data_fft0 = np.fft.rfft(input_data[:, 0])
+        input_data_fft1 = np.fft.rfft(input_data[:, 1])
 
-        self.data = np.reshape(self.data, (len(self.data)/2, 2))
-        self.data = self.data[:, 0]
-        self.data_fft = np.fft.rfft(self.data)
+        data = np.reshape(data, (len(data)/2, 2))
+        data = data[:, 0]
+        data_fft = np.fft.rfft(data)
         if width == 1:  # stupid 8 bit uints...
-            self.input_data_fft0[0] = 0
-            self.input_data_fft1[0] = 0
-            self.data_fft[0] = 0
-        # print(self.input_data.buffer_info())
+            input_data_fft0[0] = 0
+            input_data_fft1[0] = 0
+            data_fft[0] = 0
+        # print(input_data.buffer_info())
 
         # Close the open _channel(s)_...
         self.stream.close()
         pyaudio.PyAudio().terminate()
-        # inputdata2=array.array('h',b''.join(self.input_data) )
+        # inputdata2=array.array('h',b''.join(input_data) )
         # print(inputdata2)
-        # plt.magnitude_spectrum(inputdata2, Fs=self.datarate)
-        # self.input_data=scipy.signal.savgol_filter(self.input_data,11,3)
+        # plt.magnitude_spectrum(inputdata2, Fs=datarate)
+        # input_data=scipy.signal.savgol_filter(input_data,11,3)
 
         plt.figure()
         plt.subplot(2, 2, 1)
-        plt.plot(self.input_data[:, 0])  # left
+        plt.plot(input_data[:, 0])  # left
         plt.subplot(2, 2, 2)
-        plt.plot(self.data)  # left
+        plt.plot(data)  # left
         plt.subplot(2, 2, 3)
 
-        x_data = np.fft.rfftfreq(self.input_data[:, 0].size,
-                                 d=1./self.datarate)
+        x_data = np.fft.rfftfreq(input_data[:, 0].size,
+                                 d=1./datarate)
         plt.plot(x_data,
-                 scipy.signal.savgol_filter(np.abs(self.input_data_fft0),
+                 scipy.signal.savgol_filter(np.abs(input_data_fft0),
                                             1, 0))
         # pick filter with 10 Hz filtering?
         plt.xlim(xmin=20)
         plt.xscale('log')
 
         plt.subplot(2, 2, 4)
-        # plt.plot(x_data, np.abs(self.input_data_fft1))
-        data_x_data = np.fft.rfftfreq(self.data.size,
-                                      d=1./self.datarate)
+        # plt.plot(x_data, np.abs(input_data_fft1))
+        data_x_data = np.fft.rfftfreq(data.size,
+                                      d=1./datarate)
 #        plt.plot(data_x_data, scipy.signal.savgol_filter(
-#            np.abs(np.fft.rfft(self.data)), 41, 1))
-        plt.plot(data_x_data, np.abs(self.data_fft))
+#            np.abs(np.fft.rfft(data)), 41, 1))
+        plt.plot(data_x_data, np.abs(data_fft))
         plt.xlim(xmin=20)
         plt.xscale('log')
 

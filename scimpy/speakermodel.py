@@ -43,7 +43,7 @@ def find_alpha(k):
             cheby_a3(k)**2)[0]
 
 
-def find_ported_params_C4(qts):
+def find_ported_params_c4(qts):
     """Find compresion ratio alpha (Vas/Vb) and normalized box frequency
     (fb/fs) for a C4 box given qts"""
     k = cheby_find_k(qts)
@@ -52,7 +52,7 @@ def find_ported_params_C4(qts):
     return alpha, h__
 
 
-def find_ported_params_QB3(qts):
+def find_ported_params_qb3(qts):
     """Find compresion ratio alpha (Vas/Vb) and normalized box frequency
     (fb/fs) for a QB3 box given qts"""
     k = cheby_find_k(qts)

@@ -23,18 +23,28 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
             Probably arrange them verticaly on the left.")
         self.setCentralWidget(placeholder)
         self.setWindowTitle(title)
+        self.setDockOptions(self.dockOptions() | self.VerticalTabs)
+
+        self.statusbar = QtGui.QStatusBar()
+        self.setStatusBar(self.statusbar)
+        # self.setCorner(QtCore.Qt.TopLeftCorner,
+        #                QtCore.Qt.LeftDockWidgetArea);
 
         self.imptestdock = QtGui.QDockWidget("Impedance Measurement")
-        self.imptest = imptesterui.ImpTester(parent=self.imptestdock)
+        self.imptest = imptesterui.ImpTester(self)
         self.imptestdock.setWidget(self.imptest)
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.imptestdock)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.imptestdock)
         self.imptestdock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
                                      QtGui.QDockWidget.DockWidgetFloatable)
 
         self.speakermodeldock = QtGui.QDockWidget("Speaker Modeling")
         self.speakermodel = speakermodelui.SpeakerModelWidget()
-        self.speakermodeldock.setWidget(self.speakermodel)
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.speakermodeldock)
+        # until speaker edit tool is written, put in scroll area
+        tempscrollarea = QtGui.QScrollArea()
+        tempscrollarea.setWidget(self.speakermodel)
+        # self.speakermodeldock.setWidget(self.speakermodel)
+        self.speakermodeldock.setWidget(tempscrollarea)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.speakermodeldock)
         self.tabifyDockWidget(self.speakermodeldock, self.imptestdock)
         self.speakermodeldock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
                                           QtGui.QDockWidget.
@@ -51,4 +61,3 @@ def main():
     mainwindow = SpeakerModelMainWindow("Scimpy Speaker Designer")
     mainwindow.show()
     sys.exit(app.exec_())
-
