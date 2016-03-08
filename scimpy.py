@@ -363,9 +363,9 @@ class SpeakerModelWidget(QtGui.QWidget):
             delay"""
             speakermodel.calc_impedance(re_=float(relineedit.text()),
                                         le_=float(lelineedit.text())/1000,
-                                        cms_=float(cmslineedit.text())/1000,
-                                        mms_=float(mmslineedit.text())/1000,
-                                        rms_=float(rmslineedit.text()),
+                                        cms=float(cmslineedit.text())/1000,
+                                        mms=float(mmslineedit.text())/1000,
+                                        rms=float(rmslineedit.text()),
                                         sd_=float(sdlineedit.text())/(100*100),
                                         bl_=float(bllineedit.text()),
                                         vb_=float(
