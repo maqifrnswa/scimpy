@@ -10,7 +10,6 @@ import pyaudio
 import time
 
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.signal
 
 # Open the stream required, mono mode only...
@@ -27,10 +26,11 @@ import scipy.signal
 
 class SpeakerTestEngine():
     """Class that will control signal I/O during speaker testing"""
-    def __init__(self):
+    def __init__(self, plotwidget):
         self.input_device_ndx = 0
         self.output_device_ndx = 0
         self.counter = None  # is this necessary to be an atribute?
+        self.plotwidget = plotwidget
 
     def set_input_device_ndx(self, dev):
         self.input_device_ndx = dev
@@ -150,33 +150,38 @@ class SpeakerTestEngine():
         # plt.magnitude_spectrum(inputdata2, Fs=datarate)
         # input_data=scipy.signal.savgol_filter(input_data,11,3)
 
-        plt.figure()
-        plt.subplot(2, 2, 1)
-        plt.plot(input_data[:, 0])  # left
-        plt.subplot(2, 2, 2)
-        plt.plot(data)  # left
-        plt.subplot(2, 2, 3)
+        # plt.figure()
+        self.plotwidget.clear_axes()
+        # plt.subplot(2, 2, 1)
+        ax1 = self.plotwidget.axes1  # can do this programatically with figure.axes()
+        ax2 = self.plotwidget.axes2
+        ax3 = self.plotwidget.axes3
+        ax4 = self.plotwidget.axes4
+        ax1.plot(input_data[:, 0])  # left
+        # plt.subplot(2, 2, 2)
+        ax2.plot(data)  # left
+        #plt.subplot(2, 2, 3)
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
-        plt.plot(x_data,
+        ax3.plot(x_data,
                  scipy.signal.savgol_filter(np.abs(input_data_fft0),
                                             1, 0))
         # pick filter with 10 Hz filtering?
-        plt.xlim(xmin=20)
-        plt.xscale('log')
+        ax3.set_xlim(xmin=20)
+        ax3.set_xscale('log')
 
-        plt.subplot(2, 2, 4)
+        # plt.subplot(2, 2, 4)
         # plt.plot(x_data, np.abs(input_data_fft1))
         data_x_data = np.fft.rfftfreq(data.size,
                                       d=1./datarate)
 #        plt.plot(data_x_data, scipy.signal.savgol_filter(
 #            np.abs(np.fft.rfft(data)), 41, 1))
-        plt.plot(data_x_data, np.abs(data_fft))
-        plt.xlim(xmin=20)
-        plt.xscale('log')
+        ax4.plot(data_x_data, np.abs(data_fft))
+        ax4.set_xlim(xmin=20)
+        ax4.set_xscale('log')
 
-        plt.show()
+        self.plotwidget.draw()
 
 if __name__ == "__main__":
     ENGINE = SpeakerTestEngine()

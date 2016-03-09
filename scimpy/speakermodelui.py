@@ -160,7 +160,9 @@ class SpeakerModelWidget(QtGui.QWidget):
         def find_enclosure():
             """Calculates and displays closed box SPL, phase, and group
             delay"""
-            speakermodel.calc_impedance(re_=float(relineedit.text()),
+            plotwidget = self.window().plotwidget
+            speakermodel.calc_impedance(plotwidget=plotwidget,
+                                        re_=float(relineedit.text()),
                                         le_=float(lelineedit.text())/1000,
                                         cms=float(cmslineedit.text())/1000,
                                         mms=float(mmslineedit.text())/1000,

@@ -109,7 +109,8 @@ class ImpTester(QtGui.QWidget):
     """Widget to control and analyze impedance measurements"""
     def __init__(self, parent):
         super(ImpTester, self).__init__(parent)
-        self.measurement_engine = speakertest.SpeakerTestEngine()
+        self.measurement_engine = speakertest.SpeakerTestEngine(
+            self.window().plotwidget)
         self.measformwidget = MeasurementParamsForm("Measurement Parameters")
         self.init_ui()
 

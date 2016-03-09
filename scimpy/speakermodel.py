@@ -7,7 +7,7 @@ Created on Sun Feb 28 21:43:59 2016
 
 import numpy as np
 import matplotlib.ticker
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import scipy.optimize
 
 
@@ -90,7 +90,8 @@ def sealed_find_vb_qt(vas, fs_, f3_, qts):
                                  args=(vas, fs_, f3_, qts))
 
 
-def calc_impedance(re_,
+def calc_impedance(plotwidget,
+                   re_,
                    le_,
                    cms,
                    mms,
@@ -119,11 +120,16 @@ def calc_impedance(re_,
         transferfunc = transferfunc*(1j*omega*leb) / \
             (1j*omega*leb+1/(1j*omega*cev))
 
-    fig = plt.figure()
-    ax1 = fig.add_subplot(211)
+    #fig = plt.figure()
+    #ax1 = fig.add_subplot(211)
+
+    plotwidget.clear_axes()  # at some point we can keep the hold on
+
+    ax1 = plotwidget.axes1
+    ax2 = plotwidget.axes2
 
     ax1.plot(omega/2/np.pi, abs(ztotal))
-    ax2 = fig.add_subplot(212)
+    # ax2 = fig.add_subplot(212)
     ax2.plot(omega/2/np.pi, np.angle(ztotal)*180/np.pi)
     ax1.set_ylabel('Impedance Magnitude (Ohms)')
     ax1.set_title('Impedance Magnitude and Phase versus Frequency')
@@ -135,17 +141,20 @@ def calc_impedance(re_,
     ax2.grid(True, which="both", ls=":")  # ,color="0.65")
     ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
     ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
-    fig.show()
+    # fig.show()
 
-    fig2 = plt.figure()
-    ax_power = fig2.add_subplot(311)
+    #fig2 = plt.figure()
+    #ax_power = fig2.add_subplot(311)
+    ax_power = plotwidget.axes3
     efficiency = (sd_**2 * 1.18/345/2/np.pi/re_/ces**2/bl_**2) * \
         abs(transferfunc)**2
     power_spl = 112.1+10 * np.log10(efficiency)
     ax_power.plot(omega/2/np.pi, power_spl)
-    ax_phase = fig2.add_subplot(312)
+    #ax_phase = fig2.add_subplot(312)
+    ax_phase = plotwidget.axes4
     ax_phase.plot(omega/2/np.pi, np.angle(transferfunc)*180/np.pi)
-    ax_groupdelay = fig2.add_subplot(313)
+    # ax_groupdelay = fig2.add_subplot(313)
+    ax_groupdelay = plotwidget.axes5
     ax_groupdelay.plot(omega/2/np.pi,
                        -np.gradient(np.unwrap(
                            np.angle(transferfunc)))/np.gradient(omega)*1000)
@@ -167,4 +176,6 @@ def calc_impedance(re_,
     ax_power.grid(True, which="both", ls=":")  # ,color="0.65")
     ax_phase.grid(True, which="both", ls=":")  # ,color="0.65")
     ax_groupdelay.grid(True, which="both", ls=":")  # ,color="0.65")
-    fig2.show()
+    # fig2.show()
+    plotwidget.draw()
+

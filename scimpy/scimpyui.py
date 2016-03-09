@@ -12,6 +12,7 @@ except ImportError:
     from PySide import QtGui, QtCore
 import scimpy.imptesterui as imptesterui
 import scimpy.speakermodelui as speakermodelui
+import scimpy.centralplotui as centralplotui
 
 
 class SpeakerModelMainWindow(QtGui.QMainWindow):
@@ -21,7 +22,8 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         placeholder = QtGui.QLabel("This is where plots will go. \
             The above two tabs are floatable docks. \
             Probably arrange them verticaly on the left.")
-        self.setCentralWidget(placeholder)
+        self.plotwidget = centralplotui.PlotCanvas()
+        self.setCentralWidget(self.plotwidget)
         self.setWindowTitle(title)
         self.setDockOptions(self.dockOptions() | self.VerticalTabs)
 
