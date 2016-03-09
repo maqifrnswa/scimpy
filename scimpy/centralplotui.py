@@ -5,12 +5,6 @@ Created on Tue Mar  8 21:25:10 2016
 @author: showard
 """
 
-from matplotlib.backends import qt_compat
-use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-if use_pyside:
-    from PySide import QtGui, QtCore
-else:
-    from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from numpy import arange, sin, pi

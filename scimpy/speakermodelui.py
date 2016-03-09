@@ -5,12 +5,14 @@ Created on Mon Mar  7 22:23:03 2016
 @author: showard
 """
 
-try:
-    from PyQt4 import QtGui
-except ImportError:
-    from PySide import QtGui
 import scimpy.speakermodel as speakermodel
 import numpy as np
+from matplotlib.backends import qt_compat
+use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
+if use_pyside:
+    from PySide import QtGui
+else:
+    from PyQt4 import QtGui
 
 
 # eventually just pass the whole widget as the argument below

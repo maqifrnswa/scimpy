@@ -4,13 +4,14 @@ Created on Mon Mar  7 22:18:45 2016
 
 @author: showard
 """
-
-try:
-    from PyQt4 import QtGui
-except ImportError:
-    from PySide import QtGui
 import pyaudio
 import scimpy.speakertest as speakertest
+from matplotlib.backends import qt_compat
+use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
+if use_pyside:
+    from PySide import QtGui
+else:
+    from PyQt4 import QtGui
 
 
 class MeasurementParamsForm(QtGui.QGroupBox):

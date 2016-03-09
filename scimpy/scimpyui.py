@@ -6,13 +6,18 @@ Created on Thu Feb  4 17:20:04 2016
 """
 
 import sys
-try:
-    from PyQt4 import QtGui, QtCore
-except ImportError:
-    from PySide import QtGui, QtCore
 import scimpy.imptesterui as imptesterui
 import scimpy.speakermodelui as speakermodelui
 import scimpy.centralplotui as centralplotui
+
+from matplotlib.backends import qt_compat
+use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
+if use_pyside:
+    from PySide import QtGui, QtCore
+else:
+    from PyQt4 import QtGui, QtCore
+
+
 
 
 class SpeakerModelMainWindow(QtGui.QMainWindow):

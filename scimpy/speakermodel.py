@@ -7,7 +7,7 @@ Created on Sun Feb 28 21:43:59 2016
 
 import numpy as np
 import matplotlib.ticker
-#import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import scipy.optimize
 
 
