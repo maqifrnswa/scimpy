@@ -1,4 +1,3 @@
-pyside
 pyaudio
 scipy
 numpy

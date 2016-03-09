@@ -8,7 +8,7 @@ right channel are available after run() in the input_data_fft0 and
 input_data_fft1 attributes """
 import pyaudio
 import time
-
+import matplotlib.ticker
 import numpy as np
 import scipy.signal
 
@@ -155,31 +155,43 @@ class SpeakerTestEngine():
         # plt.subplot(2, 2, 1)
         ax1 = self.plotwidget.axes1  # can do this programatically with figure.axes()
         ax2 = self.plotwidget.axes2
-        ax3 = self.plotwidget.axes3
-        ax4 = self.plotwidget.axes4
+        # ax3 = self.plotwidget.axes3
+        # ax4 = self.plotwidget.axes4
         ax1.plot(input_data[:, 0])  # left
-        # plt.subplot(2, 2, 2)
-        ax2.plot(data)  # left
-        #plt.subplot(2, 2, 3)
+
+        # commented out all except microphont in and mic FFT
+        # ax2.plot(data)  # left
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
-        ax3.plot(x_data,
+        ax2.plot(x_data,
                  scipy.signal.savgol_filter(np.abs(input_data_fft0),
                                             1, 0))
         # pick filter with 10 Hz filtering?
-        ax3.set_xlim(xmin=20)
-        ax3.set_xscale('log')
+        ax2.set_xlim([20,20000])
 
-        # plt.subplot(2, 2, 4)
-        # plt.plot(x_data, np.abs(input_data_fft1))
-        data_x_data = np.fft.rfftfreq(data.size,
-                                      d=1./datarate)
-#        plt.plot(data_x_data, scipy.signal.savgol_filter(
-#            np.abs(np.fft.rfft(data)), 41, 1))
-        ax4.plot(data_x_data, np.abs(data_fft))
-        ax4.set_xlim(xmin=20)
-        ax4.set_xscale('log')
+
+        ax1.set_title('Impedance Measurement (Not Finished!)')
+        ax1.set_ylabel('Microphone Left Channel Signal', color='b')
+        ax2.set_xlabel('Sample Number')
+        ax2.set_ylabel('abs(FFT) Left Channel', color='b')
+        ax2.set_xlabel('Frequency (Hz)')
+        ax2.set_xscale('log')
+        ax2.xaxis.set_major_formatter(
+            matplotlib.ticker.FormatStrFormatter("%d"))
+        ax1.yaxis.set_major_formatter(
+            matplotlib.ticker.FormatStrFormatter("%g"))
+        ax2.grid(True, which="both", color="0.65", ls='-')
+
+
+
+        # TODO! magnitude_spectrum and phase_spectrum in matplotlib might just work!
+        # data_x_data = np.fft.rfftfreq(data.size,
+#                                      d=1./datarate)
+
+        # ax4.plot(data_x_data, np.abs(data_fft))
+        # ax4.set_xlim(xmin=20)
+        # ax4.set_xscale('log')
 
         self.plotwidget.draw()
 

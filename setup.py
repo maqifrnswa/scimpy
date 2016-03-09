@@ -25,7 +25,7 @@ setup(
 	"Topic :: Artistic Software",
 	"Topic :: Multimedia :: Sound/Audio",
 	"Topic :: Scientific/Engineering :: Physics"],
-    install_requries=["scipy", "numpy", "matplotlib", "pyaudio", "pyside"],
+    install_requries=["scipy", "numpy", "matplotlib", "pyaudio"],
     packages = find_packages(),
     entry_points = {
         'gui_scripts': [

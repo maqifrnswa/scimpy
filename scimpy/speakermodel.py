@@ -90,6 +90,36 @@ def sealed_find_vb_qt(vas, fs_, f3_, qts):
                                  args=(vas, fs_, f3_, qts))
 
 
+# Maybe use this in future
+# def set_as_3rd_yaxis(axes):
+#    axes.spines["right"].set_position(("axes", 1.05))
+#    axes.set_frame_on(True)
+#    axes.patch.set_visible(False)
+#    for sp in axes.spines.values():
+#        sp.set_visible(False)
+#    axes.spines["right"].set_visible(True)
+
+def align_y_axis(ax1, ax2, minresax1, minresax2):
+    """ Sets tick marks of twinx axes to line up with 7 total tick marks
+
+    ax1 and ax2 are matplotlib axes
+    Spacing between tick marks will be a factor of minresax1 and minresax2"""
+    ax1ylims = ax1.get_ybound()
+    ax2ylims = ax2.get_ybound()
+    ax1factor = minresax1 * 6
+    ax2factor = minresax2 * 6
+    ax1.set_yticks(np.linspace(ax1ylims[0],
+                               ax1ylims[1]+(ax1factor -
+                               (ax1ylims[1]-ax1ylims[0]) % ax1factor) %
+                               ax1factor,
+                               7))
+    ax2.set_yticks(np.linspace(ax2ylims[0],
+                               ax2ylims[1]+(ax2factor -
+                               (ax2ylims[1]-ax2ylims[0]) % ax2factor) %
+                               ax2factor,
+                               7))
+
+
 def calc_impedance(plotwidget,
                    re_,
                    le_,
@@ -109,7 +139,7 @@ def calc_impedance(plotwidget,
     leb = bl_**2/sd_**2*vb_/(1.18*345**2)
     cev = sd_**2/bl_**2*1.18*l_over_a
     # qes = omegas*res*ces
-    omega = np.logspace(1.3, 4.3, 10000)*2*np.pi
+    omega = np.logspace(1.3, 4.3, 100)*2*np.pi
     yacoustic = -1j / (leb * omega-1/(omega*cev))  # Ya = 1/ Za
     zmech = (1/res+1/(omega*les*1j)+omega*ces*1j + yacoustic)**(-1)
     ztotal = zmech+re_+omega*le_*1j
@@ -126,56 +156,76 @@ def calc_impedance(plotwidget,
     plotwidget.clear_axes()  # at some point we can keep the hold on
 
     ax1 = plotwidget.axes1
-    ax2 = plotwidget.axes2
+    #ax2 = plotwidget.axes2
+    ax2 = ax1.twinx()
 
-    ax1.plot(omega/2/np.pi, abs(ztotal))
+    ax1.plot(omega/2/np.pi, abs(ztotal), 'b-')
+
     # ax2 = fig.add_subplot(212)
-    ax2.plot(omega/2/np.pi, np.angle(ztotal)*180/np.pi)
-    ax1.set_ylabel('Impedance Magnitude (Ohms)')
+    ax2.plot(omega/2/np.pi, np.angle(ztotal)*180/np.pi, 'r--')
+    ax1.set_ylabel('Impedance Magnitude (Ohms)', color='b')
     ax1.set_title('Impedance Magnitude and Phase versus Frequency')
     ax2.set_xlabel('Frequency (Hz)')
-    ax2.set_ylabel('Phase (degrees)')
+    ax2.set_ylabel('Phase (degrees)', color='r')
     ax1.set_xscale('log')
     ax2.set_xscale('log')
-    ax1.grid(True, which="both", ls=":")  # ,color="0.65")
-    ax2.grid(True, which="both", ls=":")  # ,color="0.65")
+    ax1.set_xlim([20, 20000])
+    ax1.grid(True, which="both", color="0.65", ls='-')
+    ax2.grid(True, which="both", color="0.65", ls='-')
     ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
     ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
+    ax2.set_ylim([-180,180])
+    for tlabel in ax1.get_yticklabels():
+        tlabel.set_color('b')
+    for tlabel in ax2.get_yticklabels():
+        tlabel.set_color('r')
+    align_y_axis(ax1, ax2, .5, .5)
     # fig.show()
 
     #fig2 = plt.figure()
     #ax_power = fig2.add_subplot(311)
-    ax_power = plotwidget.axes3
+    ax_power = plotwidget.axes2
     efficiency = (sd_**2 * 1.18/345/2/np.pi/re_/ces**2/bl_**2) * \
         abs(transferfunc)**2
     power_spl = 112.1+10 * np.log10(efficiency)
-    ax_power.plot(omega/2/np.pi, power_spl)
-    #ax_phase = fig2.add_subplot(312)
-    ax_phase = plotwidget.axes4
-    ax_phase.plot(omega/2/np.pi, np.angle(transferfunc)*180/np.pi)
+    ax_power.plot(omega/2/np.pi, power_spl, 'b-')
+
+    # For now, just show group delay, possibly more interesting to people?
+    # ax_phase = fig2.add_subplot(312)
+    # ax_phase = plotwidget.axes4
+    # ax_phase = ax_power.twinx()
+    # ax_phase.plot(omega/2/np.pi, np.angle(transferfunc)*180/np.pi)
+
     # ax_groupdelay = fig2.add_subplot(313)
-    ax_groupdelay = plotwidget.axes5
+    # ax_groupdelay = plotwidget.axes5
+    ax_groupdelay = ax_power.twinx()
+    # set_as_3rd_yaxis(ax_groupdelay)
     ax_groupdelay.plot(omega/2/np.pi,
                        -np.gradient(np.unwrap(
-                           np.angle(transferfunc)))/np.gradient(omega)*1000)
+                           np.angle(transferfunc)))/np.gradient(omega)*1000,
+                       'r--')
     ax_power.set_title('Speaker Performance')
-    ax_power.set_ylabel('SPL (dB 1W1m)')
-    ax_phase.set_ylabel('Phase (degrees)')
-    ax_groupdelay.set_ylabel('Group Delay (ms)')
+    ax_power.set_ylabel('SPL (dB 1W1m)', color='b')
+    # ax_phase.set_ylabel('Phase (degrees)')
+    ax_groupdelay.set_ylabel('Group Delay (ms)', color='r')
     ax_groupdelay.set_xlabel('Frequency (Hz)')
     ax_power.set_xscale('log')
+    ax_power.set_xlim([20, 20000])
     ax_power.xaxis.set_major_formatter(
         matplotlib.ticker.FormatStrFormatter("%d"))
-    # ax_power.set_yscale('log')
-    ax_phase.set_xscale('log')
-    ax_phase.xaxis.set_major_formatter(
-        matplotlib.ticker.FormatStrFormatter("%d"))
+    # ax_phase.set_xscale('log')
+    # ax_phase.xaxis.set_major_formatter(
+    #     matplotlib.ticker.FormatStrFormatter("%d"))
     ax_groupdelay.set_xscale('log')
     ax_groupdelay.xaxis.set_major_formatter(
         matplotlib.ticker.FormatStrFormatter("%d"))
-    ax_power.grid(True, which="both", ls=":")  # ,color="0.65")
-    ax_phase.grid(True, which="both", ls=":")  # ,color="0.65")
-    ax_groupdelay.grid(True, which="both", ls=":")  # ,color="0.65")
+    ax_power.grid(True, which="both", color="0.65", ls='-')
+    # ax_phase.grid(True, which="both", color="0.65", ls='-')
+    ax_groupdelay.grid(True, which="both", color="0.65", ls='-')
+    for tlabel in ax_power.get_yticklabels():
+        tlabel.set_color('b')
+    for tlabel in ax_groupdelay.get_yticklabels():
+        tlabel.set_color('r')
+    align_y_axis(ax_power, ax_groupdelay, 1, .1)
     # fig2.show()
     plotwidget.draw()
-
