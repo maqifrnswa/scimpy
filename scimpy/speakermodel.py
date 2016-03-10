@@ -139,7 +139,7 @@ def calc_impedance(plotwidget,
     leb = bl_**2/sd_**2*vb_/(1.18*345**2)
     cev = sd_**2/bl_**2*1.18*l_over_a
     # qes = omegas*res*ces
-    omega = np.logspace(1.3, 4.3, 100)*2*np.pi
+    omega = np.logspace(1.3, 4.3, 1000)*2*np.pi
     yacoustic = -1j / (leb * omega-1/(omega*cev))  # Ya = 1/ Za
     zmech = (1/res+1/(omega*les*1j)+omega*ces*1j + yacoustic)**(-1)
     ztotal = zmech+re_+omega*le_*1j

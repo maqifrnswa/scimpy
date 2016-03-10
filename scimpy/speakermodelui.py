@@ -189,7 +189,9 @@ class SpeakerModelWidget(QtGui.QWidget):
         def find_ported_enclosure():
             """Calculates and displays ported box SPL, phase, and group
             delay"""
-            speakermodel.calc_impedance(re_=float(relineedit.text()),
+            plotwidget = self.window().plotwidget
+            speakermodel.calc_impedance(plotwidget=plotwidget,
+                                        re_=float(relineedit.text()),
                                         le_=float(lelineedit.text())/1000,
                                         cms=float(cmslineedit.text())/1000,
                                         mms=float(mmslineedit.text())/1000,
@@ -364,7 +366,7 @@ class SpeakerModelWidget(QtGui.QWidget):
         layout.addWidget(systemformwidget)  # , 0, 1, 1, 1)
         layout.addWidget(sealedboxwidg)  # , 0, 2, 1, 1)
         # layout.addWidget(sealedboxbtn, 1, 2, 1, 1)
-        layout.addWidget(runbtn)  # , 1, 0, 1, 2)
+        layout.addWidget(sealedboxbtn)  # , 1, 0, 1, 2)
         self.setLayout(layout)
 
         self.setWindowTitle('Speaker Performance')
