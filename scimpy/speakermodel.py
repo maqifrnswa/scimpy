@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.ticker
 # import matplotlib.pyplot as plt
 import scipy.optimize
+import bisect
 
 
 def cheby_a1(k):
@@ -99,25 +100,51 @@ def sealed_find_vb_qt(vas, fs_, f3_, qts):
 #        sp.set_visible(False)
 #    axes.spines["right"].set_visible(True)
 
-def align_y_axis(ax1, ax2, minresax1, minresax2):
+def get_best_tick(axlims, numtickspans):
+    # http://stackoverflow.com/questions/361681/
+    # algorithm-for-nice-grid-line-intervals-on-a-graph
+    # inspired by above, but we need to find small ticks
+    minimum = (axlims[1]-axlims[0])/numtickspans
+    magnitude = 10 ** np.floor(np.log10(minimum))
+    residual = minimum/magnitude
+#    if residual < 2:
+#        tick = magnitude/5
+#    elif residual < 2.5:
+#        tick = magnitude/4
+    if residual < 5:
+        tick = magnitude/2
+    else:
+        tick = magnitude
+    print(axlims, minimum, magnitude, residual, tick)
+    return tick
+
+def align_y_axis(ax1, ax2, numticks):
     """ Sets tick marks of twinx axes to line up with 7 total tick marks
 
     ax1 and ax2 are matplotlib axes
     Spacing between tick marks will be a factor of minresax1 and minresax2"""
     ax1ylims = ax1.get_ybound()
     ax2ylims = ax2.get_ybound()
-    ax1factor = minresax1 * 6
-    ax2factor = minresax2 * 6
+    minresax1 = get_best_tick(ax1ylims, numticks-1)
+    minresax2 = get_best_tick(ax2ylims, numticks-1)
+    ax1factor = minresax1 * (numticks-1)
+    ax2factor = minresax2 * (numticks-1)
+    print(ax2factor, minresax2,numticks)
+
     ax1.set_yticks(np.linspace(ax1ylims[0],
                                ax1ylims[1]+(ax1factor -
                                (ax1ylims[1]-ax1ylims[0]) % ax1factor) %
                                ax1factor,
-                               7))
+                               numticks))
     ax2.set_yticks(np.linspace(ax2ylims[0],
                                ax2ylims[1]+(ax2factor -
                                (ax2ylims[1]-ax2ylims[0]) % ax2factor) %
                                ax2factor,
-                               7))
+                               numticks))
+    print(ax2ylims, ax2factor, ax2ylims[1]+(ax2factor -
+                               (ax2ylims[1]-ax2ylims[0]) % ax2factor) %
+                               ax2factor,
+                               numticks)
 
 
 def calc_impedance(plotwidget,
@@ -179,7 +206,7 @@ def calc_impedance(plotwidget,
         tlabel.set_color('b')
     for tlabel in ax2.get_yticklabels():
         tlabel.set_color('r')
-    align_y_axis(ax1, ax2, .5, .5)
+    align_y_axis(ax1, ax2, 9)
     # fig.show()
 
     #fig2 = plt.figure()
@@ -226,6 +253,6 @@ def calc_impedance(plotwidget,
         tlabel.set_color('b')
     for tlabel in ax_groupdelay.get_yticklabels():
         tlabel.set_color('r')
-    align_y_axis(ax_power, ax_groupdelay, 1, .1)
+    align_y_axis(ax_power, ax_groupdelay, 9)
     # fig2.show()
     plotwidget.draw()
