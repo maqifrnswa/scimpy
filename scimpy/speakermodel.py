@@ -208,7 +208,7 @@ def calc_impedance(plotwidget,
     ax_power.set_ylabel('SPL (dB 1W1m)', color='b')
     # ax_phase.set_ylabel('Phase (degrees)')
     ax_groupdelay.set_ylabel('Group Delay (ms)', color='r')
-    ax_groupdelay.set_xlabel('Frequency (Hz)')
+    ax_power.set_xlabel('Frequency (Hz)')
     ax_power.set_xscale('log')
     ax_power.set_xlim([20, 20000])
     ax_power.xaxis.set_major_formatter(
