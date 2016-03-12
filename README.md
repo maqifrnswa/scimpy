@@ -46,11 +46,22 @@ have fun!
 
 #### How to build Windows binaries
 
-Work in progress: trying to get both py2exe and pyinstaller to work
+PyInstaller works. First install pyinstaller:
 
-Install either with pip. py2exe hangs on finding DLLs, pyinstaller can't find pywintypes
-possibly solution?
-http://stackoverflow.com/questions/19280894/py2exe-no-system-module-pywintypes
+```
+pip install pywin32 pyinstaller
+conda install setuptools=19.2
+```
+
+(downgrading setuptools: https://github.com/pyinstaller/pyinstaller/issues/1781)
+
+The run
+
+```
+pyinstaller -F --additional-hooks-dir=pyinstaller-hooks run.py
+```
+
+to get a single executable in dist/
 
 
 
