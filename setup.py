@@ -4,6 +4,7 @@ try:
 except:
     pass
 
+
 setup(
     name = "scimpy",
     version = "0.0.dev0",
@@ -31,5 +32,6 @@ setup(
         'gui_scripts': [
             'scimpy = scimpy.scimpyui:main'
         ]
-    }
+    },
+    windows = ['run.py']  # py2exe support
 )
