@@ -46,8 +46,7 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
             sc_info = [pya.get_device_info_by_index(n)
                        for n in range(pya.get_device_count())]
             default_device = pya.get_default_host_api_info()[
-                "defaultInputDevice"]
-            # TODO also return default output device, and use that info
+                "default"+role+"Device"]
             return [sc_info, default_device]
 
         def set_layout():
@@ -92,8 +91,8 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
                                          role))
             self.parentWidget().measformwidget.sampleratelineedit.setText(
                 "{}".format(int(sc_info[new_row]["defaultSampleRate"])))
-            self.parentWidget().measurement_engine.set_input_device_ndx(
-                new_row)
+            self.parentWidget().measurement_engine.set_device_ndx(
+                new_row, role)
 
         [sc_info, default_device] = get_sc_info()
         self.devlistwidg = QtGui.QListWidget()
@@ -118,10 +117,11 @@ class ImpTester(QtGui.QWidget):
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
 
+        pya = pyaudio.PyAudio()
+
         def verify_sc_settings():
             """Tests whether current settings are supported and displays result
             in statusbar"""
-            pya = pyaudio.PyAudio()
             inlistwidg = inputcardgroup.devlistwidg
             outlistwidg = outputcardgroup.devlistwidg
             measformwidget = self.measformwidget
@@ -144,14 +144,12 @@ class ImpTester(QtGui.QWidget):
 
         def run_measurement():
             """Performs measurement with user selected settings"""
-            print(self.measformwidget.sampleratelineedit.text())
+            measformwidget = self.measformwidget
             self.measurement_engine.run(
-                framesize=int(self.measformwidget.bufferlineedit.text()),
-                datarate=int(
-                    float(self.measformwidget.sampleratelineedit.text())),
-                duration=float(self.measformwidget.durationlineedit.text()),
-                width=int(
-                    self.measformwidget.bitwidthcombobox.currentText())/8)
+                framesize=int(measformwidget.bufferlineedit.text()),
+                datarate=int(float(measformwidget.sampleratelineedit.text())),
+                duration=float(measformwidget.durationlineedit.text()),
+                width=int(measformwidget.bitwidthcombobox.currentText())/8)
 
         statusbar = self.window().statusbar
 

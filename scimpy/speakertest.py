@@ -27,16 +27,12 @@ import scipy.signal
 class SpeakerTestEngine():
     """Class that will control signal I/O during speaker testing"""
     def __init__(self, plotwidget):
-        self.input_device_ndx = 0
-        self.output_device_ndx = 0
+        self.device_ndx = {}
         self.counter = None  # is this necessary to be an atribute?
         self.plotwidget = plotwidget
-
-    def set_input_device_ndx(self, dev):
-        self.input_device_ndx = dev
-
-    def set_output_device_ndx(self, dev):
-        self.output_device_ndx = dev
+    
+    def set_device_ndx(self, dev, role):
+        self.device_ndx[role] = dev
 
     def run(self,
             framesize=0,
@@ -108,7 +104,7 @@ class SpeakerTestEngine():
         input_data = []
 
         print("Opening input device %d and output device %d" % (
-            self.input_device_ndx, self.output_device_ndx))
+            self.device_ndx["Input"], self.device_ndx["Output"]))
 
         self.counter = 0
         self.stream = pya.open(format=pa_format,
@@ -116,8 +112,8 @@ class SpeakerTestEngine():
                                rate=datarate,
                                output=True,
                                input=True,
-                               input_device_index=self.input_device_ndx,
-                               output_device_index=self.output_device_ndx,
+                               input_device_index=self.device_ndx["Input"],
+                               output_device_index=self.device_ndx["Output"],
                                stream_callback=cb_stream_processing,
                                frames_per_buffer=framesize)
 
