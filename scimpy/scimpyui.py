@@ -56,11 +56,18 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         self.speakermodeldock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
                                           QtGui.QDockWidget.
                                           DockWidgetFloatable)
+        self.init_menus()
+
+    def init_menus(self):
+        filemenu = self.menuBar().addMenu("&File")
+        newaction = QtGui.QAction("&New", filemenu)
+        filemenu.addAction(newaction)
 
 
 def main():
     """Starts Scimpy Speaker Design Suite"""
     app = QtGui.QApplication(sys.argv)
+    app.setApplicationName("scimpy")
     # imptesterwidg = imptesterui.ImpTester()
     # speakermodelwidg = speakermodelui.SpeakerModelWidget()
     # imptesterwidg.show()

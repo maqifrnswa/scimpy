@@ -13,6 +13,8 @@ if use_pyside:
     from PySide import QtGui
 else:
     from PyQt4 import QtGui
+import os
+import json
 
 
 # eventually just pass the whole widget as the argument below
@@ -148,43 +150,42 @@ class SpeakerModelWidget(QtGui.QWidget):
     def __init__(self):
         super(SpeakerModelWidget, self).__init__()
         self.init_ui()
+        self.driver_params = {}  # TODO save values in this dict! just pass this!
 
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
+        def update_driver_params():
+            self.driver_params["re"] = float(relineedit.text())
+            self.driver_params["le"] = float(lelineedit.text())/1000
+            self.driver_params["cms"] = float(cmslineedit.text())/1000
+            self.driver_params["mms"] = float(mmslineedit.text())/1000
+            self.driver_params["rms"] = float(rmslineedit.text())
+            self.driver_params["sd"] = float(sdlineedit.text())/(100*100)
+            self.driver_params["bl"] = float(bllineedit.text())
+
+        def savefunction():
+            update_driver_params()
+            basedirectory = QtGui.QDesktopServices.storageLocation(
+                QtGui.QDesktopServices.DataLocation)
+            driverdir = basedirectory+"/drivers"
+            if not os.path.isdir(driverdir):
+                os.makedirs(driverdir)
+            filters = "Driver Files (*.drv);;All Files (*.*)"
+            filename = QtGui.QFileDialog.getSaveFileName(self,
+                                                         "Save Driver Specs",
+                                                         driverdir,
+                                                         filters)
+            if os.path.splitext(filename)[1] == "":
+                filename = filename+".drv"
+            with open(filename, 'w') as outfile:
+                json.dump(self.driver_params, outfile)
+
         def set_eta0(sd_, re_, mms, bl_):
             """Find and update set reference efficiency"""
             efficiency = sd_**2 * 1.18/345/2/np.pi/re_/(mms/bl_**2)**2/bl_**2
             eta0label.setText("{0:2.1f} %".format(efficiency*100))
             spllabel.setText(
                 "{0:.0f} dB 1w1m".format(112.1+10*np.log10(efficiency)))
-
-        # TODO these three methods all do the same thing
-        def find_enclosure():
-            """Calculates and displays closed box SPL, phase, and group
-            delay"""
-            plotwidget = self.window().plotwidget
-            speakermodel.calc_impedance(plotwidget=plotwidget,
-                                        re_=float(relineedit.text()),
-                                        le_=float(lelineedit.text())/1000,
-                                        cms=float(cmslineedit.text())/1000,
-                                        mms=float(mmslineedit.text())/1000,
-                                        rms=float(rmslineedit.text()),
-                                        sd_=float(sdlineedit.text())/(100*100),
-                                        bl_=float(bllineedit.text()),
-                                        vb_=float(
-                                            sealedboxwidg.vbllineedit.text()
-                                            )/1000)
-
-#        def find_infinite_baffle_enclosure():
-#            """Calculates and displays infinite baffle SPL, phase, and group
-#            delay"""
-#            speakermodel.calc_impedance(re=float(relineedit.text()),
-#                                        le=float(lelineedit.text())/1000,
-#                                        cms=float(cmslineedit.text())/1000,
-#                                        mms=float(mmslineedit.text())/1000,
-#                                        rms=float(rmslineedit.text()),
-#                                        sd=float(sdlineedit.text())/(100*100),
-#                                        bl=float(bllineedit.text()))
 
         def find_ported_enclosure():
             """Calculates and displays ported box SPL, phase, and group
@@ -327,10 +328,6 @@ class SpeakerModelWidget(QtGui.QWidget):
 
         formwidget.setLayout(formwidgetlayout)
 
-        runbtn = QtGui.QPushButton(
-            'Plot Impedance && SPL')
-        runbtn.clicked.connect(find_enclosure)  # can sepearate these two
-
         systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
         systemformwidgetlayout = QtGui.QFormLayout()
         fslineedit = QtGui.QLineEdit("300")
@@ -361,7 +358,17 @@ class SpeakerModelWidget(QtGui.QWidget):
         sealedboxbtn = QtGui.QPushButton("Calculate Sealed Box Performace")
         sealedboxbtn.clicked.connect(find_ported_enclosure)
 
+        driverfileopwidg = QtGui.QWidget()
+        fileoplayout = QtGui.QHBoxLayout()
+        savebtn = QtGui.QPushButton("Save Driver")
+        savebtn.clicked.connect(savefunction)
+        loadbtn = QtGui.QPushButton("Load Driver")
+        fileoplayout.addWidget(savebtn)
+        fileoplayout.addWidget(loadbtn)
+        driverfileopwidg.setLayout(fileoplayout)
+
         layout = QtGui.QVBoxLayout()
+        layout.addWidget(driverfileopwidg)
         layout.addWidget(formwidget)  # , 0, 0, 1, 1)
         layout.addWidget(systemformwidget)  # , 0, 1, 1, 1)
         layout.addWidget(sealedboxwidg)  # , 0, 2, 1, 1)

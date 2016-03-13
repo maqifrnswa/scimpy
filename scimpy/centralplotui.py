@@ -31,30 +31,10 @@ class PlotCanvas(FigureCanvas):
         self.axes1.set_xlim(right=3)
         self.axes2.set_title("Scimpy Speaker Designer!")
 
-
-
     def init_axes(self):
         self.axes1 = self.fig.add_subplot(211)
         self.axes2 = self.fig.add_subplot(212)
-#        self.axes3 = self.fig.add_subplot(322)
-#        self.axes4 = self.fig.add_subplot(324)
-#        self.axes5 = self.fig.add_subplot(326)
-
-
-#        self.axes1 = fig.add_subplot(311)
-#        self.axes2 = fig.add_subplot(312)
-#        self.axes3 = fig.add_subplot(313)
-
-
-#        self.axes3.plot(t, s)
-#        self.axes4.plot(t, s)
-#        self.axes5.plot(t, s)
 
     def clear_axes(self):
-#       print(self.fig.axes)
         self.fig.clf()
         self.init_axes()
-#        for axes in self.fig.axes:
- #           axes.cla()
-
-
