@@ -120,16 +120,20 @@ class SealedBoxWidget(QtGui.QGroupBox):
         layout = QtGui.QFormLayout()
         self.vbllineedit = QtGui.QLineEdit()
         self.vbllineedit.editingFinished.connect(vbllineedit_callback)
-        layout.addRow("Box Volume (Vb) litres:", self.vbllineedit)
+        self.vbllineedit.setToolTip("Box Volume")
+        layout.addRow("Vb (litres):", self.vbllineedit)
         vbflineedit = QtGui.QLineEdit()
         vbflineedit.editingFinished.connect(vbflineedit_callback)
-        layout.addRow("Box Volume (Vb) ft^3:", vbflineedit)
+        vbflineedit.setToolTip("Box Volume")
+        layout.addRow("Vb (ft^3):", vbflineedit)
         qtlabel = QtGui.QLabel()
         layout.addRow("Qt:", qtlabel)
         f3lineedit = QtGui.QLineEdit()
-        layout.addRow("Cutoff Frequency (f3) Hz:", f3lineedit)
+        f3lineedit.setToolTip("3 dB Cutoff Frequency")
+        layout.addRow("f3 (Hz):", f3lineedit)
         self.loveralineedit = QtGui.QLineEdit()
-        layout.addRow("Port/Vent Length over Area (av) m^-1:",
+        self.loveralineedit.setToolTip("Port/Vent Length to Area Ratio")
+        layout.addRow("L/A (m^-1):",
                       self.loveralineedit)
 
         resetbtn = QtGui.QPushButton("Set to Infinite Baffle")
@@ -149,12 +153,12 @@ class SpeakerModelWidget(QtGui.QWidget):
     """Widget for modeling speaker performance based on T/S values"""
     def __init__(self):
         super(SpeakerModelWidget, self).__init__()
-        self.init_ui()
         self.driver_params = {}  # TODO save values in this dict! just pass this!
+        self.init_ui()
 
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
-        def update_driver_params():
+        def update_driver_dict():
             self.driver_params["re"] = float(relineedit.text())
             self.driver_params["le"] = float(lelineedit.text())/1000
             self.driver_params["cms"] = float(cmslineedit.text())/1000
@@ -163,8 +167,17 @@ class SpeakerModelWidget(QtGui.QWidget):
             self.driver_params["sd"] = float(sdlineedit.text())/(100*100)
             self.driver_params["bl"] = float(bllineedit.text())
 
-        def savefunction():
-            update_driver_params()
+        def update_driver_fields():
+            relineedit.setText(str(self.driver_params["re"]))
+            lelineedit.setText(str(self.driver_params["le"]*1000.0))
+            cmslineedit.setText(str(self.driver_params["cms"]*1000.0))
+            mmslineedit.setText(str(self.driver_params["mms"]*1000.0))
+            rmslineedit.setText(str(self.driver_params["rms"]))
+            sdlineedit.setText(str(self.driver_params["sd"]*(100*100.0)))
+            bllineedit.setText(str(self.driver_params["bl"]))
+
+        def savedriver():
+            update_driver_dict()
             basedirectory = QtGui.QDesktopServices.storageLocation(
                 QtGui.QDesktopServices.DataLocation)
             driverdir = basedirectory+"/drivers"
@@ -179,6 +192,21 @@ class SpeakerModelWidget(QtGui.QWidget):
                 filename = filename+".drv"
             with open(filename, 'w') as outfile:
                 json.dump(self.driver_params, outfile)
+
+        def loaddriver():
+            basedirectory = QtGui.QDesktopServices.storageLocation(
+                QtGui.QDesktopServices.DataLocation)
+            driverdir = basedirectory+"/drivers"
+            if not os.path.isdir(driverdir):
+                os.makedirs(driverdir)
+            filters = "Driver Files (*.drv);;All Files (*.*)"
+            filename = QtGui.QFileDialog.getOpenFileName(self,
+                                                         "Save Driver Specs",
+                                                         driverdir,
+                                                         filters)
+            with open(filename, 'r') as infile:
+                self.driver_params = json.load(infile)
+            update_driver_fields()
 
         def set_eta0(sd_, re_, mms, bl_):
             """Find and update set reference efficiency"""
@@ -293,38 +321,41 @@ class SpeakerModelWidget(QtGui.QWidget):
         formwidgetlayout = QtGui.QFormLayout()
         relineedit = QtGui.QLineEdit("6")
         relineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow("*DC Resistance (Re) ohms:", relineedit)
+        relineedit.setToolTip("DC Resistance *Required*")
+        formwidgetlayout.addRow("*Re (ohms):", relineedit)
         lelineedit = QtGui.QLineEdit("0.1")
         lelineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow("*Voice Coil Inductance (Le) mH:", lelineedit)
+        lelineedit.setToolTip("Voice Coil Inductance *Required*")
+        formwidgetlayout.addRow("*Le (mH):", lelineedit)
         sdlineedit = QtGui.QLineEdit("25")
         sdlineedit.editingFinished.connect(calc_system_params)
+        sdlineedit.setToolTip("Cone Surface Area *Required*")
         formwidgetlayout.addRow(
-            "*Surface Area of Cone (Sd) cm^2:", sdlineedit)
+            "*Sd (cm^2):", sdlineedit)
         bllineedit = QtGui.QLineEdit("4.5")
         bllineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow(
-            "*Mag. Flux Density x Length (BL) Tm:", bllineedit)
+        bllineedit.setToolTip("Mag. Flux Density x Length *Required*")
+        formwidgetlayout.addRow("*BL (Tm):", bllineedit)
         cmslineedit = QtGui.QLineEdit("0.16")
         cmslineedit.editingFinished.connect(cmslineedit_callback)
-        formwidgetlayout.addRow(
-            "Driver Compliance (Cms) mm/N:", cmslineedit)
+        cmslineedit.setToolTip("Driver Compliance")
+        formwidgetlayout.addRow("Cms (mm/N):", cmslineedit)
         vasllineedit = QtGui.QLineEdit("0.14")
         vasllineedit.editingFinished.connect(vasllineedit_callback)
-        formwidgetlayout.addRow(
-            "Driver Compliance Vol. (Vas) litres:", vasllineedit)
+        vasllineedit.setToolTip("Driver Compliance Volume")
+        formwidgetlayout.addRow("Vas (litres):", vasllineedit)
         vasflineedit = QtGui.QLineEdit("0.005")
         vasflineedit.editingFinished.connect(vasflineedit_callback)
-        formwidgetlayout.addRow(
-            "Driver Compliance Vol. (Vas) ft^3:", vasflineedit)
+        vasflineedit.setToolTip("Driver Compliance Volume")
+        formwidgetlayout.addRow("Vas (ft^3):", vasflineedit)
         mmslineedit = QtGui.QLineEdit("1.8")
         mmslineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow(
-            "Diaphragm Mass w/ Airload (Mms) g:", mmslineedit)
+        mmslineedit.setToolTip("Diaphragm Mass w/ Airload")
+        formwidgetlayout.addRow("Mms (g):", mmslineedit)
         rmslineedit = QtGui.QLineEdit("3.4")
         rmslineedit.editingFinished.connect(calc_system_params)
-        formwidgetlayout.addRow(
-            "Mech. Resist. (Rms) Ns/m=Mech. ohm:", rmslineedit)
+        rmslineedit.setToolTip("Mechanical Resistance (Mech. ohm=N s/m")
+        formwidgetlayout.addRow("Rms (Mech. ohm):", rmslineedit)
 
         formwidget.setLayout(formwidgetlayout)
 
@@ -332,7 +363,8 @@ class SpeakerModelWidget(QtGui.QWidget):
         systemformwidgetlayout = QtGui.QFormLayout()
         fslineedit = QtGui.QLineEdit("300")
         fslineedit.editingFinished.connect(calc_component_params)
-        systemformwidgetlayout.addRow("Resonant Freq. (Fs) Hz:", fslineedit)
+        fslineedit.setToolTip("Driver Suspension Resonant Frequency")
+        systemformwidgetlayout.addRow("Fs (Hz):", fslineedit)
         qtslabel = QtGui.QLabel("0.5")
         systemformwidgetlayout.addRow("Qts:", qtslabel)
         qeslineedit = QtGui.QLineEdit("1")
@@ -342,11 +374,13 @@ class SpeakerModelWidget(QtGui.QWidget):
         qmslineedit.editingFinished.connect(calc_component_params)
         systemformwidgetlayout.addRow("Qms:", qmslineedit)
         eta0label = QtGui.QLabel("0.4 %")
+        eta0label.setToolTip("Reference Efficiency")
         systemformwidgetlayout.addRow(
-            "Reference Efficiency (eta0):", eta0label)
+            "eta0:", eta0label)
         spllabel = QtGui.QLabel("88 dB 1W1m")
+        spllabel.setToolTip("Sound Power Level")
         systemformwidgetlayout.addRow(
-            "Sound Power Level (SPL):", spllabel)
+            "SPL:", spllabel)
 
         systemformwidget.setLayout(systemformwidgetlayout)
 
@@ -355,14 +389,15 @@ class SpeakerModelWidget(QtGui.QWidget):
                                         qtslabel,
                                         vasllineedit,
                                         vasflineedit)
-        sealedboxbtn = QtGui.QPushButton("Calculate Sealed Box Performace")
+        sealedboxbtn = QtGui.QPushButton("Calculate && Plot")
         sealedboxbtn.clicked.connect(find_ported_enclosure)
 
         driverfileopwidg = QtGui.QWidget()
         fileoplayout = QtGui.QHBoxLayout()
         savebtn = QtGui.QPushButton("Save Driver")
-        savebtn.clicked.connect(savefunction)
+        savebtn.clicked.connect(savedriver)
         loadbtn = QtGui.QPushButton("Load Driver")
+        loadbtn.clicked.connect(loaddriver)
         fileoplayout.addWidget(savebtn)
         fileoplayout.addWidget(loadbtn)
         driverfileopwidg.setLayout(fileoplayout)
@@ -377,11 +412,3 @@ class SpeakerModelWidget(QtGui.QWidget):
         self.setLayout(layout)
 
         self.setWindowTitle('Speaker Performance')
-        self.center()
-
-    def center(self):
-        """Method to center widget on screen"""
-        framegeo = self.frameGeometry()
-        centerpoint = QtGui.QDesktopWidget().availableGeometry().center()
-        framegeo.moveCenter(centerpoint)
-        self.move(framegeo.topLeft())

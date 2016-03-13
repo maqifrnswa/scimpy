@@ -21,15 +21,14 @@ class MeasurementParamsForm(QtGui.QGroupBox):
         layout = QtGui.QFormLayout()
         self.sampleratelineedit = QtGui.QLineEdit()
         self.bufferlineedit = QtGui.QLineEdit("1024")
+        self.bufferlineedit.setToolTip("0=auto")
         self.bitwidthcombobox = QtGui.QComboBox()
         self.bitwidthcombobox.addItems(["8", "16", "32"])
         self.bitwidthcombobox.setCurrentIndex(1)
-        self.freqreslineedit = QtGui.QLineEdit("10")
         self.durationlineedit = QtGui.QLineEdit("2")
         layout.addRow("Sampling Rate (kHz):", self.sampleratelineedit)
-        layout.addRow("I/O Buffer Size (frames, 0=auto):", self.bufferlineedit)
+        layout.addRow("Buffer Size (frames):", self.bufferlineedit)
         layout.addRow("Data width (bits):", self.bitwidthcombobox)
-        layout.addRow("Display Freq Resolution (Hz):", self.freqreslineedit)
         layout.addRow("Measurement Duration (s):", self.durationlineedit)
         self.setLayout(layout)
 
@@ -171,12 +170,3 @@ class ImpTester(QtGui.QWidget):
 
         self.setLayout(layout)
 
-        self.setWindowTitle('Impedance Tester')
-        self.center()
-
-    def center(self):
-        """Method to center widget on screen"""
-        framegeo = self.frameGeometry()
-        centerpoint = QtGui.QDesktopWidget().availableGeometry().center()
-        framegeo.moveCenter(centerpoint)
-        self.move(framegeo.topLeft())

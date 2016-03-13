@@ -49,6 +49,7 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         # until speaker edit tool is written, put in scroll area
         tempscrollarea = QtGui.QScrollArea()
         tempscrollarea.setWidget(self.speakermodel)
+        tempscrollarea.setAlignment(QtCore.Qt.AlignCenter)
         # self.speakermodeldock.setWidget(self.speakermodel)
         self.speakermodeldock.setWidget(tempscrollarea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.speakermodeldock)
@@ -63,6 +64,12 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         newaction = QtGui.QAction("&New", filemenu)
         filemenu.addAction(newaction)
 
+    def center(self):
+        """Method to center widget on screen"""
+        framegeo = self.frameGeometry()
+        centerpoint = QtGui.QApplication.desktop().availableGeometry().center()
+        framegeo.moveCenter(centerpoint)
+        self.move(framegeo.topLeft())
 
 def main():
     """Starts Scimpy Speaker Design Suite"""
@@ -74,4 +81,5 @@ def main():
     # speakermodelwidg.show()
     mainwindow = SpeakerModelMainWindow("Scimpy Speaker Designer")
     mainwindow.show()
+    mainwindow.center()
     sys.exit(app.exec_())
