@@ -149,6 +149,12 @@ class SealedBoxWidget(QtGui.QGroupBox):
         self.setLayout(layout)
 
 
+def find_main_window():
+    for widget in QtGui.QApplication.topLevelWidgets():
+        if isinstance(widget, QtGui.QMainWindow):
+            return widget
+
+
 class SpeakerModelWidget(QtGui.QWidget):
     """Widget for modeling speaker performance based on T/S values"""
     def __init__(self):
@@ -204,9 +210,10 @@ class SpeakerModelWidget(QtGui.QWidget):
                                                          "Save Driver Specs",
                                                          driverdir,
                                                          filters)
-            with open(filename, 'r') as infile:
-                self.driver_params = json.load(infile)
-            update_driver_fields()
+            if filename != '':
+                with open(filename, 'r') as infile:
+                    self.driver_params = json.load(infile)
+                update_driver_fields()
 
         def set_eta0(sd_, re_, mms, bl_):
             """Find and update set reference efficiency"""
@@ -218,7 +225,7 @@ class SpeakerModelWidget(QtGui.QWidget):
         def find_ported_enclosure():
             """Calculates and displays ported box SPL, phase, and group
             delay"""
-            plotwidget = self.window().plotwidget
+            plotwidget = find_main_window().plotwidget.canvas
             speakermodel.calc_impedance(plotwidget=plotwidget,
                                         re_=float(relineedit.text()),
                                         le_=float(lelineedit.text())/1000,

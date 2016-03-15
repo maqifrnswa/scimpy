@@ -128,7 +128,7 @@ def calc_impedance(plotwidget,
 
     ax1 = plotwidget.axes1
     #ax2 = plotwidget.axes2
-    ax2 = ax1.twinx()
+    ax2 = plotwidget.axes1b
 
     ax1.plot(omega/2/np.pi, abs(ztotal), 'b-')
 
@@ -174,7 +174,7 @@ def calc_impedance(plotwidget,
 
     # ax_groupdelay = fig2.add_subplot(313)
     # ax_groupdelay = plotwidget.axes5
-    ax_groupdelay = ax_power.twinx()
+    ax_groupdelay = plotwidget.axes2b
     # set_as_3rd_yaxis(ax_groupdelay)
     ax_groupdelay.plot(omega/2/np.pi,
                        -np.gradient(np.unwrap(

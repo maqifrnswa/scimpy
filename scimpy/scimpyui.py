@@ -18,16 +18,12 @@ else:
     from PyQt4 import QtGui, QtCore
 
 
-
-
 class SpeakerModelMainWindow(QtGui.QMainWindow):
     """Main application widget"""
     def __init__(self, title):
         super(SpeakerModelMainWindow, self).__init__()
-        placeholder = QtGui.QLabel("This is where plots will go. \
-            The above two tabs are floatable docks. \
-            Probably arrange them verticaly on the left.")
-        self.plotwidget = centralplotui.PlotCanvas()
+        # self.plotwidget = centralplotui.PlotCanvas()
+        self.plotwidget = centralplotui.CentralWidget()
         self.setCentralWidget(self.plotwidget)
         self.setWindowTitle(title)
         self.setDockOptions(self.dockOptions() | self.VerticalTabs)
@@ -58,11 +54,21 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
                                           QtGui.QDockWidget.
                                           DockWidgetFloatable)
         self.init_menus()
+        self.init_toolbar()
 
     def init_menus(self):
         filemenu = self.menuBar().addMenu("&File")
-        newaction = QtGui.QAction("&New", filemenu)
+        newaction = QtGui.QAction("&New", self)
         filemenu.addAction(newaction)
+
+    def init_toolbar(self):
+        filetoolbar = self.addToolBar("test")
+        newaction = QtGui.QAction("Testing", self)
+        newaction = QtGui.QAction("Testing", self)
+        newaction2 = QtGui.QAction("Testing2", self)
+        filetoolbar.addAction(newaction)
+        filetoolbar.addAction(newaction2)
+
 
     def center(self):
         """Method to center widget on screen"""
@@ -70,6 +76,7 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         centerpoint = QtGui.QApplication.desktop().availableGeometry().center()
         framegeo.moveCenter(centerpoint)
         self.move(framegeo.topLeft())
+
 
 def main():
     """Starts Scimpy Speaker Design Suite"""
