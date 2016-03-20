@@ -9,6 +9,7 @@ import sys
 import scimpy.imptesterui as imptesterui
 import scimpy.speakermodelui as speakermodelui
 import scimpy.centralplotui as centralplotui
+import scimpy.impfitterui as impfitterui
 
 from matplotlib.backends import qt_compat
 use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
@@ -53,6 +54,14 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         self.speakermodeldock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
                                           QtGui.QDockWidget.
                                           DockWidgetFloatable)
+        self.impfitterdock = QtGui.QDockWidget("Impedance Fitter")
+        self.impfitterwidget = impfitterui.ImpedanceFitterWidget()
+        self.impfitterdock.setWidget(self.impfitterwidget)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.impfitterdock)
+        self.impfitterdock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
+                                     QtGui.QDockWidget.DockWidgetFloatable)
+        self.tabifyDockWidget(self.imptestdock, self.impfitterdock)
+
         self.init_menus()
         self.init_toolbar()
 
@@ -68,7 +77,6 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         newaction2 = QtGui.QAction("Testing2", self)
         filetoolbar.addAction(newaction)
         filetoolbar.addAction(newaction2)
-
 
     def center(self):
         """Method to center widget on screen"""

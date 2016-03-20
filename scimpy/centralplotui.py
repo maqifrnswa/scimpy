@@ -4,14 +4,14 @@ Created on Tue Mar  8 21:25:10 2016
 
 @author: showard
 """
-
+import scimpy.speakermodel as speakermodel
 import os
 import csv
 import matplotlib.axes
 from matplotlib.backends.backend_qt4agg import\
     FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from numpy import arange, sin, pi
+import numpy as np
 from matplotlib.backends import qt_compat
 USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if USE_PYSIDE:
@@ -33,10 +33,10 @@ class PlotCanvas(FigureCanvas):
         self.placeholder()
 
     def placeholder(self):
-        t = arange(0.0, 3.0, 0.01)
-        s = sin(2*pi*t)
-        self.axes1.plot(t, s, 'b-')
-        self.axes2.plot(t, s, 'r-')
+        t__ = np.arange(0.0, 3.0, 0.01)
+        s__ = np.sin(2*np.pi*t__)
+        self.axes1.plot(t__, s__, 'b-')
+        self.axes2.plot(t__, s__, 'r-')
         self.axes1.grid(True, which="both", color="0.65", ls='-')
         self.axes2.grid(True, which="both", color="0.65", ls='-')
         self.axes1.set_xscale('log')
@@ -56,19 +56,25 @@ class PlotCanvas(FigureCanvas):
 
 class CentralWidget(QtGui.QWidget):
     def __init__(self):
-        def saveimpedance():
+        def getimpdir():
             basedirectory = QtGui.QDesktopServices.storageLocation(
                 QtGui.QDesktopServices.DataLocation)
             impdir = basedirectory+"/plots"
             if not os.path.isdir(impdir):
                 os.makedirs(impdir)
-            filters = "Impedance (*.ZRA);;All Files (*.*)"
+            filters = "Impedance (*.ZDA *.ZMA);;All Files (*.*)"
+            return impdir, filters
+
+        def saveimpedance():
+            impdir, filters = getimpdir()
             filename = QtGui.QFileDialog.getSaveFileName(self,
                                                          "Save Impedance Data",
                                                          impdir,
                                                          filters)
-            if os.path.splitext(filename)[1] == "":
-                filename = filename+".ZRA"
+            if filename == "":
+                return
+            elif os.path.splitext(filename)[1] == "":
+                filename = filename+".ZMA"
             print(self.canvas.axes1.get_lines()[0])
             try:
                 data = zip(self.canvas.axes1.get_lines()[0].get_xdata(),
@@ -76,25 +82,50 @@ class CentralWidget(QtGui.QWidget):
                            self.canvas.axes1b.get_lines()[0].get_ydata())
             except IndexError:
                 data = zip(self.canvas.axes1.get_lines()[0].get_xdata(),
-                           self.canvas.axes1.get_lines()[0].get_ydata())
+                           self.canvas.axes1.get_lines()[0].get_ydata(),
+                           [0]*len(
+                               self.canvas.axes1.get_lines()[0].get_xdata()))
             with open(filename, 'w') as outfile:
                 writer = csv.writer(outfile, delimiter=' ')
                 for row in data:
                     writer.writerow(row)
 
+        def loadimpedance():
+            impdir, filters = getimpdir()
+            filename = QtGui.QFileDialog.getOpenFileName(self,
+                                                         "Load Impedance Data",
+                                                         impdir,
+                                                         filters)
+            if filename == "":
+                return
+            file_data = np.genfromtxt(filename,
+                                      dtype=np.float,
+                                      delimiter=" ",
+                                      comments="*",
+                                      usecols=(0, 1, 2),
+                                      unpack=True)
+            self.canvas.clear_axes()
+            speakermodel.plot_impedance(ax1=self.canvas.axes1,
+                                        ax2=self.canvas.axes1b,
+                                        freqs=file_data[0],
+                                        magnitude=file_data[1],
+                                        phase=file_data[2])
+            self.canvas.draw()
+
         super(CentralWidget, self).__init__()
+        self.canvas = PlotCanvas()
         layout = QtGui.QVBoxLayout()
         toolbar = QtGui.QToolBar()
 
-        newaction = QtGui.QAction("Save .ZRA", self)
-        newaction2 = QtGui.QAction("Load .ZRA", self)
+        savezraaction = QtGui.QAction("Save .ZMA/ZDA", self)
+        loadzraaction = QtGui.QAction("Load .ZMA/ZDA", self)
         newaction3 = QtGui.QAction("Toolbar Change with different plots", self)
-        toolbar.addAction(newaction)
-        toolbar.addAction(newaction2)
+        toolbar.addAction(savezraaction)
+        toolbar.addAction(loadzraaction)
         toolbar.addAction(newaction3)
 
-        newaction.triggered.connect(saveimpedance)
-        self.canvas = PlotCanvas()
+        savezraaction.triggered.connect(saveimpedance)
+        loadzraaction.triggered.connect(loadimpedance)
 
         layout.addWidget(toolbar)
         layout.addWidget(self.canvas)

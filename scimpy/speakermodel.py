@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.ticker
 # import matplotlib.pyplot as plt
 import scipy.optimize
-import bisect
 
 
 def cheby_a1(k):
@@ -91,6 +90,30 @@ def sealed_find_vb_qt(vas, fs_, f3_, qts):
                                  args=(vas, fs_, f3_, qts))
 
 
+def plot_impedance(ax1, ax2, freqs, magnitude, phase):
+    ax1.plot(freqs, magnitude, 'b-')
+    ax2.plot(freqs, phase, 'r--')
+
+    ax1.set_ylabel('Impedance Magnitude (Ohms)', color='b')
+    ax1.set_title('Impedance Magnitude and Phase versus Frequency')
+    ax2.set_xlabel('Frequency (Hz)')
+    ax2.set_ylabel('Phase (degrees)', color='r')
+    ax1.set_xscale('log')
+    ax2.set_xscale('log')
+    ax1.set_xlim([20, 20000])
+
+    ax1.grid(True, which="both", color="0.65", ls='-')
+    ax2.grid(True, which="both", color="0.65", ls='-')
+    ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
+    ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
+    for tlabel in ax1.get_yticklabels():
+        tlabel.set_color('b')
+    for tlabel in ax2.get_yticklabels():
+        tlabel.set_color('r')
+    ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
+    ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
+
+
 def calc_impedance(plotwidget,
                    re_,
                    le_,
@@ -121,45 +144,13 @@ def calc_impedance(plotwidget,
         transferfunc = transferfunc*(1j*omega*leb) / \
             (1j*omega*leb+1/(1j*omega*cev))
 
-    #fig = plt.figure()
-    #ax1 = fig.add_subplot(211)
-
     plotwidget.clear_axes()  # at some point we can keep the hold on
+    plot_impedance(ax1=plotwidget.axes1,
+                   ax2=plotwidget.axes1b,
+                   freqs=omega/2/np.pi,
+                   magnitude=abs(ztotal),
+                   phase=np.angle(ztotal)*180/np.pi)
 
-    ax1 = plotwidget.axes1
-    #ax2 = plotwidget.axes2
-    ax2 = plotwidget.axes1b
-
-    ax1.plot(omega/2/np.pi, abs(ztotal), 'b-')
-
-    # ax2 = fig.add_subplot(212)
-    ax2.plot(omega/2/np.pi, np.angle(ztotal)*180/np.pi, 'r--')
-    ax1.set_ylabel('Impedance Magnitude (Ohms)', color='b')
-    ax1.set_title('Impedance Magnitude and Phase versus Frequency')
-    ax2.set_xlabel('Frequency (Hz)')
-    ax2.set_ylabel('Phase (degrees)', color='r')
-    ax1.set_xscale('log')
-    ax2.set_xscale('log')
-    ax1.set_xlim([20, 20000])
-    ax1.grid(True, which="both", color="0.65", ls='-')
-    ax2.grid(True, which="both", color="0.65", ls='-')
-    ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
-    ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d"))
-    # ax2.set_ylim([-200, 200])
-    for tlabel in ax1.get_yticklabels():
-        tlabel.set_color('b')
-    for tlabel in ax2.get_yticklabels():
-        tlabel.set_color('r')
-    #align_y_axis(ax1, ax2, 9)
-
-    ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
-    ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
-
-
-    # fig.show()
-
-    #fig2 = plt.figure()
-    #ax_power = fig2.add_subplot(311)
     ax_power = plotwidget.axes2
     efficiency = (sd_**2 * 1.18/345/2/np.pi/re_/ces**2/bl_**2) * \
         abs(transferfunc)**2
