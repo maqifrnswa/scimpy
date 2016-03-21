@@ -43,8 +43,7 @@ def free_speaker_extract():
         print("need to impliment if file only has zeros for phase")
     def print_fun(x, f, accepted):
         if int(accepted)==1:
-            print("at minima %.4f accepted %d" % (f, int(accepted)),x)
-
+            print("at minima %.4f accepted %d" % (f, int(accepted)), x)
 
     class StepFunc():
         def __init__(self, stepsize=.9):
@@ -52,18 +51,23 @@ def free_speaker_extract():
 
         def __call__(self, x):
             s = self.stepsize
-            xout = [max([0, np.random.uniform(k*(1-s), k*(1+s))])
-                    for k in x]
+            xout = x * np.random.uniform((1-s), (1+s), len(x))
             # print(xout)
             return xout
 
+    def accept_test_func(f_new, x_new, f_old, x_old):
+        if x_new[0] > 1 and x_new[2] > 1:
+            return True
+        return False
+
     stepfuncobj = StepFunc()
 # TODO basinhop only positive numbers!
-    print( scipy.optimize.basinhopping(residuals,
+    print(scipy.optimize.basinhopping(residuals,
                                     #x0=(6, 1e-4, 4.5**2/3.4, 1.8e-3/4.5**2, .16e-3*4.5**2),
-                                    x0=[10,.1,10,.1,.1],#x0=[6, 1e-4, 6, 1e-4, 1e-4],
+                                    x0=[10,.01,10,.01,.01],#x0=[6, 1e-4, 6, 1e-4, 1e-4],
 callback=print_fun,
 niter=2000,
+accept_test=accept_test_func,
                                     minimizer_kwargs={"args":( omega, zmag, zphase)},
 take_step=stepfuncobj))
 

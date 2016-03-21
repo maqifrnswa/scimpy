@@ -10,11 +10,12 @@ from PyInstaller import log as logging
 from PyInstaller import compat
 from os import listdir
 
-libdir = compat.base_prefix + "/Library/bin"
-#mkllib = list(filter(lambda x : x.startswith('mkl_'), listdir(libdir)))
-mkllib = [x for x in listdir(libdir) if x.startswith('mkl_')]
-if mkllib != []:
-    logger = logging.getLogger(__name__)
-    logger.info("MKL installed as part of numpy, importing that!")
-#    binaries = list(map(lambda l: (libdir + "/" + l, ''), mkllib))
-    binaries = [(libdir + "/" + l, '') for l in mkllib]
+try:
+    libdir = compat.base_prefix + "/Library/bin"
+    mkllib = [x for x in listdir(libdir) if x.startswith('mkl_')]
+    if mkllib != []:
+        logger = logging.getLogger(__name__)
+        logger.info("MKL installed as part of numpy, importing that!")
+        binaries = [(libdir + "/" + l, '') for l in mkllib]
+except FileNotFoundError:
+    pass

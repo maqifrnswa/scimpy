@@ -3,12 +3,12 @@
 block_cipher = None
 
 
-a = Analysis(['scimpy.py'],
-             pathex=['C:\\Users\\showard\\Desktop\\speakers\\scimpy'],
+a = Analysis(['run.py'],
+             pathex=['/home/showard/scimpy/scimpy'],
              binaries=None,
              datas=None,
              hiddenimports=[],
-             hookspath=[],
+             hookspath=['pyinstaller-hooks'],
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -18,11 +18,16 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
+          exclude_binaries=True,
           name='scimpy',
           debug=False,
           strip=False,
           upx=True,
-          console=False )
+          console=True )
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               name='scimpy')
