@@ -7,6 +7,7 @@ Created on Tue Mar  8 21:25:10 2016
 import scimpy.speakermodel as speakermodel
 import os
 import csv
+import pandas
 import matplotlib.axes
 from matplotlib.backends.backend_qt4agg import\
     FigureCanvasQTAgg as FigureCanvas
@@ -98,12 +99,11 @@ class CentralWidget(QtGui.QWidget):
                                                          filters)
             if filename == "":
                 return
-            file_data = np.genfromtxt(filename,
-                                      dtype=np.float,
-                                      delimiter=" ",
-                                      comments="*",
-                                      usecols=(0, 1, 2),
-                                      unpack=True)
+
+            file_data = pandas.read_csv(filename,
+                                        header=None,
+                                        delim_whitespace=True)
+
             self.canvas.clear_axes()
             speakermodel.plot_impedance(ax1=self.canvas.axes1,
                                         ax2=self.canvas.axes1b,

@@ -1,3 +1,4 @@
+pandas
 pyaudio
 scipy
 numpy
