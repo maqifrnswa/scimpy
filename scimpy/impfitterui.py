@@ -71,8 +71,8 @@ def free_speaker_extract():
     except IndexError:
         print("need to impliment if file only has zeros for phase")
 
-    init_test = [10, .01, 10, .01, .01]  # TODO: Ask use for starting point?
-    stepfuncobj = StepFunc(stepsize=.9, init_test=init_test)
+    init_test = [10, .001, 10, .001, .001]  # TODO: Ask use for starting point?
+    stepfuncobj = StepFunc(stepsize=.5, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
     output = scipy.optimize.basinhopping(residuals_obj,
                                          x0=init_test,

@@ -51,8 +51,9 @@ class PlotCanvas(FigureCanvas):
         self.axes2b = matplotlib.axes.Axes.twinx(self.axes2)
 
     def clear_axes(self):
-        self.fig.clf()
-        self.init_axes()
+        if self.parentWidget().holdplotaction.isChecked() == False:
+            self.fig.clf()
+            self.init_axes()
 
 
 class CentralWidget(QtGui.QWidget):
@@ -119,10 +120,11 @@ class CentralWidget(QtGui.QWidget):
 
         savezraaction = QtGui.QAction("Save .ZMA/ZDA", self)
         loadzraaction = QtGui.QAction("Load .ZMA/ZDA", self)
-        newaction3 = QtGui.QAction("Toolbar Change with different plots", self)
+        self.holdplotaction = QtGui.QAction("Hold Plot Data", self)
+        self.holdplotaction.setCheckable(True)
         toolbar.addAction(savezraaction)
         toolbar.addAction(loadzraaction)
-        toolbar.addAction(newaction3)
+        toolbar.addAction(self.holdplotaction)
 
         savezraaction.triggered.connect(saveimpedance)
         loadzraaction.triggered.connect(loadimpedance)
