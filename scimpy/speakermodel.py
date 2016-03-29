@@ -163,10 +163,10 @@ def calc_impedance(plotwidget,
     # ax_phase = ax_power.twinx()
     # ax_phase.plot(omega/2/np.pi, np.angle(transferfunc)*180/np.pi)
 
-    # ax_groupdelay = fig2.add_subplot(313)
-    # ax_groupdelay = plotwidget.axes5
+    # TODO impulse response instead of phase?
+    # response = sum(SPL_mag*cos(omega*t+spl_phase)*delta_omega) acounts for
+    # non-linear FRD files and data (logrithmic) and FFT (linear)
     ax_groupdelay = plotwidget.axes2b
-    # set_as_3rd_yaxis(ax_groupdelay)
     ax_groupdelay.plot(omega/2/np.pi,
                        -np.gradient(np.unwrap(
                            np.angle(transferfunc)))/np.gradient(omega)*1000,

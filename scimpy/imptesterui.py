@@ -169,4 +169,3 @@ class ImpTester(QtGui.QWidget):
         layout.addWidget(runbtn)
 
         self.setLayout(layout)
-

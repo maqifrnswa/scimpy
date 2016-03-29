@@ -59,7 +59,7 @@ class SpeakerModelMainWindow(QtGui.QMainWindow):
         self.impfitterdock.setWidget(self.impfitterwidget)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.impfitterdock)
         self.impfitterdock.setFeatures(QtGui.QDockWidget.DockWidgetMovable |
-                                     QtGui.QDockWidget.DockWidgetFloatable)
+                                       QtGui.QDockWidget.DockWidgetFloatable)
         self.tabifyDockWidget(self.imptestdock, self.impfitterdock)
 
         self.init_menus()

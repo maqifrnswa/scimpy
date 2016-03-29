@@ -409,6 +409,14 @@ class SpeakerModelWidget(QtGui.QWidget):
         fileoplayout.addWidget(loadbtn)
         driverfileopwidg.setLayout(fileoplayout)
 
+        # TODO below is a hack, find a better way
+        self.relineedit = relineedit
+        self.lelineedit = lelineedit
+        self.rmslineedit = rmslineedit
+        self.cmslineedit = cmslineedit
+        self.mmslineedit = mmslineedit
+        self.bllineedit = bllineedit
+
         layout = QtGui.QVBoxLayout()
         layout.addWidget(driverfileopwidg)
         layout.addWidget(formwidget)  # , 0, 0, 1, 1)

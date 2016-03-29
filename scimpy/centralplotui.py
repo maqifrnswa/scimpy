@@ -64,7 +64,7 @@ class CentralWidget(QtGui.QWidget):
             impdir = basedirectory+"/plots"
             if not os.path.isdir(impdir):
                 os.makedirs(impdir)
-            filters = "Impedance (*.ZDA *.ZMA);;All Files (*.*)"
+            filters = "Impedance Files (*.ZDA *.ZMA);;All Files (*.*)"
             return impdir, filters
 
         def saveimpedance():
