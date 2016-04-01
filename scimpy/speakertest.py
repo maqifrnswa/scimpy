@@ -30,7 +30,7 @@ class SpeakerTestEngine():
         self.device_ndx = {}
         self.counter = None  # is this necessary to be an atribute?
         self.plotwidget = plotwidget
-    
+
     def set_device_ndx(self, dev, role):
         self.device_ndx[role] = dev
 
@@ -86,13 +86,12 @@ class SpeakerTestEngine():
             np_type = np.int32
         else:
             print("Bit width should be 1, 2, or 4 bytes")
-
-        data = (scipy.signal.chirp(t=np.arange(0, duration, 1/datarate),
-                                   f0=0,
-                                   t1=duration,
-                                   f1=20000,
-                                   method='lin',
-                                   phi=-90)*((2**(8*width))/2-1))
+        data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
+                                  f0=0,
+                                  t1=duration,
+                                  f1=20000,
+                                  method='lin',
+                                  phi=-90)*((2**(8*width))/2.-1)
         if width == 1:
             data = data+(2**(8*width))/2-1
         data = data.astype(dtype=np_type, copy=False)

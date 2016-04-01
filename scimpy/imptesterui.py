@@ -148,7 +148,7 @@ class ImpTester(QtGui.QWidget):
                 framesize=int(measformwidget.bufferlineedit.text()),
                 datarate=int(float(measformwidget.sampleratelineedit.text())),
                 duration=float(measformwidget.durationlineedit.text()),
-                width=int(measformwidget.bitwidthcombobox.currentText())/8)
+                width=int(measformwidget.bitwidthcombobox.currentText())/8.0)
 
         statusbar = self.window().statusbar
 

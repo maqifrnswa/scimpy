@@ -210,7 +210,7 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
                          float(cmslineedit.text())*blproduct**2/1000]
             fitresult = free_speaker_extract(init_test, progressdialog)
             # worker = FreeSpeakerExtract(init_test)
-            progressdialog.exec()
+            # progressdialog.exec()
             # get fitresult from worker
             relineedit.setText("{0:.2g}".format(fitresult[0]))
             lelineedit.setText("{0:.2g}".format(fitresult[1]*1000))
