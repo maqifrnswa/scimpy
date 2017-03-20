@@ -12,6 +12,8 @@ import scimpy.centralplotui as centralplotui
 import scimpy.impfitterui as impfitterui
 
 from matplotlib.backends import qt_compat
+from matplotlib import use
+use('Qt4Agg')
 use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if use_pyside:
     from PySide import QtGui, QtCore

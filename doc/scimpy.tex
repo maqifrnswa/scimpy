@@ -56,7 +56,7 @@ Commercial and closed-source software tools are available to characterize and ai
 
 
 \section*{About the Author}
-Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and has preformed post-doctoral work at Princeton and Cornell University prior to appointment at Notre Dame.
+Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and has preformed post-doctoral work in Applied and Engineering Physics at Cornell University prior to appointment at Notre Dame.
 
 At Notre Dame, Professor Howard has taught undergraduate-level ``Electromagnetic Fields and Waves" and graduate courses in photonics and optics. He is the director of the Biomedical Photonics Research Laboratory and is funded by the National Science Foundation, US Department of Homeland Security, and US Department of Agriculture.
 
@@ -68,6 +68,15 @@ Dr. Howard is also a strong supporter of open-source software and hardware proje
 \chapter{Introduction}
 
 This is largely a presentation of the ideas from Thiele and Small's papers, we'll 
+
+Organize better?
+\begin{enumerate}
+\item Why to do these measurements
+\item how to use scimpy
+\item how to use scimpy results to design boxes (say it will be explained in more detail later on)
+\item background on theory/models
+\item background on speaker design theory
+\end{enumerate}
 
 \begin{quote}
 ``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." \\-- A. N. Thiele
@@ -882,7 +891,7 @@ We can use our understanding and model in Figure \ref{fig:elec-mech-acoustic_mod
   to[R=$\frac{(B\ell)^2}{S_d^2 R_{rad}}$,v>=$v_f$] (10,0)
   to[short] (8,0);
 \end{circuitikz}
-\caption{Simplified Model of Speaker Driver in Free Air}\label{fig:freeair-model}
+\caption{Simplified Model of Speaker Driver in Free Air BAD CIRCUIT vf is wrong, needs inductors and capacitors from full model to show it is out of phase!}\label{fig:freeair-model}
 \end{figure}
 
 Still, there is some insight to be gained about system performance. Prior ubiquitous computing and measurement techniques, the easiest responses to measure were the peak frequency response and bandwidth, simply by measuring acoustic audio output versus input frequency.  We can find the expressions for resonance frequency $f_s$ and $f_s/\Delta f = Q$ of power dissipated in the mechanical resonator.
@@ -905,6 +914,15 @@ Since $Q$ is energy stored per power dissipated, if a resonator has two ways of 
 \begin{align}
 Q_{ts}=\frac{\omega W_{store}}{P_e+P_m}=\left(\frac{P_e}{\omega W_{store}}+\frac{P_m}{\omega W_{store}}\right)^{-1}=\frac{Q_{es}Q_{ms}}{Q_{es}+Q_{ms}}\label{eq:Qts}
 \end{align}
+
+NOTES TO SCOTT: Just show expression for impedance, say you can fit for parameters. Then  start with discussion only about Q? even though the software does full analysis, it's always easier to fit to fewer terms - that's why people did Q first?
+
+1) say Q is defined as omega over delta omega which is also energy stored over dissipated (per radian). Want to find Q of whole system. Measure Q (Q=f/delta f), which is the whole system. Note that energy can either be dissipated in electrical or mechanical. Show Qts formula (5.8). Measure impedance, find Qts, fs, delta f, and peak value of impedance at resonance. Measure series resistance, Re. We have 5 unknowns (suspension R, C, L, Qes, Qms), and 5 equations (fs, qts, qms, qes, Z(omega0)), so we can solve them all. Or just fit (if fitting, assume Le is small so it doesn't matter at resonance freq). 
+
+ Another approach to present: Define Q as peak divided by FWHM. Show that an RLC circuit  has impedance Q of (reference commented out below) a peak at $\omega_0=1/\sqrt{LC}$ and FWHM of  1/RC, so $Q=\omega_0/\Delta \omega=\omega_0 RC$. add Re and Le in series.
+
+
+%https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-071j-introduction-to-electronics-signals-and-measurement-spring-2006/lecture-notes/resonance_qfactr.pdf
 
 \section{Speaker with an Infinite Baffle}
 The problem with our free space speaker was the interference of the sound from the front and back of the speaker driver. We can block the sound from the back of the driver by walling off the space between the front and back of the driver. Figure \ref{fig:freeair-model} stays the same, but our output acoustic power is solely from the front of the driver. We can compute the output acoustic power of this system as a function of frequency:

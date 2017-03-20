@@ -7,6 +7,8 @@ Created on Mon Mar  7 22:18:45 2016
 import pyaudio
 import scimpy.speakertest as speakertest
 from matplotlib.backends import qt_compat
+from matplotlib import use
+use('Qt4Agg')
 use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if use_pyside:
     from PySide import QtGui
