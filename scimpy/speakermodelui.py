@@ -7,9 +7,9 @@ Created on Mon Mar  7 22:23:03 2016
 
 import scimpy.speakermodel as speakermodel
 import numpy as np
-from matplotlib.backends import qt_compat
 from matplotlib import use
 use('Qt4Agg')
+from matplotlib.backends import qt_compat
 use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if use_pyside:
     from PySide import QtGui

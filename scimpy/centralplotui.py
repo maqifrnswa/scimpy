@@ -9,13 +9,13 @@ import os
 import csv
 import pandas
 import matplotlib.axes
+import numpy as np
+from matplotlib import use
+use('Qt4Agg')
+from matplotlib.backends import qt_compat
 from matplotlib.backends.backend_qt4agg import\
     FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import numpy as np
-from matplotlib.backends import qt_compat
-from matplotlib import use
-use('Qt4Agg')
 USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if USE_PYSIDE:
     from PySide import QtGui
