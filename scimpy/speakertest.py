@@ -163,7 +163,7 @@ class SpeakerTestEngine():
                  scipy.signal.savgol_filter(np.abs(input_data_fft0),
                                             1, 0))
         # pick filter with 10 Hz filtering?
-        ax2.set_xlim([20,20000])
+        ax2.set_xlim([20, 20000])
 
 
         ax1.set_title('Impedance Measurement (Not Finished!)')

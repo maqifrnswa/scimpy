@@ -25,6 +25,7 @@ def find_main_window():
 
 
 # TODO Don't use a function, use this worker instead
+# needs to be updated with new fit function below
 class FreeSpeakerExtract(QtCore.QThread):
     updateProgress = QtCore.Signal(int)
 
@@ -118,6 +119,7 @@ def free_speaker_extract(init_test, progressdialog):
             self.omega = omega
             self.zmag = zmag
             self.zphase = zphase
+            self.weights = np.gradient(np.log10(omega))
 
         def __call__(self, x0):
             # TODO weight each residual by the derivative (diff) of log(omega)
@@ -126,18 +128,21 @@ def free_speaker_extract(init_test, progressdialog):
             omega = self.omega
             zmag = self.zmag
             zphase = self.zphase
+            weights = self.weights
             re_, le_, res, ces, les = x0
             zelect = (1/res+1/(omega*les*1j)+omega*ces*1j)**(-1)
             ztotal = zelect+re_+omega*le_*1j
             diff = ztotal - zmag * np.exp(1j*zphase)
             z1d = np.zeros(diff.size*2, dtype=np.float64)
-            z1d[0:z1d.size:2] = diff.real
-            z1d[1:z1d.size:2] = diff.imag
+            # since omega is linear, and we are interested in log(omega)
+            # weight each by the gradient of log omega
+            z1d[0:z1d.size:2] = diff.real * weights
+            z1d[1:z1d.size:2] = diff.imag * weights
             # print(ztotal[100], zmag[100] * np.exp(1j*zphase[100]))
             # sse = sum(z1d**2)
             # if sse > sse.size:
             #    return sum(z1d**2)
-            return sum(z1d**2)
+            return sum(z1d**2) # old, unweighted
             # return sum((abs(ztotal)-zmag)**2)
 
     def print_fun(x, f, accepted):
@@ -154,8 +159,8 @@ def free_speaker_extract(init_test, progressdialog):
             # xout = x+ self.init_test * np.random.uniform(-s, s, len(x))
             # xout = x + x * np.random.uniform(-s, s, len(x))
             # xout = x+self.init_test*np.random.normal(0, s, len(x))
-            xout = x+x*np.random.normal(0, s, len(x))
-            # xout = x+[np.random.normal(0, s*element) for element in self.init_test]
+            # xout = x+x*np.random.normal(0, s, len(x))
+            xout = x+[np.random.normal(0, s*element) for element in self.init_test]
             return xout
 
     def accept_test_func(f_new, x_new, f_old, x_old):
@@ -173,14 +178,14 @@ def free_speaker_extract(init_test, progressdialog):
     except IndexError:
         print("need to impliment if file only has zeros for phase")
 
-    #init_test = [10, .01, 10, .01, .01]  # TODO: Ask use for starting point?
+    # init_test = [10, .01, 10, .01, .01]  # TODO: Ask use for starting point?
     stepsize = .5
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
     output = scipy.optimize.basinhopping(residuals_obj,
                                          x0=init_test,
                                          callback=print_fun,
-                                         niter=200,
+                                         niter_success=200,
                                          accept_test=accept_test_func,
                                          take_step=stepfuncobj)
     print(output.keys())
