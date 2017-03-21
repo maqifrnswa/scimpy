@@ -412,6 +412,7 @@ A loudspeaker driver is fundamentally a system that translates electrical curren
 \label{speaker_diagram}
 \end{figure}
 
+
 \begin{figure}
 \centering
 \begin{circuitikz}
@@ -428,6 +429,32 @@ A loudspeaker driver is fundamentally a system that translates electrical curren
   to[short] (4,2);
 \end{circuitikz}
 \caption{Electrical Model}\label{electrical_model}
+\end{figure}
+
+Since eddy currents are highly non-linearly in frequency (i.e., they are a function of voice coil position), a frequency dependent coil inductance can be used. Leach ("Loudspeaker Voice-Coil Inductance Losses:
+Circuit Models, Parameter Estimation, and
+Effect on Frequency Response") shows that for a causal system, you can model the voice coil inductor with:
+\begin{equation}
+Z_L=K(i\omega)^n
+\end{equation}
+which is the same as using Figure~\ref{electrical_model} with
+\begin{align}
+R_{eddy}&=\frac{K\omega^n}{\cos(n\pi/2)} & L_e&=\frac{K\omega^{n-1}}{\sin(n\pi/2)}
+\end{align}
+where $K$ and $n$ are fit parameters. This is great, because we can now characterize the frequency dependent voice-coil impedance with two parameters.
+
+\begin{figure}
+\centering
+\begin{circuitikz}
+  \draw (0,0)
+  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[R=$R_e$] (2,2) % The resistor
+  to[generic=$\hat{Z}_L$] (4,2)
+  to[short] (5,2)
+  to[generic=$\hat{Z_e}$,i=$i_e$] (5,0)
+  to[short] (0,0);
+\end{circuitikz}
+\caption{Electrical Model with Frequency Dependent Voice Coil Inductance}\label{electrical_model_leach}
 \end{figure}
 
 
@@ -796,9 +823,10 @@ $B\ell$ & & Voice coil magnet strength \\
 Variable & Definition & Description \\
 \midrule
 $Z_e$ & $\frac{(B\ell)^2}{Z_m}$ & Electric Impedance\\
-$R_e$ & & Electrical resistance of the voice coil\\
-$L_e$ & & Electrical inductance of the voice coil\\
-$R_{eddy}$ & & Losses due to inductive currents near voice coil\\
+$R_e$ &  & Electrical resistance of the voice coil\\
+$\hat{Z}_L$ & $K(i\omega)^n$ & Electrical inductance of the voice coil\\
+$L_e$ & $\frac{K\omega^{n}}{\cos(n\pi\omega/2)}$ & Electrical inductance of the voice coil\\
+$R_{eddy}$ & $\frac{K\omega^{n-1}}{\sin(n\pi\omega/2)}$ & Losses due to inductive currents near voice coil\\
 $C_{es}$ & $\frac{M_{ms}}{(B\ell)^2}$ & Equivalent electrical capacitance from diaphragm and voice coil mass\\
 $R_{es}$ & $\frac{(B\ell)^2}{R_{ms}+S_d^2R_{rad}}$ & Equiv. electrical resistance of suspension mechanical dampening and front acoustic radiation\\
 $L_{ces}$ & $(B\ell)^2C_{ms}$ & Equiv. electrical inductance of the suspension's mechanical compliance\\

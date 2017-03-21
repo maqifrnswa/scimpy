@@ -130,15 +130,15 @@ def free_speaker_extract(init_test, progressdialog):
             zphase = self.zphase
             weights = self.weights
             # re_, le_, res, ces, les, reddy = x0 w/ reddy
-            re_, le_, res, ces, les, reddy = x0
+            re_, le_, res, ces, les, n = x0
             zelect = (1/res+1/(omega*les*1j)+omega*ces*1j)**(-1)
-            # ztotal = zelect+re_+omega*le_*1j
-            ztotal = zelect+re_+(1/(omega*le_*1j)+1/reddy)**(-1)
+            #ztotal = zelect+re_+omega*le_*1j
+            ztotal = zelect+re_+le_*(1j*omega)**n
             diff = ztotal - zmag * np.exp(1j*zphase)
             z1d = np.zeros(diff.size*2, dtype=np.float64)
             # since omega is linear, and we are interested in log(omega)
             # weight each by the gradient of log omega
-            z1d[0:z1d.size:2] = diff.real * weights # just weight one since they will multiply
+            z1d[0:z1d.size:2] = diff.real * weights
             z1d[1:z1d.size:2] = diff.imag * weights
             # print(ztotal[100], zmag[100] * np.exp(1j*zphase[100]))
             # sse = sum(z1d**2)
@@ -163,7 +163,6 @@ def free_speaker_extract(init_test, progressdialog):
             # xout = x+self.init_test*np.random.normal(0, s, len(x))
             # xout = x+x*np.random.normal(0, s, len(x))
             xout = x + [np.random.normal(0, s*element) for element in self.init_test]
-            xout = [max([0.001, element]) for element in xout]
             return xout
 
     def accept_test_func(f_new, x_new, f_old, x_old):
@@ -180,13 +179,16 @@ def free_speaker_extract(init_test, progressdialog):
 
     # init_test = [10, .01, 10, .01, .01]  # TODO: Ask use for starting point?
     stepsize = .5
+    bounds=[(1,50),(1e-5,1),(1,500),(1e-5,100e-5),(1e-4,100e-3),(0,5)]
+    minimizer_kwargs = dict(bounds=bounds)#, bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
     output = scipy.optimize.basinhopping(residuals_obj,
                                          x0=init_test,
                                          callback=print_fun,
                                          niter_success=200,
-                                         # accept_test=accept_test_func,
+                                        minimizer_kwargs=minimizer_kwargs,
+                                         #accept_test=accept_test_func,
                                          take_step=stepfuncobj)
     print(output.keys())
     output = output["x"]
@@ -244,16 +246,16 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
         formwidgetlayout.addRow("*BL (Tm):", bllineedit)
         relineedit = QtGui.QLineEdit("1")
         formwidgetlayout.addRow("Re (ohms):", relineedit)
-        lelineedit = QtGui.QLineEdit("1")
-        formwidgetlayout.addRow("Le (mH):", lelineedit)
         rmslineedit = QtGui.QLineEdit("1")
         formwidgetlayout.addRow("Rms (ohms):", rmslineedit)
         mmslineedit = QtGui.QLineEdit("1")
         formwidgetlayout.addRow("Mms (g):", mmslineedit)
         cmslineedit = QtGui.QLineEdit("1")
         formwidgetlayout.addRow("Cms (mm/N):", cmslineedit)
-        reddylineedit = QtGui.QLineEdit("100000")
-        formwidgetlayout.addRow("Reddy (ohms):", reddylineedit)
+        lelineedit = QtGui.QLineEdit("1")
+        formwidgetlayout.addRow("K (times 1000):", lelineedit)
+        reddylineedit = QtGui.QLineEdit("1")
+        formwidgetlayout.addRow("n:", reddylineedit)
 #        formwidgetlayout.addRow("Leb (mH):", leslineedit)
 #        ceslineedit = QtGui.QLineEdit()
 #        formwidgetlayout.addRow("Cev (mH):", ceslineedit)
