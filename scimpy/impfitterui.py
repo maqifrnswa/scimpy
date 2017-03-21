@@ -138,8 +138,8 @@ def free_speaker_extract(init_test, progressdialog):
             z1d = np.zeros(diff.size*2, dtype=np.float64)
             # since omega is linear, and we are interested in log(omega)
             # weight each by the gradient of log omega
-            z1d[0:z1d.size:2] = diff.real * weights
-            z1d[1:z1d.size:2] = diff.imag * weights
+            z1d[0:z1d.size:2] = diff.real# * weights
+            z1d[1:z1d.size:2] = diff.imag# * weights
             # print(ztotal[100], zmag[100] * np.exp(1j*zphase[100]))
             # sse = sum(z1d**2)
             # if sse > sse.size:
@@ -177,17 +177,16 @@ def free_speaker_extract(init_test, progressdialog):
     except IndexError:
         print("need to impliment if file only has zeros for phase")
 
-    # init_test = [10, .01, 10, .01, .01]  # TODO: Ask use for starting point?
     stepsize = .5
-    bounds=[(1,50),(1e-5,1),(1,500),(1e-5,100e-5),(1e-4,100e-3),(0,5)]
-    minimizer_kwargs = dict(bounds=bounds)#, bounds=bounds)
+    bounds = [(element*.01, element*100) for element in init_test]
+    minimizer_kwargs = dict(bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
     output = scipy.optimize.basinhopping(residuals_obj,
                                          x0=init_test,
                                          callback=print_fun,
                                          niter_success=200,
-                                        minimizer_kwargs=minimizer_kwargs,
+                                         minimizer_kwargs=minimizer_kwargs,
                                          #accept_test=accept_test_func,
                                          take_step=stepfuncobj)
     print(output.keys())
@@ -228,12 +227,16 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
             mmslineedit.setText("{0:.2g}".format(fitresult[3]*blproduct**2*1000))
             cmslineedit.setText("{0:.2g}".format(fitresult[4]/blproduct**2*1000))
             reddylineedit.setText("{0:.2g}".format(fitresult[5]))
+            inductorimpedance1k = fitresult[1]*(1j*1000*2*np.pi)**(fitresult[5])
+            # note: inductorimpedance1k.imag/omega = L in H
+            lelabel.setText("{0:.2g}".format(inductorimpedance1k.imag))
+            drelabel.setText("{0:.2g}".format(inductorimpedance1k.real))
             progressdialog.setValue(100)
 
         def export_to_model_btn_handler():
             speakermodel = find_main_window().speakermodel
             speakermodel.relineedit.setText(str(relineedit.text()))
-            speakermodel.lelineedit.setText(str(lelineedit.text()))
+            speakermodel.lelineedit.setText(str(lelabel.text()))
             speakermodel.cmslineedit.setText(str(cmslineedit.text()))
             speakermodel.mmslineedit.setText(str(mmslineedit.text()))
             speakermodel.rmslineedit.setText(str(rmslineedit.text()))
@@ -256,6 +259,10 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
         formwidgetlayout.addRow("K (times 1000):", lelineedit)
         reddylineedit = QtGui.QLineEdit("1")
         formwidgetlayout.addRow("n:", reddylineedit)
+        lelabel = QtGui.QLabel("")
+        formwidgetlayout.addRow("Le (mH @ 1 kHz):", lelabel)
+        drelabel = QtGui.QLabel("")
+        formwidgetlayout.addRow("dRe (ohms @ 1 kHz):", drelabel)
 #        formwidgetlayout.addRow("Leb (mH):", leslineedit)
 #        ceslineedit = QtGui.QLineEdit()
 #        formwidgetlayout.addRow("Cev (mH):", ceslineedit)
