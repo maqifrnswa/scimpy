@@ -117,6 +117,7 @@ def plot_impedance(ax1, ax2, freqs, magnitude, phase):
 def calc_impedance(plotwidget,
                    re_,
                    le_,
+                   n_,
                    cms,
                    mms,
                    rms,
@@ -134,9 +135,12 @@ def calc_impedance(plotwidget,
     cev = sd_**2/bl_**2*1.18*l_over_a
     # qes = omegas*res*ces
     omega = np.logspace(1.3, 4.3, 1000)*2*np.pi
+    zvc = le_*(omega*1j)**n_
+    re_ = re_ + zvc.real  # freq. dependent resistance
+    le_ = zvc.imag/omega  # freq. dependent inductance
     yacoustic = -1j / (leb * omega-1/(omega*cev))  # Ya = 1/ Za
     zmech = (1/res+1/(omega*les*1j)+omega*ces*1j + yacoustic)**(-1)
-    ztotal = zmech+re_+omega*le_*1j
+    ztotal = zmech+re_+1j*omega*le_
 
     transferfunc = 1j*(omega*zmech/ztotal)*re_*ces
     print(l_over_a)

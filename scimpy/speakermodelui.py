@@ -231,6 +231,7 @@ class SpeakerModelWidget(QtGui.QWidget):
             speakermodel.calc_impedance(plotwidget=plotwidget,
                                         re_=float(relineedit.text()),
                                         le_=float(lelineedit.text())/1000,
+                                        n_=float(nlineedit.text()),
                                         cms=float(cmslineedit.text())/1000,
                                         mms=float(mmslineedit.text())/1000,
                                         rms=float(rmslineedit.text()),
@@ -334,8 +335,12 @@ class SpeakerModelWidget(QtGui.QWidget):
         formwidgetlayout.addRow("*Re (ohms):", relineedit)
         lelineedit = QtGui.QLineEdit("0.1")
         lelineedit.editingFinished.connect(calc_system_params)
-        lelineedit.setToolTip("Voice Coil Inductance *Required*")
-        formwidgetlayout.addRow("*Le (mH):", lelineedit)
+        lelineedit.setToolTip("Leach K, if n=1 Voice Coil Inductance *Required*")
+        formwidgetlayout.addRow("*Le (mH) or K*1000:", lelineedit)
+        nlineedit = QtGui.QLineEdit("1")
+        nlineedit.editingFinished.connect(calc_system_params)
+        nlineedit.setToolTip("Leach n parameter (if n=1, then K=Le) *Required*")
+        formwidgetlayout.addRow("*n:", nlineedit)
         sdlineedit = QtGui.QLineEdit("25")
         sdlineedit.editingFinished.connect(calc_system_params)
         sdlineedit.setToolTip("Cone Surface Area *Required*")
@@ -414,6 +419,7 @@ class SpeakerModelWidget(QtGui.QWidget):
         # TODO below is a hack, find a better way
         self.relineedit = relineedit
         self.lelineedit = lelineedit
+        self.nlineedit = nlineedit
         self.rmslineedit = rmslineedit
         self.cmslineedit = cmslineedit
         self.mmslineedit = mmslineedit

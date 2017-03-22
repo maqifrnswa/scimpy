@@ -179,6 +179,7 @@ def free_speaker_extract(init_test, progressdialog):
 
     stepsize = .5
     bounds = [(element*.01, element*100) for element in init_test]
+    bounds[5] = (0,2)
     minimizer_kwargs = dict(bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
@@ -236,11 +237,12 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
         def export_to_model_btn_handler():
             speakermodel = find_main_window().speakermodel
             speakermodel.relineedit.setText(str(relineedit.text()))
-            speakermodel.lelineedit.setText(str(lelabel.text()))
+            speakermodel.lelineedit.setText(str(lelineedit.text()))
             speakermodel.cmslineedit.setText(str(cmslineedit.text()))
             speakermodel.mmslineedit.setText(str(mmslineedit.text()))
             speakermodel.rmslineedit.setText(str(rmslineedit.text()))
             speakermodel.bllineedit.setText(str(bllineedit.text()))
+            speakermodel.nlineedit.setText(str(reddylineedit.text()))
 
 
         formwidgetlayout = QtGui.QFormLayout()
