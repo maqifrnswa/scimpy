@@ -162,7 +162,75 @@ class SpeakerModelWidget(QtGui.QWidget):
     def __init__(self):
         super(SpeakerModelWidget, self).__init__()
         self.driver_params = {}  # TODO save values in this dict! just pass this!
+        # TDOD use driver_params rather than constantly getting text values
         self.init_ui()
+
+    def calc_system_params(self):
+        """Calculates system composite characteristics from physical
+        measurements of components (e.g., Qes from Cms Mms and Res)"""
+        try:
+            re_ = float(self.relineedit.text())
+            cms = float(self.cmslineedit.text())/1000
+            mms = float(self.mmslineedit.text())/1000
+            rms = float(self.rmslineedit.text())
+            sd_ = float(self.sdlineedit.text())/(100*100)
+            bl_ = float(self.bllineedit.text())
+
+            fs_ = 1/2/np.pi/np.sqrt(cms*mms)
+            qes = 2*np.pi*fs_*mms*re_/bl_**2
+            qms = 2*np.pi*fs_*mms/rms
+            qts = qms*qes/(qms+qes)
+            self.set_eta0(sd_, re_, mms, bl_)
+
+            self.fslineedit.setText("{0:2.0f}".format(fs_))
+            self.qeslineedit.setText("{0:1.2g}".format(qes))
+            self.qmslineedit.setText("{0:1.2g}".format(qms))
+            self.qtslabel.setText("{0:1.2g}".format(qts))
+        except ValueError:
+            pass  # might not be set yet
+
+    def calc_component_params(self):
+        """Calculates physical measurements of components from system
+        composite values (e.g., find mechanical resistance from Qes
+        Qms and Re)"""
+        try:
+            re_ = float(self.relineedit.text())
+            qes = float(self.qeslineedit.text())
+            qms = float(self.qmslineedit.text())
+            bl_ = float(self.bllineedit.text())
+            sd_ = float(self.sdlineedit.text())/(100*100)
+            fs_ = float(self.fslineedit.text())
+
+            rms = bl_**2/(qms/qes*re_)
+            self.rmslineedit.setText("{0:.2g}".format(rms))
+            cms = (1/2/np.pi/fs_/qms/rms)*1000  # mm/N
+            self.cmslineedit.setText("{0:.2g}".format(cms))
+            mms = 1/(cms*(2*np.pi*fs_)**2)*1000  # grams
+            self.mmslineedit.setText("{0:.2g}".format(mms*1000))
+
+            self.cmslineedit_set()
+
+            self.set_eta0(sd_, re_, mms, bl_)
+
+            self.qtslabel.setText("{0:.2g}".format(qms*qes/(qms+qes)))
+        except ValueError:
+            pass  # might not be set yet
+
+    def set_eta0(self, sd_, re_, mms, bl_):
+        """Find and update set reference efficiency"""
+        efficiency = sd_**2 * 1.18/345/2/np.pi/re_/(mms/bl_**2)**2/bl_**2
+        self.eta0label.setText("{0:2.1f} %".format(efficiency*100))
+        self.spllabel.setText(
+            "{0:.0f} dB 1w1m".format(112.1+10*np.log10(efficiency)))
+
+    def cmslineedit_set(self):
+        """Find and update Vas in ft^3 and litres from Cms"""
+        sd_ = float(self.sdlineedit.text())/(100*100)
+        vas = (float(self.cmslineedit.text())/1000) * 1.18*345**2*sd_**2
+        vasf = vas/0.0283168
+        vasl = vas*1000  # litres
+        self.vasflineedit.setText("{0:.2g}".format(vasf))
+        self.vasllineedit.setText("{0:.2g}".format(vasl))
 
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
@@ -174,6 +242,7 @@ class SpeakerModelWidget(QtGui.QWidget):
             self.driver_params["rms"] = float(rmslineedit.text())
             self.driver_params["sd"] = float(sdlineedit.text())/(100*100)
             self.driver_params["bl"] = float(bllineedit.text())
+            self.driver_params["n"] = float(nlineedit.text())
 
         def update_driver_fields():
             relineedit.setText(str(self.driver_params["re"]))
@@ -183,6 +252,9 @@ class SpeakerModelWidget(QtGui.QWidget):
             rmslineedit.setText(str(self.driver_params["rms"]))
             sdlineedit.setText(str(self.driver_params["sd"]*(100*100.0)))
             bllineedit.setText(str(self.driver_params["bl"]))
+            nlineedit.setText(str(self.driver_params["n"]))
+            self.cmslineedit_set()
+            self.calc_system_params()
 
         def savedriver():
             update_driver_dict()
@@ -209,20 +281,13 @@ class SpeakerModelWidget(QtGui.QWidget):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
             filename = QtGui.QFileDialog.getOpenFileName(self,
-                                                         "Save Driver Specs",
+                                                         "Load Driver Specs",
                                                          driverdir,
                                                          filters)
             if filename != '':
                 with open(filename, 'r') as infile:
                     self.driver_params = json.load(infile)
                 update_driver_fields()
-
-        def set_eta0(sd_, re_, mms, bl_):
-            """Find and update set reference efficiency"""
-            efficiency = sd_**2 * 1.18/345/2/np.pi/re_/(mms/bl_**2)**2/bl_**2
-            eta0label.setText("{0:2.1f} %".format(efficiency*100))
-            spllabel.setText(
-                "{0:.0f} dB 1w1m".format(112.1+10*np.log10(efficiency)))
 
         def find_ported_enclosure():
             """Calculates and displays ported box SPL, phase, and group
@@ -244,57 +309,6 @@ class SpeakerModelWidget(QtGui.QWidget):
                                             sealedboxwidg.loveralineedit
                                             .text()))
 
-        def calc_component_params():
-            """Calculates physical measurements of components from system
-            composite values (e.g., find mechanical resistance from Qes
-            Qms and Re)"""
-            try:
-                re_ = float(relineedit.text())
-                qes = float(qeslineedit.text())
-                qms = float(qmslineedit.text())
-                bl_ = float(bllineedit.text())
-                sd_ = float(sdlineedit.text())/(100*100)
-                fs_ = float(fslineedit.text())
-
-                rms = bl_**2/(qms/qes*re_)
-                rmslineedit.setText("{0:.2g}".format(rms))
-                cms = (1/2/np.pi/fs_/qms/rms)*1000  # mm/N
-                cmslineedit.setText("{0:.2g}".format(cms))
-                mms = 1/(cms*(2*np.pi*fs_)**2)*1000  # grams
-                mmslineedit.setText("{0:.2g}".format(mms*1000))
-
-                cmslineedit_set()
-
-                set_eta0(sd_, re_, mms, bl_)
-
-                qtslabel.setText("{0:.2g}".format(qms*qes/(qms+qes)))
-            except ValueError:
-                pass  # might not be set yet
-
-        def calc_system_params():
-            """Calculates system composite characteristics from physical
-            measurements of components (e.g., Qes from Cms Mms and Res)"""
-            try:
-                re_ = float(relineedit.text())
-                cms = float(cmslineedit.text())/1000
-                mms = float(mmslineedit.text())/1000
-                rms = float(rmslineedit.text())
-                sd_ = float(sdlineedit.text())/(100*100)
-                bl_ = float(bllineedit.text())
-
-                fs_ = 1/2/np.pi/np.sqrt(cms*mms)
-                qes = 2*np.pi*fs_*mms*re_/bl_**2
-                qms = 2*np.pi*fs_*mms/rms
-                qts = qms*qes/(qms+qes)
-                set_eta0(sd_, re_, mms, bl_)
-
-                fslineedit.setText("{0:2.0f}".format(fs_))
-                qeslineedit.setText("{0:1.2g}".format(qes))
-                qmslineedit.setText("{0:1.2g}".format(qms))
-                qtslabel.setText("{0:1.2g}".format(qts))
-            except ValueError:
-                pass  # might not be set yet
-
         def vasflineedit_callback():
             """On Vas in ft^3 change, find and update Cms (which then updates
             Vas in litres)"""
@@ -313,41 +327,32 @@ class SpeakerModelWidget(QtGui.QWidget):
             cmslineedit.setText("{0:.2g}".format(cms))
             cmslineedit_callback()
 
-        def cmslineedit_set():
-            """Find and update Vas in ft^3 and litres from Cms"""
-            sd_ = float(sdlineedit.text())/(100*100)
-            vas = (float(cmslineedit.text())/1000) * 1.18*345**2*sd_**2
-            vasf = vas/0.0283168
-            vasl = vas*1000  # litres
-            vasflineedit.setText("{0:.2g}".format(vasf))
-            vasllineedit.setText("{0:.2g}".format(vasl))
-
         def cmslineedit_callback():
             """On Cms change, find and update Vas in ft^3 and litres"""
-            cmslineedit_set()
-            calc_system_params()
+            self.cmslineedit_set()
+            self.calc_system_params()
 
         formwidget = QtGui.QGroupBox("Component T/S Parameters")
         formwidgetlayout = QtGui.QFormLayout()
         relineedit = QtGui.QLineEdit("6")
-        relineedit.editingFinished.connect(calc_system_params)
+        relineedit.editingFinished.connect(self.calc_system_params)
         relineedit.setToolTip("DC Resistance *Required*")
         formwidgetlayout.addRow("*Re (ohms):", relineedit)
         lelineedit = QtGui.QLineEdit("0.1")
-        lelineedit.editingFinished.connect(calc_system_params)
+        lelineedit.editingFinished.connect(self.calc_system_params)
         lelineedit.setToolTip("Leach K, if n=1 Voice Coil Inductance *Required*")
         formwidgetlayout.addRow("*Le (mH) or K*1000:", lelineedit)
         nlineedit = QtGui.QLineEdit("1")
-        nlineedit.editingFinished.connect(calc_system_params)
+        nlineedit.editingFinished.connect(self.calc_system_params)
         nlineedit.setToolTip("Leach n parameter (if n=1, then K=Le) *Required*")
         formwidgetlayout.addRow("*n:", nlineedit)
         sdlineedit = QtGui.QLineEdit("25")
-        sdlineedit.editingFinished.connect(calc_system_params)
+        sdlineedit.editingFinished.connect(self.calc_system_params)
         sdlineedit.setToolTip("Cone Surface Area *Required*")
         formwidgetlayout.addRow(
             "*Sd (cm^2):", sdlineedit)
         bllineedit = QtGui.QLineEdit("4.5")
-        bllineedit.editingFinished.connect(calc_system_params)
+        bllineedit.editingFinished.connect(self.calc_system_params)
         bllineedit.setToolTip("Mag. Flux Density x Length *Required*")
         formwidgetlayout.addRow("*BL (Tm):", bllineedit)
         cmslineedit = QtGui.QLineEdit("0.16")
@@ -363,11 +368,11 @@ class SpeakerModelWidget(QtGui.QWidget):
         vasflineedit.setToolTip("Driver Compliance Volume")
         formwidgetlayout.addRow("Vas (ft^3):", vasflineedit)
         mmslineedit = QtGui.QLineEdit("1.8")
-        mmslineedit.editingFinished.connect(calc_system_params)
+        mmslineedit.editingFinished.connect(self.calc_system_params)
         mmslineedit.setToolTip("Diaphragm Mass w/ Airload")
         formwidgetlayout.addRow("Mms (g):", mmslineedit)
         rmslineedit = QtGui.QLineEdit("3.4")
-        rmslineedit.editingFinished.connect(calc_system_params)
+        rmslineedit.editingFinished.connect(self.calc_system_params)
         rmslineedit.setToolTip("Mechanical Resistance (Mech. ohm=N s/m")
         formwidgetlayout.addRow("Rms (Mech. ohm):", rmslineedit)
 
@@ -376,16 +381,16 @@ class SpeakerModelWidget(QtGui.QWidget):
         systemformwidget = QtGui.QGroupBox("Speaker T/S Parameters")
         systemformwidgetlayout = QtGui.QFormLayout()
         fslineedit = QtGui.QLineEdit("300")
-        fslineedit.editingFinished.connect(calc_component_params)
+        fslineedit.editingFinished.connect(self.calc_component_params)
         fslineedit.setToolTip("Driver Suspension Resonant Frequency")
         systemformwidgetlayout.addRow("Fs (Hz):", fslineedit)
         qtslabel = QtGui.QLabel("0.5")
         systemformwidgetlayout.addRow("Qts:", qtslabel)
         qeslineedit = QtGui.QLineEdit("1")
-        qeslineedit.editingFinished.connect(calc_component_params)
+        qeslineedit.editingFinished.connect(self.calc_component_params)
         systemformwidgetlayout.addRow("Qes:", qeslineedit)
         qmslineedit = QtGui.QLineEdit("1")
-        qmslineedit.editingFinished.connect(calc_component_params)
+        qmslineedit.editingFinished.connect(self.calc_component_params)
         systemformwidgetlayout.addRow("Qms:", qmslineedit)
         eta0label = QtGui.QLabel("0.4 %")
         eta0label.setToolTip("Reference Efficiency")
@@ -417,6 +422,7 @@ class SpeakerModelWidget(QtGui.QWidget):
         driverfileopwidg.setLayout(fileoplayout)
 
         # TODO below is a hack, find a better way
+        self.sdlineedit = sdlineedit
         self.relineedit = relineedit
         self.lelineedit = lelineedit
         self.nlineedit = nlineedit
@@ -424,6 +430,14 @@ class SpeakerModelWidget(QtGui.QWidget):
         self.cmslineedit = cmslineedit
         self.mmslineedit = mmslineedit
         self.bllineedit = bllineedit
+        self.fslineedit = fslineedit
+        self.qeslineedit = qeslineedit
+        self.qmslineedit = qmslineedit
+        self.qtslabel = qtslabel
+        self.eta0label = eta0label
+        self.spllabel = spllabel
+        self.vasflineedit = vasflineedit
+        self.vasllineedit = vasllineedit
 
         layout = QtGui.QVBoxLayout()
         layout.addWidget(driverfileopwidg)

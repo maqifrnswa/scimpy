@@ -130,10 +130,10 @@ def free_speaker_extract(init_test, progressdialog):
             zphase = self.zphase
             weights = self.weights
             # re_, le_, res, ces, les, reddy = x0 w/ reddy
-            re_, le_, res, ces, les, n = x0
+            re_, le_, res, ces, les, n__ = x0
             zelect = (1/res+1/(omega*les*1j)+omega*ces*1j)**(-1)
             #ztotal = zelect+re_+omega*le_*1j
-            ztotal = zelect+re_+le_*(1j*omega)**n
+            ztotal = zelect+re_+le_*(1j*omega)**n__
             diff = ztotal - zmag * np.exp(1j*zphase)
             z1d = np.zeros(diff.size*2, dtype=np.float64)
             # since omega is linear, and we are interested in log(omega)
@@ -230,7 +230,7 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
             reddylineedit.setText("{0:.2g}".format(fitresult[5]))
             inductorimpedance1k = fitresult[1]*(1j*1000*2*np.pi)**(fitresult[5])
             # note: inductorimpedance1k.imag/omega = L in H
-            lelabel.setText("{0:.2g}".format(inductorimpedance1k.imag))
+            lelabel.setText("{0:.2g}".format(inductorimpedance1k.imag*1000/(1000*2*np.pi)))
             drelabel.setText("{0:.2g}".format(inductorimpedance1k.real))
             progressdialog.setValue(100)
 
@@ -243,7 +243,8 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
             speakermodel.rmslineedit.setText(str(rmslineedit.text()))
             speakermodel.bllineedit.setText(str(bllineedit.text()))
             speakermodel.nlineedit.setText(str(reddylineedit.text()))
-
+            speakermodel.cmslineedit_set()
+            speakermodel.calc_system_params()
 
         formwidgetlayout = QtGui.QFormLayout()
 

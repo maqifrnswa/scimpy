@@ -13,8 +13,9 @@ import numpy as np
 from matplotlib import use
 use('Qt4Agg')
 from matplotlib.backends import qt_compat
-from matplotlib.backends.backend_qt4agg import\
-    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import (
+    FigureCanvasQTAgg as FigureCanvas,
+    NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
 USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
 if USE_PYSIDE:
@@ -53,7 +54,7 @@ class PlotCanvas(FigureCanvas):
         self.axes2b = matplotlib.axes.Axes.twinx(self.axes2)
 
     def clear_axes(self):
-        if self.parentWidget().holdplotaction.isChecked() == False:
+        if self.parentWidget().holdplotaction.isChecked() is False:
             self.fig.clf()
             self.init_axes()
 
@@ -130,7 +131,17 @@ class CentralWidget(QtGui.QWidget):
 
         savezraaction.triggered.connect(saveimpedance)
         loadzraaction.triggered.connect(loadimpedance)
-
+        
+        mpl_toolbar = NavigationToolbar(self.canvas, self.parentWidget())
+        
+#        toolbarwidget=QtGui.QWidget()
+#        layout2=QtGui.QHBoxLayout()
+#        layout2.addWidget(toolbar)
+#        layout2.addWidget(mpl_toolbar)
+#        toolbarwidget.setLayout(layout2)
+#        layout.addWidget(toolbarwidget)
+        
         layout.addWidget(toolbar)
         layout.addWidget(self.canvas)
+        layout.addWidget(mpl_toolbar)
         self.setLayout(layout)
