@@ -32,7 +32,7 @@
 \null
 \vfill
 \subsection*{Copyright}
-© Copyright Scott Howard 2016
+© Copyright Scott Howard 2016-2017
 
 \subsection*{License}
 This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License. To view a copy of this license, visit:
@@ -56,7 +56,7 @@ Commercial and closed-source software tools are available to characterize and ai
 
 
 \section*{About the Author}
-Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and has preformed post-doctoral work in Applied and Engineering Physics at Cornell University prior to appointment at Notre Dame.
+Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and was a post-doctoral research associate in Applied and Engineering Physics at Cornell University prior to appointment at Notre Dame.
 
 At Notre Dame, Professor Howard has taught undergraduate-level ``Electromagnetic Fields and Waves" and graduate courses in photonics and optics. He is the director of the Biomedical Photonics Research Laboratory and is funded by the National Science Foundation, US Department of Homeland Security, and US Department of Agriculture.
 
@@ -403,7 +403,7 @@ A loudspeaker converts electrical signals to sound waves by using the signal ele
 
 To understand this process, we will break down the electrical, mechanical, and acoustical systems individually. We will also describe how each are connected. From the individual system models and our understanding of how they are connected, we will finally integrate them in to a complete single model which can be used to describe how loudspeakers work.
 \section{Electrical Model}
-A loudspeaker driver is fundamentally a system that translates electrical current to air motion. Current through a coil of wires (called the voice coil) interacts with a permanent magnet, as described in Figure~\ref{speaker_diagram}\footnote{By Iain, png by Rohitbd [CC-BY-SA-3.0], via Wikimedia Commons}. Wire, itself, is a resistor; when coiled a wire a an inductor; and the time varying magnetic field created by and inductor induces ``eddy currents" in nearby conductors which act as a resistor in parallel with the inductor. This electrical current is then can be coupled to the mechanical vibrations (discussed in Section~\ref{mechanical_section}). The electrical model is thus described in Figure~\ref{electrical_model}. Where $R_{vc}$ is the DC resistance of the voice coil, $L_{vc}$ is the inductance of the voice coil, $\hat{Z}_e$ is the electrical impedance equivalent to the mechanical impedance due to the electrical-mechanical coupling, and $R_{eddy}$ is the effective resistance due to eddy currents which is typically very high and frequently ignored in models. Finally, the current $i_e$ is the current that couples to mechanical motion described by $\hat{Z}_e$ as described in Section~\ref{mechanical_section}.
+A loudspeaker driver is fundamentally a system that translates electrical current to air motion. Current through a coil of wires (called the voice coil) interacts with a permanent magnet, as described in Figure~\ref{speaker_diagram}\footnote{By Iain, png by Rohitbd [CC-BY-SA-3.0], via Wikimedia Commons}. Wire, itself, is a resistor; when coiled a wire a an inductor; and the time varying magnetic field created by and inductor induces ``eddy currents" in nearby conductors which act as a resistor in parallel with the inductor. This electrical current is then can be coupled to the mechanical vibrations (discussed in Section~\ref{mechanical_section}). The electrical model is thus described in Figure~\ref{electrical_model}. Where $R_{vc}$ is the DC resistance of the voice coil, $L_{vc}$ is the inductance of the voice coil, $\hat{Z}_e$ is the electrical impedance equivalent to the mechanical impedance due to the electrical-mechanical coupling, and $R_{eddy}$ is the effective resistance due to eddy currents (which many treatments consider to be very high and frequently ignored in models). Finally, the current $i_e$ is the current that couples to mechanical motion described by $\hat{Z}_e$ as described in Section~\ref{mechanical_section}.
 
 \begin{figure}
 \centering
@@ -428,20 +428,17 @@ A loudspeaker driver is fundamentally a system that translates electrical curren
   to[R=$R_{eddy}$] (4,3)
   to[short] (4,2);
 \end{circuitikz}
-\caption{Electrical Model}\label{electrical_model}
+\caption{Simple Frequency Dependent Electrical Model}\label{electrical_model}
 \end{figure}
 
-Since eddy currents are highly non-linearly in frequency (i.e., they are a function of voice coil position), a frequency dependent coil inductance can be used. Leach ("Loudspeaker Voice-Coil Inductance Losses:
+Since eddy currents are highly non-linearly in frequency (i.e., they are a function of voice coil position), a more complicated model is needed to capture the frequency dependent coil inductance can be used. Leach ("Loudspeaker Voice-Coil Inductance Losses:
 Circuit Models, Parameter Estimation, and
-Effect on Frequency Response") shows that for a causal system, you can model the voice coil inductor with:
+Effect on Frequency Response") uses the fact that inductors are a causal system\footnote{Leach uses the Bode Gain-Phase relationship, which describes the relationship between the real and imaginary parts of any causal passive circuit element. This is similar to what the optics community calls the Kamers-Kronig relations.}, which means the voice coil inductor impedance can be modelled as:
 \begin{equation}
 Z_L=K(i\omega)^n
 \end{equation}
-which is the same as using Figure~\ref{electrical_model} with
-\begin{align}
-R_{eddy}&=\frac{K\omega^n}{\cos(n\pi/2)} & L_e&=\frac{K\omega^{n-1}}{\sin(n\pi/2)}
-\end{align}
-where $K$ and $n$ are fit parameters. This is great, because we can now characterize the frequency dependent voice-coil impedance with two parameters.
+as seen in Figure~\ref{electrical_model_leach}.
+
 
 \begin{figure}
 \centering
@@ -454,9 +451,39 @@ where $K$ and $n$ are fit parameters. This is great, because we can now characte
   to[generic=$\hat{Z_e}$,i=$i_e$] (5,0)
   to[short] (0,0);
 \end{circuitikz}
-\caption{Electrical Model with Frequency Dependent Voice Coil Inductance}\label{electrical_model_leach}
+\caption{Frequency Dependent Electrical Model}\label{electrical_model_leach}
 \end{figure}
 
+
+The complex $\hat{Z}_L$ is the same as if you had the circuit in Figure~\ref{electrical_model} with
+\begin{align}
+R_{eddy}&=\frac{K\omega^n}{\cos(n\pi/2)} & L_e&=\frac{K\omega^{n-1}}{\sin(n\pi/2)}
+\end{align}
+where $K$ and $n$ are fit parameters. This is great, because we can now characterize the frequency dependent voice-coil impedance with just two parameters, which makes extracting these values from measurements easy.
+
+
+
+
+Since $\hat{Z}_L$ is a function of frequency, you can describe a complete frequency dependent model as Figure~\ref{simple_electrical_model} by using the following terms for the electrical resistance and impedance:
+\begin{align}
+R_e(\omega)&=R_{e,\text{DC}}+\Re\{\hat{Z}_L\} & L_e (\omega) &= \Im\{\hat{Z}_L\}/\omega
+\end{align}
+where $R_{e,\text{DC}}$ is the value of $R_e$ at $\omega=0$. This allows us to include frequency dependence in our simple model seen in Figure~\ref{simple_electrical_model}.
+
+
+\begin{figure}
+\centering
+\begin{circuitikz}
+  \draw (0,0)
+  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[R=$R_e(\omega)$] (2,2) % The resistor
+  to[L=$L_e(\omega)$] (4,2)
+  to[short] (5,2)
+  to[generic=$\hat{Z_e}$,i=$i_e$] (5,0)
+  to[short] (0,0);
+\end{circuitikz}
+\caption{Simple Electrical Model}\label{simple_electrical_model}
+\end{figure}
 
 \section{Mechanical Model}\label{mechanical_section}
 Electric current is coupled to mechanical motion by the Loretnz Force equation:
@@ -581,7 +608,7 @@ and assume a spherical wave solution of the form:
 \begin{align}
 p=\Re \left\{ \frac{K}{r} e^{i(\omega t - k r)} \right\}
 \end{align}
-where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$, assuming $a\ll \lambda/2\pi$. That basically places a spherical monopole in your opening\footnote{This is an approximation, more formal analysis of acoustic radiation models the vent as a piston. The approach here still works pretty well at drawing some meaningful conclusions, nonetheless.}. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
+where $K$ is an unknown constant and $k=\omega/c=2\pi/\lambda$ (i.e., the spatial frequency of the wave). We know that at the port, we have volume velocity $Q_0$, so we need to find $K$ at the boundary. The easiest way to do this is to assume $Q=Q_0$ when $r$ is equal to the radius of your opening $a$, assuming $a\ll \lambda/2\pi$. That basically places a spherical monopole (i.e., a ``balloon" that is expanding and contracting with frequency $\omega$) in your opening\footnote{This is an approximation, more formal analysis of acoustic radiation models the vent as a piston. The approach here still works pretty well at drawing some meaningful conclusions, nonetheless.}. Moving on assuming a time harmonic volume velocity $Q=\Re\left\{\hat{Q}_0e^{i\omega t}\right\}$ we can find $Q$ from the surface of our spherical monopole with radius $a$:
 \begin{align}
 Q_a=Av_a(t)=\frac{4\pi a^2}{2} v_a(t) \approx \hat{Q}_0e^{i\omega t}
 \end{align}
@@ -767,10 +794,6 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
   to[short] (6,3)
   to[R=$R_{eb}$] (8,3)
   to[short] (8,2);
-  \draw (0,2)
-  to[short] (0,3)
-  to[R=$R_{eddy}$] (2,3)
-  to[short] (2,2);
 \end{circuitikz}
 \caption{Electro-Mechanical-Acoustic Circuit Model}\label{elec-mech-acoustic_model}
 \end{figure}
@@ -822,11 +845,10 @@ $B\ell$ & & Voice coil magnet strength \\
 \toprule
 Variable & Definition & Description \\
 \midrule
-$Z_e$ & $\frac{(B\ell)^2}{Z_m}$ & Electric Impedance\\
-$R_e$ &  & Electrical resistance of the voice coil\\
-$\hat{Z}_L$ & $K(i\omega)^n$ & Electrical inductance of the voice coil\\
-$L_e$ & $\frac{K\omega^{n}}{\cos(n\pi\omega/2)}$ & Electrical inductance of the voice coil\\
-$R_{eddy}$ & $\frac{K\omega^{n-1}}{\sin(n\pi\omega/2)}$ & Losses due to inductive currents near voice coil\\
+$Z_e$ & $\frac{(B\ell)^2}{Z_m}$ & Electric ompedance of mech. imp.\\
+$\hat{Z}_L$ & $K(i\omega)^n$ & Freq. dependent voice coil imp.\\
+$R_e(\omega)$ & $R_e + \Re\{\hat{Z}_L\}$  & Electrical resistance of the voice coil\\
+$L_e(\omega)$ & $\Im\{\hat{Z}_L\}/\omega$ & Electrical inductance of the voice coil\\
 $C_{es}$ & $\frac{M_{ms}}{(B\ell)^2}$ & Equivalent electrical capacitance from diaphragm and voice coil mass\\
 $R_{es}$ & $\frac{(B\ell)^2}{R_{ms}+S_d^2R_{rad}}$ & Equiv. electrical resistance of suspension mechanical dampening and front acoustic radiation\\
 $L_{ces}$ & $(B\ell)^2C_{ms}$ & Equiv. electrical inductance of the suspension's mechanical compliance\\
@@ -1038,12 +1060,12 @@ Which is commonly described as the \textit{compression ratio} ($\alpha$):
 \alpha=\frac{V_{as}}{V_b}=\frac{1-(Q_{ts}/Q_{t})^2}{(Q_{ts}/Q_{t})^2}
 \end{align}
 
-That's it! Some important notes: sealed boxes only work if the current $Q_{ts}$ is less than the desired $Q_t$ (i.e., $Q_{ts}<Q_{t}$). For a 2nd order Butterworth filter, $Q_t\approx 0.7$, so $Q_{ts}>0.7$ to achieve B2 alignment. Also, it is possible to use other 2nd order filters to obtain specific design criteria by choosing a desired that is not B2 alignment. If $Q_{t}\neq 1/\sqrt{2}$, one can tune  low-frequency response and peak at $\omega_s$). The effect of choice of $Q$ is depicted in Figure \ref{fig:sealedBoxQ}.
+That's it! Some important notes: sealed boxes only work if the current $Q_{ts}$ is less than the desired $Q_t$ (i.e., $Q_{ts}<Q_{t}$). For a 2nd order Butterworth filter, $Q_t\approx 0.7$, so $Q_{ts}>0.7$ to achieve B2 alignment. Also, it is possible to use other 2nd order filters to obtain specific design criteria by choosing a desired that is not B2 alignment. If $Q_{t}\neq 1/\sqrt{2}$, one can tune  low-frequency response and peak at $\omega_s$). The effect of choice of $Q$ is depicted in Figure \ref{fig:sealedBoxQ}. Note that for high $Q$, that is small boxes, there is a low frequency resonance. This puts the ``boom" in the term ``boom box."
 
-\begin{figure}
+\begin{figure}\label{fig:sealedBoxQ}
 \centering
 \includegraphics[width=0.75\textwidth]{matlab/sealedBoxQ.eps}
-\caption{Normalized Acoustic Power in a Sealed Box Versus $Q$}\label{fig:sealedBoxQ}
+\caption{Normalized Acoustic Power in a Sealed Box Versus $Q$}
 \end{figure}
 
 In this example, we only touched $L$, but it is also possible to similarly affect $R_t$ by adding an additional electric resistance in parallel with (or acoustic resistance in series with) the box compliance. That is the equivalent of filling the box with an acoustically absorbing material. This does two things: it properly adds compliance while keeping the speaker compact and it does not negatively effect efficiency, as seen in the previous discussion.
@@ -1342,7 +1364,7 @@ where $\hat{H}(\omega)$ is a function normalized to $1$ when $\omega>\omega_c$. 
 \begin{align}
 \left\langle P_e \right\rangle =\frac{\left| v_o \right|^2}{2 R_e}
 \end{align}
-If the voice coil inductance includes eddy currents, substitute $R_e+\Re\{\hat{Z}_L\}$ for $R_e$. Efficiency can be found:
+from which efficiency can be found:
 \begin{align}
 \eta=\frac{\left\langle P_a \right\rangle}{\left\langle P_e \right\rangle}=\frac{S_d^2 \rho}{
 2\pi c (B\ell)^2 
