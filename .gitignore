@@ -10,3 +10,4 @@ env
 dist
 *.egg-info
 *.spec
+*.pyc

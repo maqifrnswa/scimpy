@@ -76,6 +76,7 @@ class CentralWidget(QtGui.QWidget):
                                                          "Save Impedance Data",
                                                          impdir,
                                                          filters)
+            filename = str(filename)  # python 2 compat.
             if filename == "":
                 return
             elif os.path.splitext(filename)[1] == "":
@@ -104,7 +105,7 @@ class CentralWidget(QtGui.QWidget):
             if filename == "":
                 return
 
-            file_data = pandas.read_csv(filename,
+            file_data = pandas.read_csv(str(filename),
                                         header=None,
                                         delim_whitespace=True)
 
