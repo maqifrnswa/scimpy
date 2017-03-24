@@ -22,7 +22,7 @@ Scimpy is short for "Sound Card Impedance Measurements in PYthon"
 General Python Requirements:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Python 2 or 3, scipy, numpy, pyaudio, matplotlib, pandas and either pyqt4 or pyside
+Python 2 or 3, scipy, numpy, pyaudio, matplotlib, pandas, and pyqt5
 
 PyPi Package:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +39,7 @@ Debian/Ubuntu Development Environment & Installation:
 
 ::
 
-    sudo apt-get install python3-scipy python3-pyaudio python3-matplotlib python3-pyside python3-pandas
+    sudo apt-get install python3-scipy python3-pyaudio python3-matplotlib python3-pyqt5 python3-pandas
     python3 setup.py install
 
 
@@ -89,10 +89,7 @@ PyInstaller works. First install pyinstaller:
 ::
 
     pip install pywin32 pyinstaller
-    conda install setuptools=19.2
 
-(downgrading setuptools:
-https://github.com/pyinstaller/pyinstaller/issues/1781)
 
 The run
 

@@ -5,15 +5,10 @@ Created on Wed Mar 30 09:55:51 2016
 @author: showard
 """
 
-from matplotlib import use
-use('Qt4Agg')
-from matplotlib.backends import qt_compat
-USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-if USE_PYSIDE:
-    from PySide import QtGui
-else:
-    from PyQt4 import QtGui
+import matplotlib
+matplotlib.use('Qt5Agg')
+from PyQt5 import QtWidgets
 
-class ProgressModal(QtGui.QDialog):
+class ProgressModal(QtWidgets.QDialog):
     super(ProgressModal, self).__init__()
-    self.progressbar = QtGui.QProgressDialog
+    self.progressbar = QtWidgets.QProgressDialog

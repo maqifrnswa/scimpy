@@ -6,28 +6,23 @@ Created on Mon Mar  7 22:18:45 2016
 """
 import pyaudio
 import scimpy.speakertest as speakertest
-from matplotlib import use
-use('Qt4Agg')
-from matplotlib.backends import qt_compat
-use_pyside = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-if use_pyside:
-    from PySide import QtGui
-else:
-    from PyQt4 import QtGui
+import matplotlib
+matplotlib.use('Qt5Agg')
+from PyQt5 import QtWidgets
 
 
-class MeasurementParamsForm(QtGui.QGroupBox):
+class MeasurementParamsForm(QtWidgets.QGroupBox):
     """Widget form for entering measurement parameters"""
     def __init__(self, title):
         super(MeasurementParamsForm, self).__init__(title)
-        layout = QtGui.QFormLayout()
-        self.sampleratelineedit = QtGui.QLineEdit()
-        self.bufferlineedit = QtGui.QLineEdit("0")
+        layout = QtWidgets.QFormLayout()
+        self.sampleratelineedit = QtWidgets.QLineEdit()
+        self.bufferlineedit = QtWidgets.QLineEdit("0")
         self.bufferlineedit.setToolTip("0=auto")
-        self.bitwidthcombobox = QtGui.QComboBox()
+        self.bitwidthcombobox = QtWidgets.QComboBox()
         self.bitwidthcombobox.addItems(["8", "16", "32"])
         self.bitwidthcombobox.setCurrentIndex(1)
-        self.durationlineedit = QtGui.QLineEdit("2")
+        self.durationlineedit = QtWidgets.QLineEdit("2")
         layout.addRow("Sampling Rate (kHz):", self.sampleratelineedit)
         layout.addRow("Buffer Size (frames, 0=auto):", self.bufferlineedit)
         layout.addRow("Data width (bits):", self.bitwidthcombobox)
@@ -35,7 +30,7 @@ class MeasurementParamsForm(QtGui.QGroupBox):
         self.setLayout(layout)
 
 
-class SoundDeviceGroupBox(QtGui.QGroupBox):
+class SoundDeviceGroupBox(QtWidgets.QGroupBox):
     def __init__(self, title, parent, role):
         assert role == "Input" or "Output"
         super(SoundDeviceGroupBox, self).__init__(title, parent)
@@ -51,7 +46,7 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
             return [sc_info, default_device]
 
         def set_layout():
-            layout = QtGui.QVBoxLayout()
+            layout = QtWidgets.QVBoxLayout()
             layout.addWidget(self.devlistwidg)
             layout.addWidget(self.deviceinfolabel)
             self.setLayout(layout)
@@ -64,7 +59,7 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
                 else:
                     # Adding a hidden item for devices with
                     # no inputs to maintain the index offset
-                    hiddenitem = QtGui.QListWidgetItem()
+                    hiddenitem = QtWidgets.QListWidgetItem()
                     hiddenitem.setText("%s" % k["name"])
                     self.devlistwidg.addItem(hiddenitem)
                     hiddenitem.setHidden(True)
@@ -96,8 +91,8 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
                 new_row, role)
 
         [sc_info, default_device] = get_sc_info()
-        self.devlistwidg = QtGui.QListWidget()
-        self.deviceinfolabel = QtGui.QLabel()
+        self.devlistwidg = QtWidgets.QListWidget()
+        self.deviceinfolabel = QtWidgets.QLabel()
         populate_dev_list(sc_info, role)
 
         self.devlistwidg.currentItemChanged.connect(update_textbox)
@@ -106,7 +101,7 @@ class SoundDeviceGroupBox(QtGui.QGroupBox):
         set_layout()
 
 
-class ImpTester(QtGui.QWidget):
+class ImpTester(QtWidgets.QWidget):
     """Widget to control and analyze impedance measurements"""
     def __init__(self, parent):
         super(ImpTester, self).__init__(parent)
@@ -154,16 +149,16 @@ class ImpTester(QtGui.QWidget):
 
         statusbar = self.window().statusbar
 
-        btn = QtGui.QPushButton('Verify Soundcard Capabillities')
+        btn = QtWidgets.QPushButton('Verify Soundcard Capabillities')
         btn.clicked.connect(verify_sc_settings)
 
-        runbtn = QtGui.QPushButton('Begin Test')
+        runbtn = QtWidgets.QPushButton('Begin Test')
         runbtn.clicked.connect(run_measurement)
 
         inputcardgroup = SoundDeviceGroupBox("Input Device", self, "Input")
         outputcardgroup = SoundDeviceGroupBox("Output Device", self, "Output")
 
-        layout = QtGui.QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(outputcardgroup)
         layout.addWidget(inputcardgroup)
         layout.addWidget(self.measformwidget)

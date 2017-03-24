@@ -10,18 +10,13 @@ import csv
 import pandas
 import matplotlib.axes
 import numpy as np
-from matplotlib import use
-use('Qt4Agg')
-from matplotlib.backends import qt_compat
-from matplotlib.backends.backend_qt4agg import (
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
-USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-if USE_PYSIDE:
-    from PySide import QtGui
-else:
-    from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 
 class PlotCanvas(FigureCanvas):
@@ -59,11 +54,11 @@ class PlotCanvas(FigureCanvas):
             self.init_axes()
 
 
-class CentralWidget(QtGui.QWidget):
+class CentralWidget(QtWidgets.QWidget):
     def __init__(self):
         def getimpdir():
-            basedirectory = QtGui.QDesktopServices.storageLocation(
-                QtGui.QDesktopServices.DataLocation)
+            basedirectory = QtWidgets.QDesktopServices.storageLocation(
+                QtWidgets.QDesktopServices.DataLocation)
             impdir = basedirectory+"/plots"
             if not os.path.isdir(impdir):
                 os.makedirs(impdir)
@@ -72,7 +67,7 @@ class CentralWidget(QtGui.QWidget):
 
         def saveimpedance():
             impdir, filters = getimpdir()
-            filename = QtGui.QFileDialog.getSaveFileName(self,
+            filename = QtWidgets.QFileDialog.getSaveFileName(self,
                                                          "Save Impedance Data",
                                                          impdir,
                                                          filters)
@@ -98,7 +93,7 @@ class CentralWidget(QtGui.QWidget):
 
         def loadimpedance():
             impdir, filters = getimpdir()
-            filename = QtGui.QFileDialog.getOpenFileName(self,
+            filename = QtWidgets.QFileDialog.getOpenFileName(self,
                                                          "Load Impedance Data",
                                                          impdir,
                                                          filters)
@@ -119,12 +114,12 @@ class CentralWidget(QtGui.QWidget):
 
         super(CentralWidget, self).__init__()
         self.canvas = PlotCanvas()
-        layout = QtGui.QVBoxLayout()
-        toolbar = QtGui.QToolBar()
+        layout = QtWidgets.QVBoxLayout()
+        toolbar = QtWidgets.QToolBar()
 
-        savezraaction = QtGui.QAction("Save .ZMA/ZDA", self)
-        loadzraaction = QtGui.QAction("Load .ZMA/ZDA", self)
-        self.holdplotaction = QtGui.QAction("Hold Plot Data", self)
+        savezraaction = QtWidgets.QAction("Save .ZMA/ZDA", self)
+        loadzraaction = QtWidgets.QAction("Load .ZMA/ZDA", self)
+        self.holdplotaction = QtWidgets.QAction("Hold Plot Data", self)
         self.holdplotaction.setCheckable(True)
         toolbar.addAction(savezraaction)
         toolbar.addAction(loadzraaction)
@@ -135,8 +130,8 @@ class CentralWidget(QtGui.QWidget):
         
         mpl_toolbar = NavigationToolbar(self.canvas, self.parentWidget())
         
-#        toolbarwidget=QtGui.QWidget()
-#        layout2=QtGui.QHBoxLayout()
+#        toolbarwidget=QtWidgets.QWidget()
+#        layout2=QtWidgets.QHBoxLayout()
 #        layout2.addWidget(toolbar)
 #        layout2.addWidget(mpl_toolbar)
 #        toolbarwidget.setLayout(layout2)

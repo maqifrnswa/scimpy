@@ -7,20 +7,15 @@ Created on Mon Mar  7 22:23:03 2016
 
 import numpy as np
 import scipy.optimize
-from matplotlib import use
-use('Qt4Agg')
-from matplotlib.backends import qt_compat
-USE_PYSIDE = qt_compat.QT_API == qt_compat.QT_API_PYSIDE
-if USE_PYSIDE:
-    from PySide import QtGui, QtCore
-else:
-    from PyQt4 import QtGui, QtCore
+import matplotlib
+matplotlib.use('Qt5Agg')
+from PyQt5 import QtWidgets, QtCore
 
 
 # TODO put all the find_main_window functions in one module, just call that
 def find_main_window():
-    for widget in QtGui.QApplication.topLevelWidgets():
-        if isinstance(widget, QtGui.QMainWindow):
+    for widget in QtWidgets.QApplication.topLevelWidgets():
+        if isinstance(widget, QtWidgets.QMainWindow):
             return widget
 
 
@@ -198,7 +193,7 @@ def free_speaker_extract(init_test, progressdialog):
     return output
 
 
-class ImpedanceFitterWidget(QtGui.QGroupBox):
+class ImpedanceFitterWidget(QtWidgets.QGroupBox):
     """Widget for modeling speaker performance based on T/S values"""
     def __init__(self):
         super(ImpedanceFitterWidget, self).__init__("Equiv. Electrical Model")
@@ -207,7 +202,7 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
         def freespeakerbtn_handler():
-            progressdialog = QtGui.QProgressDialog("Finding Fit Values",
+            progressdialog = QtWidgets.QProgressDialog("Finding Fit Values",
                                                    "Cancel",
                                                    0,
                                                    100)
@@ -246,34 +241,34 @@ class ImpedanceFitterWidget(QtGui.QGroupBox):
             speakermodel.cmslineedit_set()
             speakermodel.calc_system_params()
 
-        formwidgetlayout = QtGui.QFormLayout()
+        formwidgetlayout = QtWidgets.QFormLayout()
 
-        bllineedit = QtGui.QLineEdit("1")
+        bllineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("*BL (Tm):", bllineedit)
-        relineedit = QtGui.QLineEdit("1")
+        relineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("Re (ohms):", relineedit)
-        rmslineedit = QtGui.QLineEdit("1")
+        rmslineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("Rms (ohms):", rmslineedit)
-        mmslineedit = QtGui.QLineEdit("1")
+        mmslineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("Mms (g):", mmslineedit)
-        cmslineedit = QtGui.QLineEdit("1")
+        cmslineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("Cms (mm/N):", cmslineedit)
-        lelineedit = QtGui.QLineEdit("1")
+        lelineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("K (times 1000):", lelineedit)
-        reddylineedit = QtGui.QLineEdit("1")
+        reddylineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("n:", reddylineedit)
-        lelabel = QtGui.QLabel("")
+        lelabel = QtWidgets.QLabel("")
         formwidgetlayout.addRow("Le (mH @ 1 kHz):", lelabel)
-        drelabel = QtGui.QLabel("")
+        drelabel = QtWidgets.QLabel("")
         formwidgetlayout.addRow("dRe (ohms @ 1 kHz):", drelabel)
 #        formwidgetlayout.addRow("Leb (mH):", leslineedit)
-#        ceslineedit = QtGui.QLineEdit()
+#        ceslineedit = QtWidgets.QLineEdit()
 #        formwidgetlayout.addRow("Cev (mH):", ceslineedit)
 
-        freespeakerbtn = QtGui.QPushButton("Extract Free Speaker Params")
+        freespeakerbtn = QtWidgets.QPushButton("Extract Free Speaker Params")
         freespeakerbtn.clicked.connect(freespeakerbtn_handler)
         formwidgetlayout.addRow(freespeakerbtn)
-        export_to_model_btn = QtGui.QPushButton("Export to Speaker Modeler")
+        export_to_model_btn = QtWidgets.QPushButton("Export to Speaker Modeler")
         formwidgetlayout.addRow(export_to_model_btn)
         export_to_model_btn.clicked.connect(export_to_model_btn_handler)
 
