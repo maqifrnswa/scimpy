@@ -2,13 +2,19 @@ Scimpy
 ======
 
 Scimpy is an open-source, cross-platform loudspeaker design tool. Features include:
+
 * Modeling speaker impedance, phase, SPL, and group delay from TS Parameters
+
 * Measuring speaker impedance using your sound card as a signal generator and
-data acquisition system
+  data acquisition system
+
 * Extract TS parameters from measured results and downloaded ZMA files.
+
 * Loudspeaker cabinet design: the tool will calculate speaker performance (SPL
-and group delay) for sealed and vented box designs. Will calculate "optimal"
-cabinet dimensions for traditional speaker alignments (B2 closed box, QB4-B4-C4)
+  and group delay) for sealed and vented box designs. Will calculate "optimal"
+  cabinet dimensions for traditional speaker alignments (B2 closed box,
+  QB4-B4-C4)
+
 * A complete book covering speaker design theory
 
 Scimpy is short for "Sound Card Impedance Measurements in PYthon"
@@ -18,7 +24,17 @@ General Python Requirements:
 
 Python 2 or 3, scipy, numpy, pyaudio, matplotlib, pandas and either pyqt4 or pyside
 
-Debian/Ubuntu development environment & installation:
+PyPi Package:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PyPi package available (https://pypi.python.org/pypi/scimpy). To use the pip
+package, you need to install SciPy first. SciPy is not on PyPi, so you first
+must install via conda (Windows) or your package manager (Linux). Info below,
+however, this is still pre-release software, so the github version will have
+more features and possibly less bugs than the pypi version for now.
+ 
+
+Debian/Ubuntu Development Environment & Installation:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
@@ -92,7 +108,7 @@ Book
 LaTeX (e.g., MiKTeX)
 
 License
--------
+~~~~~~~
 
 Code: GPL3
 
