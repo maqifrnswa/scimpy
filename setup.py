@@ -1,9 +1,18 @@
 from setuptools import setup, find_packages
+from codecs import open
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name = "scimpy",
     version = "0.0.dev1",
     description ="Scimpy Speaker Design Tool",
+    long_description = long_description,
     url = "https://github.com/maqifrnswa/scimpy",
     author = "Scott Howard",
     license = "GPLv3+",

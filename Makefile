@@ -1,5 +1,5 @@
 all:
-	pyinstaller run.py -n scimpy --additional-hooks-dir pyinstaller-hooks
+	pyinstaller run.py -n scimpy
 	cp LICENSE* dist/scimpy/
 
 clean:
