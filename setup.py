@@ -11,7 +11,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name = "scimpy",
     version = "0.0.dev1",
-    description ="Scimpy Speaker Design Tool",
+    description ="Speaker design and impedance measuring tool",
     long_description = long_description,
     url = "https://github.com/maqifrnswa/scimpy",
     author = "Scott Howard",
