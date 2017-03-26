@@ -9,7 +9,7 @@ import scimpy.speakermodel as speakermodel
 import numpy as np
 import matplotlib
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import os
 import json
 
@@ -253,13 +253,13 @@ class SpeakerModelWidget(QtWidgets.QWidget):
 
         def savedriver():
             update_driver_dict()
-            basedirectory = QtWidgets.QDesktopServices.storageLocation(
-                QtWidgets.QDesktopServices.DataLocation)
+            basedirectory = QtCore.QStandardPaths.writableLocation(
+                QtCore.QStandardPaths.AppDataLocation)
             driverdir = basedirectory+"/drivers"
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename = QtWidgets.QFileDialog.getSaveFileName(self,
+            filename, exten = QtWidgets.QFileDialog.getSaveFileName(self,
                                                          "Save Driver Specs",
                                                          driverdir,
                                                          filters)
@@ -269,13 +269,13 @@ class SpeakerModelWidget(QtWidgets.QWidget):
                 json.dump(self.driver_params, outfile)
 
         def loaddriver():
-            basedirectory = QtWidgets.QDesktopServices.storageLocation(
-                QtWidgets.QDesktopServices.DataLocation)
+            basedirectory = QtCore.QStandardPaths.writableLocation(
+                QtCore.QStandardPaths.AppDataLocation)
             driverdir = basedirectory+"/drivers"
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename = QtWidgets.QFileDialog.getOpenFileName(self,
+            filename, exten = QtWidgets.QFileDialog.getOpenFileName(self,
                                                          "Load Driver Specs",
                                                          driverdir,
                                                          filters)

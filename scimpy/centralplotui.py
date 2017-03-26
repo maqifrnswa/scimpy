@@ -16,7 +16,7 @@ from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 
 class PlotCanvas(FigureCanvas):
@@ -57,8 +57,8 @@ class PlotCanvas(FigureCanvas):
 class CentralWidget(QtWidgets.QWidget):
     def __init__(self):
         def getimpdir():
-            basedirectory = QtWidgets.QDesktopServices.storageLocation(
-                QtWidgets.QDesktopServices.DataLocation)
+            basedirectory = QtCore.QStandardPaths.writableLocation(
+                QtCore.QStandardPaths.AppDataLocation)
             impdir = basedirectory+"/plots"
             if not os.path.isdir(impdir):
                 os.makedirs(impdir)
@@ -67,11 +67,10 @@ class CentralWidget(QtWidgets.QWidget):
 
         def saveimpedance():
             impdir, filters = getimpdir()
-            filename = QtWidgets.QFileDialog.getSaveFileName(self,
+            filename, exten = QtWidgets.QFileDialog.getSaveFileName(self,
                                                          "Save Impedance Data",
                                                          impdir,
                                                          filters)
-            filename = str(filename)  # python 2 compat.
             if filename == "":
                 return
             elif os.path.splitext(filename)[1] == "":
@@ -93,7 +92,7 @@ class CentralWidget(QtWidgets.QWidget):
 
         def loadimpedance():
             impdir, filters = getimpdir()
-            filename = QtWidgets.QFileDialog.getOpenFileName(self,
+            filename, exten = QtWidgets.QFileDialog.getOpenFileName(self,
                                                          "Load Impedance Data",
                                                          impdir,
                                                          filters)
