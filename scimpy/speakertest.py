@@ -124,11 +124,11 @@ class SpeakerTestEngine():
         print(len(input_data), len(data))
         # two channels
         input_data =\
-            np.reshape(input_data, (len(input_data)/2, 2))
+            np.reshape(input_data, (int(len(input_data)/2), 2))
         input_data_fft0 = np.fft.rfft(input_data[:, 0])
         input_data_fft1 = np.fft.rfft(input_data[:, 1])
 
-        data = np.reshape(data, (len(data)/2, 2))
+        data = np.reshape(data, (int(len(data)/2), 2))
         data = data[:, 0]
         data_fft = np.fft.rfft(data)
         if width == 1:  # stupid 8 bit uints...
