@@ -34,13 +34,13 @@ however, this is still pre-release software, so the github version will have
 more features and possibly less bugs than the pypi version for now.
  
 
-Debian/Ubuntu Development Environment & Installation:
+Debian/Ubuntu Development Environment & Execution:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
     sudo apt-get install python3-scipy python3-pyaudio python3-matplotlib python3-pyqt5 python3-pandas
-    python3 setup.py install
+    python3 run.py
 
 
 Windows Python Environment & Scimpy Installation:
