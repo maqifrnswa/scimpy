@@ -83,6 +83,10 @@ Organize better?
 \end{quote}
 test
 
+Other good software tools: \url{http://audio.claub.net/software/jbabgy/jbagby.html}
+
+Good diffraction paper: \url{http://www.torean.dk/artikel/Diffraction.pdf}
+
 test
 
 \chapter{Usage}
@@ -360,6 +364,8 @@ The transfer function ($\hat{H}$, the ratio of output to input voltage) can be f
 \end{align}
 
 $L$ and $C$ are picked for a given cross-over frequency such that $L=\frac{R}{\omega_c}$ and $C=\frac{1}{R\omega_c}$. Note that the sum of both speaker outputs $\hat{H}_{LP}(\omega)+\hat{H}_{HP}(\omega)~=~1$ for all frequencies! That means that the signal is transferred perfectly in amplitude (volume) and phase (audible delay) at every frequency. However, each driver demonstrates a group phase delay ($\partial \phi / \partial \omega$) in the pass-bands, so how can it appear to have zero-phase? Well, it's a bit of a trick in that the system ``uses"  \textit{both} speakers to correct for this variable delay as a function of frequency. Low frequencies coming from the woofer have small delay (phase), while those low frequencies in the tweeter have a lot of delay. As frequency increases, woofer delay increases and tweeter delay decreases. The apparent phase (delay) is unchanged. This is not ideal as it relies on driving your tweeter lower than designed (risking overheating and damage) and your woofer higher than intended (excited standing waves/nodes within the woofer driver which degrades sound quality). Therefore, high-order filters are preferred.
+
+\textbf{NOTE: phase shift between two means there is BEAM STEERING, show radiation patterns from LR paper? \url{http://www.linkwitzlab.com/JAES/jaes_papers76.htm} need delay circuitry if offset from front of cabinet? Overnight sensations: LR2 with extra delay on tweeter and and l-pad attenuator}
 
 High order filters (i.e., ones that separate tweeter and woofer signals better) can be used, but requires more parts. See, for example, Linkwitz-Riley (LR) filters for a high-order filter. The LR2 filter design is shown in Figure~\ref{LRfilters}. Choosing $Z_1=Z_2$ and $R_s=R_1$, you can calculate transfer functions in the Maxima computer algebra system (left for the reader):
 % put this in and plot?!

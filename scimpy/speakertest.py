@@ -30,6 +30,7 @@ class SpeakerTestEngine():
         self.device_ndx = {}
         self.counter = None  # is this necessary to be an atribute?
         self.plotwidget = plotwidget
+        self.pya = pyaudio.PyAudio()
 
     def set_device_ndx(self, dev, role):
         self.device_ndx[role] = dev
@@ -56,16 +57,13 @@ class SpeakerTestEngine():
             """PyAudio callback to fill output buffer and handle input
             buffer"""
             input_data.append(in_data)
-            frames_to_write = frame_count
+            # frames_to_write = frame_count
             data_out = data[
-                self.counter*2:(self.counter+frames_to_write)*2].tostring()
-            self.counter = self.counter+frames_to_write
-            print(self.counter, len(data)/2-self.counter,
-                  frames_to_write,
-                  len(data_out))
+                self.counter*2:(self.counter+frame_count)*2]
+            self.counter = self.counter+frame_count
             return(data_out, pyaudio.paContinue)
 
-        pya = pyaudio.PyAudio()
+        pya = self.pya
         # maybe make framesize=int(datarate/10)
         # duration seconds
         # volume max of 1
@@ -87,10 +85,10 @@ class SpeakerTestEngine():
         else:
             print("Bit width should be 1, 2, or 4 bytes")
         data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
-                                  f0=0,
+                                  f0=50,
                                   t1=duration,
                                   f1=20000,
-                                  method='lin',
+                                  method='log',
                                   phi=-90)*((2**(8*width))/2.-1)
         if width == 1:
             data = data+(2**(8*width))/2-1
@@ -139,7 +137,11 @@ class SpeakerTestEngine():
 
         # Close the open _channel(s)_...
         self.stream.close()
-        pyaudio.PyAudio().terminate()
+
+        # TODO: put pyaudioterminte in the destructor?
+        # pyaudio.PyAudio().terminate()
+
+
         # inputdata2=array.array('h',b''.join(input_data) )
         # print(inputdata2)
         # plt.magnitude_spectrum(inputdata2, Fs=datarate)
