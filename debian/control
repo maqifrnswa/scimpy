@@ -1,0 +1,39 @@
+Source: scimpy
+Section: unknown
+Priority: optional
+Maintainer: Scott Howard <showard@debian.org>
+#Build-Depends: debhelper (>=9),dh-python,python-all (>= 2.6.6-3~),python-setuptools,python3-all,python3-setuptools
+Build-Depends: debhelper (>=9),dh-python,python3,python3-setuptools
+Standards-Version: 3.9.8
+Homepage: <insert the upstream URL, if relevant>
+#X-Python-Version: >= 2.6
+X-Python3-Version: >= 3.2
+#Vcs-Git: git://anonscm.debian.org/collab-maint/scimpy.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/scimpy.git
+
+#Package: python-scimpy
+#Architecture: all
+#Depends: ${python:Depends}, ${misc:Depends}
+#Suggests: python-scimpy-doc
+#Description: <insert up to 60 chars description> (Python 2)
+# <insert long description, indented with spaces>
+# .
+# This package installs the library for Python 2.
+
+Package: python3-scimpy
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Suggests: python-scimpy-doc
+Description: <insert up to 60 chars description> (Python 3)
+ <insert long description, indented with spaces>
+ .
+ This package installs the library for Python 3.
+
+#Package: python-scimpy-doc
+#Architecture: all
+#Section: doc
+#Depends: ${sphinxdoc:Depends}, ${misc:Depends}
+#Description: <insert up to 60 chars description> (common documentation)
+# <insert long description, indented with spaces>
+# .
+# This is the common documentation package.
