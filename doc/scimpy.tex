@@ -105,6 +105,8 @@ microphone, more sensitive but powered (need AC coupling?)
 \chapter{Impedance}\label{Impedance}
 \textbf{Modern amps have lots of current, digital feedback - is impedance important? probably not, except to help cross over maybe... Impedance measurements can get you info on internal parameters, help tune/design box for example!}
 
+\textbf{Note 4/2/2017: passive crossover networks want an entirely real load. If the load is not real, then an extra frequency-dependent phase is added - which means group delay, which means slower bass and ``beam steering" for two-way systems}
+
 Speaker impedance represents how much voltage will be needed to drive 1~A of current  through the speaker voice coil. Higher resistance means that speaker response will drop, as it is harder to push current through it. Due to electrical, mechanical, and acoustical effects, impedance changes with frequency -- thus changing how the speaker sounds. If speaker impedance drops too low, more current will be needed from the amplifier. Over-driving the speaker amplifier risks distortion and overheating the amplifier. Additionally, passive cross-over circuits (i.e., what splits the signal to tweeter and woofer) are designed to work with loads whose impedance do not change with frequency; poor impedance matching reduces cross-over performance
 
 An ``impedance matching" circuit can correct this poor performance. The circuit is designed such that the combined impedance of the speaker and circuit us the same for all frequencies, and thus avoiding signal distortion and amplifier damage.

@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP TDA7292
+D 40 W + 40 W  TO220-11 (MultiWatt11)
+K TDA7292 Amplifier 40W Multiwatt
+F http://www.st.com/content/ccc/resource/technical/document/datasheet/1a/b1/d0/90/8b/8d/40/fe/CD00236549.pdf/files/CD00236549.pdf/jcr:content/translations/en.CD00236549.pdf
+$ENDCMP
+#
+#End Doc Library

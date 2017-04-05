@@ -38,7 +38,7 @@ class SoundDeviceGroupBox(QtWidgets.QGroupBox):
         def get_sc_info():
             """Returns a list of available devices on the default host api
             along with the information on the default input device"""
-            pya = pyaudio.PyAudio()
+            pya = pyaudio.PyAudio()  # TODO: we have multiple PyAudio objects
             sc_info = [pya.get_device_info_by_index(n)
                        for n in range(pya.get_device_count())]
             default_device = pya.get_default_host_api_info()[

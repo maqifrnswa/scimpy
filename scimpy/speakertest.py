@@ -85,11 +85,14 @@ class SpeakerTestEngine():
         else:
             print("Bit width should be 1, 2, or 4 bytes")
         data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
-                                  f0=50,
+                                  f0=10,
                                   t1=duration,
                                   f1=20000,
                                   method='log',
                                   phi=-90)*((2**(8*width))/2.-1)
+        np.concatenate((np.zeros(duration*.1 * datarate),
+                        data,
+                        np.zeros(duration*.1 * datarate)))
         if width == 1:
             data = data+(2**(8*width))/2-1
         data = data.astype(dtype=np_type, copy=False)
@@ -141,7 +144,6 @@ class SpeakerTestEngine():
         # TODO: put pyaudioterminte in the destructor?
         # pyaudio.PyAudio().terminate()
 
-
         # inputdata2=array.array('h',b''.join(input_data) )
         # print(inputdata2)
         # plt.magnitude_spectrum(inputdata2, Fs=datarate)
@@ -155,23 +157,36 @@ class SpeakerTestEngine():
         # ax3 = self.plotwidget.axes3
         # ax4 = self.plotwidget.axes4
         ax1.plot(input_data[:, 0])  # left
-
+        ax1.plot(input_data[:, 1])  # right
+    
         # commented out all except microphont in and mic FFT
         # ax2.plot(data)  # left
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
+        imp_data = input_data_fft0/(input_data_fft0-input_data_fft1)
+
+#        ax2.plot(x_data,
+#                 scipy.signal.savgol_filter(np.abs(imp_data),
+#                                            1, 0))
+
+        # Top to tip: black green red white; don't use "default" device
         ax2.plot(x_data,
                  scipy.signal.savgol_filter(np.abs(input_data_fft0),
+                                            1, 0),
+                 x_data,
+                 scipy.signal.savgol_filter(np.abs(input_data_fft1),
                                             1, 0))
+        
         # pick filter with 10 Hz filtering?
         ax2.set_xlim([20, 20000])
+
 
 
         ax1.set_title('Impedance Measurement (Not Finished!)')
         ax1.set_ylabel('Microphone Left Channel Signal', color='b')
         ax2.set_xlabel('Sample Number')
-        ax2.set_ylabel('abs(FFT) Left Channel', color='b')
+        ax2.set_ylabel('abs(FFT) Left/(Left-Right)', color='b')
         ax2.set_xlabel('Frequency (Hz)')
         ax2.set_xscale('log')
         ax2.xaxis.set_major_formatter(
