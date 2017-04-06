@@ -13,7 +13,8 @@ X-Python3-Version: >= 3.2
 
 Package: scimpy
 Architecture: all
-Depends: ${python3:Depends}, ${misc:Depends}
+Depends: ${python3:Depends}, ${misc:Depends}, python3-pandas,
+ python3-matplotlib, python3-numpy, python3-pyqt5, python3-scipy, python3-pyaudio
 Suggests: python-scimpy-doc
 Description: <insert up to 60 chars description> (Python 3)
  <insert long description, indented with spaces>
