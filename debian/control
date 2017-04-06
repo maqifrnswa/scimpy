@@ -1,5 +1,5 @@
 Source: scimpy
-Section: unknown
+Section: electronics
 Priority: optional
 Maintainer: Scott Howard <showard@debian.org>
 #Build-Depends: debhelper (>=9),dh-python,python-all (>= 2.6.6-3~),python-setuptools,python3-all,python3-setuptools
