@@ -7,9 +7,9 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - "conda create -q -n scimpy-environment python=%PYTHON_VERSION% numpy scipy matplotlib pandas pyinstaller pip"
+  - "conda create -q -n scimpy-environment python=%PYTHON_VERSION% numpy scipy matplotlib pandas pip"
   - activate scimpy-environment
-  - pip install portaudio
+  - pip install portaudio pyinstaller
 
 build_script:
   - "echo %PATH%"
