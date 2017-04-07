@@ -13,16 +13,16 @@ install:
   - curl -L -o upx.zip http://libgd.blob.core.windows.net/upx/upx391w.zip
   - 7z e upx.zip *.exe -r
   - curl -L -o tbb.zip https://github.com/01org/tbb/releases/download/4.4.5/tbb44_20160526oss_win.zip
-  - 7z e tbb.zip tbb44_20160526oss/lib/ia32/vc10/*.dll
+  - 7z e tbb.zip tbb44_20160526oss/lib/ia32/vc10/*.lib
 
 build_script:
   - "echo %PATH%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - activate scimpy-environment
-  - pyinstaller run.py -n scimpy
+  - pyinstaller run.py -n scimpy --distpath scimpy_win32
 
 before_package:
-  - cp LICENSE* dist/scimpy/
+  - cp LICENSE* scimpy_win32/scimpy/
 
 artifacts:
-  - path: dist/scimpy
+  - path: scimpy_win32
