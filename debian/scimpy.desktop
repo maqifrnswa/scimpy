@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Scimpy Speaker Measurements
+Comment=Measure TS parameters and design speaker systems
+TryExec=scimpy
+Exec=scimpy
+Icon=scimpy
+Categories=Audio;Electronics;
