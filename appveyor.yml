@@ -19,10 +19,9 @@ build_script:
   - "echo %PATH%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - activate scimpy-environment
-  - pyinstaller run.py --noupx -n scimpy_win32_%APPVEYOR_BUILD_NUMBER% --distpath scimpy_win32_%APPVEYOR_BUILD_NUMBER%
-  - move scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins.old
+  - pyinstaller run.py --noupx -n scimpy_win32_%APPVEYOR_BUILD_NUMBER% --distpath temp
   - pyinstaller run.py -n scimpy_win32_%APPVEYOR_BUILD_NUMBER% --distpath scimpy_win32_%APPVEYOR_BUILD_NUMBER%
-  - move /y scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins.old scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins
+  - move /y temp/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/qt5_plugins
 
 before_package:
   - cp LICENSE* scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%
