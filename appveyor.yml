@@ -10,10 +10,19 @@ install:
   - "conda create -q -n scimpy-environment python=%PYTHON_VERSION% numpy scipy matplotlib pandas pip"
   - activate scimpy-environment
   - pip install pyaudio pyinstaller
+  - curl -L -o upx.zip http://libgd.blob.core.windows.net/upx/upx391w.zip
+  - 7z e upx.zip *.exe -r
+  - curl -L -o tbb.zip https://github.com/01org/tbb/releases/download/4.4.5/tbb44_20160526oss_win.zip
+  - 7z e tbb.zip tbb44_20160526oss/lib/ia32/vc10/*.dll
 
 build_script:
   - "echo %PATH%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - activate scimpy-environment
   - pyinstaller run.py -n scimpy
+
+before_package:
   - cp LICENSE* dist/scimpy/
+
+artifacts:
+  - path: dist/scimpy
