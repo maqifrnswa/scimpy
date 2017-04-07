@@ -9,7 +9,7 @@ install:
   - conda info -a
   - "conda create -q -n scimpy-environment python=%PYTHON_VERSION% numpy scipy matplotlib pandas pip"
   - activate scimpy-environment
-  - pip install portaudio pyinstaller
+  - pip install pyaudio pyinstaller
 
 build_script:
   - "echo %PATH%"
