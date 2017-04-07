@@ -1,6 +1,6 @@
 environment:
-  - PYTHON_VERSION: 3.6
-    MINICONDA: C:\Miniconda36
+  PYTHON_VERSION: 3.6
+  MINICONDA: C:\Miniconda36
 
 install:
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
@@ -17,4 +17,3 @@ build_script:
   - activate scimpy-environment
   - pyinstaller run.py -n scimpy
   - cp LICENSE* dist/scimpy/
-
