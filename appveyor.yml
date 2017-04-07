@@ -19,10 +19,10 @@ build_script:
   - "echo %PATH%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - activate scimpy-environment
-  - pyinstaller run.py -n scimpy_win32_%APPVEYOR_REPO_COMMIT_TIMESTAMP% --distpath scimpy_win32_%APPVEYOR_REPO_COMMIT_TIMESTAMP%
+  - pyinstaller run.py -n scimpy_win32_%APPVEYOR_BUILD_NUMBER% --distpath scimpy_win32_%APPVEYOR_BUILD_NUMBER%
 
 before_package:
-  - cp LICENSE* scimpy_win32_%APPVEYOR_REPO_COMMIT_TIMESTAMP%/scimpy_win32_%APPVEYOR_REPO_COMMIT_TIMESTAMP%
+  - cp LICENSE* scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%
 
 artifacts:
-  - path: scimpy_win32_%APPVEYOR_REPO_COMMIT_TIMESTAMP%
+  - path: scimpy_win32_%APPVEYOR_BUILD_NUMBER%
