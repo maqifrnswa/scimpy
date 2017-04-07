@@ -1077,10 +1077,10 @@ Filter caps:\nhttps://www.digikey.com/product-detail/en/tdk-corporation/FG26C0G1
 Text Notes 3300 200  0    60   ~ 0
 bypass caps:\nhttps://www.digikey.com/product-detail/en/kemet/C320C104K5R5TA7317/399-14036-1-ND/6562568
 $Comp
-L -12V #PWR12
+L -12V #PWR9
 U 1 1 58E5C12B
 P 2550 3100
-F 0 "#PWR12" H 2550 3200 50  0001 C CNN
+F 0 "#PWR9" H 2550 3200 50  0001 C CNN
 F 1 "-12V" H 2550 3250 50  0000 C CNN
 F 2 "" H 2550 3100 50  0000 C CNN
 F 3 "" H 2550 3100 50  0000 C CNN
@@ -1099,10 +1099,10 @@ F 3 "" H 2550 2100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L -12V #PWR14
+L -12V #PWR11
 U 1 1 58E5C72F
 P 2550 5750
-F 0 "#PWR14" H 2550 5850 50  0001 C CNN
+F 0 "#PWR11" H 2550 5850 50  0001 C CNN
 F 1 "-12V" H 2550 5900 50  0000 C CNN
 F 2 "" H 2550 5750 50  0000 C CNN
 F 3 "" H 2550 5750 50  0000 C CNN
@@ -1134,10 +1134,10 @@ $EndComp
 Wire Wire Line
 	2750 850  2750 800 
 $Comp
-L -12V #PWR5
+L -12V #PWR13
 U 1 1 58E5CC5E
 P 2750 1500
-F 0 "#PWR5" H 2750 1600 50  0001 C CNN
+F 0 "#PWR13" H 2750 1600 50  0001 C CNN
 F 1 "-12V" H 2750 1650 50  0000 C CNN
 F 2 "" H 2750 1500 50  0000 C CNN
 F 3 "" H 2750 1500 50  0000 C CNN
@@ -1289,36 +1289,81 @@ Wire Wire Line
 Text Notes 600  750  0    60   ~ 0
 maybe higher power, need to up caps, etc.
 $Comp
-L TL072 U?
+L TL072 U4
 U 1 1 58E6EA22
 P 3750 7300
-F 0 "U?" H 3750 7500 50  0000 L CNN
+F 0 "U4" H 3750 7500 50  0000 L CNN
 F 1 "TL072" H 3750 7100 50  0000 L CNN
-F 2 "" H 3750 7300 50  0000 C CNN
+F 2 "Housings_DIP:DIP-8_W7.62mm" H 3750 7300 50  0001 C CNN
 F 3 "" H 3750 7300 50  0000 C CNN
 	1    3750 7300
 	1    0    0    -1  
 $EndComp
 $Comp
-L TL072 U?
+L TL072 U4
 U 2 1 58E6EAB3
 P 4450 7650
-F 0 "U?" H 4450 7850 50  0000 L CNN
+F 0 "U4" H 4450 7850 50  0000 L CNN
 F 1 "TL072" H 4450 7450 50  0000 L CNN
-F 2 "" H 4450 7650 50  0000 C CNN
+F 2 "Housings_DIP:DIP-8_W7.62mm" H 4450 7650 50  0001 C CNN
 F 3 "" H 4450 7650 50  0000 C CNN
 	2    4450 7650
 	1    0    0    -1  
 $EndComp
 $Comp
-L DUAL_POT RV?
+L DUAL_POT RV1
 U 1 1 58E6EC42
 P 2850 7650
-F 0 "RV?" H 3010 7960 50  0000 C CNN
+F 0 "RV1" H 3010 7960 50  0000 C CNN
 F 1 "DUAL_POT" H 3140 7350 50  0000 C CNN
-F 2 "" H 2850 7650 50  0000 C CNN
+F 2 "" H 2850 7650 50  0001 C CNN
 F 3 "" H 2850 7650 50  0000 C CNN
 	1    2850 7650
 	1    0    0    -1  
 $EndComp
+Text Notes 7650 1450 0    60   ~ 0
+Design:\n10W in to each driver of a 8 ohm speaker\n-which means ~~9V and ~~1.1 A each\n-Power supply needs > 4.4 A, ~~5A\n-25W power dissipated in each chip\n\n1% THD\n-Vs needs +/- 22V\n-Transformer needs to be > 16-0-16, ~~5A (found 100VA, 20-0-20 on digikey)\n\nResevoir Caps\n- C = Q/V = I*t/V, I is ~~3 A, t = 1/60/2, V=allowed voltage drop = ~~4 V\n- C should be >6250u\n-put a small, better behaved cap in parallel to decouple\n-put a resistor that discharges cap when power is off over 6.8 seconds (1k)
+Text Notes 4150 2250 0    60   ~ 0
+supply voltage of tl074 is supposed to be 15 V, we're up at 28 now, might need regulator?
+$Comp
+L LM7915CT U6
+U 1 1 58E7206A
+P 5350 1350
+F 0 "U6" H 5150 1150 50  0000 C CNN
+F 1 "LM7915CT" H 5350 1150 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-220_Neutral123_Vertical" H 5350 1250 50  0000 C CIN
+F 3 "" H 5350 1350 50  0000 C CNN
+	1    5350 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L LM7815CT U5
+U 1 1 58E72369
+P 4350 1300
+F 0 "U5" H 4150 1500 50  0000 C CNN
+F 1 "LM7815CT" H 4350 1500 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-220_Neutral123_Vertical" H 4350 1400 50  0000 C CIN
+F 3 "" H 4350 1300 50  0000 C CNN
+	1    4350 1300
+	1    0    0    -1  
+$EndComp
+Connection ~ 1550 5000
+Connection ~ 1550 4650
+Connection ~ 3750 5000
+Connection ~ 3750 4650
+Connection ~ 3750 2350
+Connection ~ 3750 2000
+$Comp
+L TRANSFO_3 T?
+U 1 1 58E73943
+P -900 1150
+F 0 "T?" H -900 1650 50  0000 C CNN
+F 1 "TRANSFO_3" H -900 650 50  0000 C CNN
+F 2 "" H -900 1150 50  0000 C CNN
+F 3 "" H -900 1150 50  0000 C CNN
+	1    -900 1150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	-500 1050 -500 1250
 $EndSCHEMATC

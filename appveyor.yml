@@ -1,0 +1,20 @@
+environment:
+  - PYTHON_VERSION: 3.6
+    MINICONDA: C:\Miniconda36
+
+install:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - "conda create -q -n scimpy-environment python=%PYTHON_VERSION% numpy scipy matplotlib pandas pyinstaller pip"
+  - activate scimpy-environment
+  - pip install portaudio
+
+build_script:
+  - "echo %PATH%"
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - activate scimpy-environment
+  - pyinstaller run.py -n scimpy
+  - cp LICENSE* dist/scimpy/
+
