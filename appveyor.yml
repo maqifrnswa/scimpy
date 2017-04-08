@@ -29,4 +29,4 @@ artifacts:
   - path: scimpy_win32_%APPVEYOR_BUILD_NUMBER%
 
 only_commits:
-  message: /build/
+  message: /\[build\]/
