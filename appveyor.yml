@@ -1,3 +1,5 @@
+version: 0.0.1-{build}
+
 environment:
   PYTHON_VERSION: 3.4
   MINICONDA: C:\Miniconda3
@@ -25,3 +27,6 @@ build_script:
 
 artifacts:
   - path: scimpy_win32_%APPVEYOR_BUILD_NUMBER%
+
+only_commits:
+  message: /build/
