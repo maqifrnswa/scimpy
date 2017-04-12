@@ -21,12 +21,12 @@ build_script:
   - "echo %PATH%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - activate scimpy-environment
-  - pyinstaller run.py --noupx -n scimpy_win32_%APPVEYOR_BUILD_NUMBER% --distpath scimpy_win32_%APPVEYOR_BUILD_NUMBER%
-  - .\upx.exe --lzma scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/*.exe scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%/*.dll
-  - cp LICENSE* scimpy_win32_%APPVEYOR_BUILD_NUMBER%/scimpy_win32_%APPVEYOR_BUILD_NUMBER%
+  - pyinstaller run.py --noupx -n scimpy_win32_%APPVEYOR_BUILD_VERSION% --distpath scimpy_win32_%APPVEYOR_BUILD_VERSION%
+  - .\upx.exe --lzma scimpy_win32_%APPVEYOR_BUILD_VERSION%/scimpy_win32_%APPVEYOR_BUILD_VERSION%/*.exe scimpy_win32_%APPVEYOR_BUILD_VERSION%/scimpy_win32_%APPVEYOR_BUILD_VERSION%/*.dll
+  - cp LICENSE* scimpy_win32_%APPVEYOR_BUILD_VERSION%/scimpy_win32_%APPVEYOR_BUILD_VERSION%
 
 artifacts:
-  - path: scimpy_win32_%APPVEYOR_BUILD_NUMBER%
+  - path: scimpy_win32_%APPVEYOR_BUILD_VERSION%
 
 only_commits:
   message: /\[build\]/

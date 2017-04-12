@@ -90,9 +90,9 @@ class SpeakerTestEngine():
                                   f1=20000,
                                   method='log',
                                   phi=-90)*((2**(8*width))/2.-1)
-        np.concatenate((np.zeros(duration*.1 * datarate),
+        data = np.concatenate((np.zeros(int(duration*.1 * datarate)),
                         data,
-                        np.zeros(duration*.1 * datarate)))
+                        np.zeros(int(duration*.1 * datarate))))
         if width == 1:
             data = data+(2**(8*width))/2-1
         data = data.astype(dtype=np_type, copy=False)
