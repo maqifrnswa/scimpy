@@ -22,7 +22,7 @@ from PyQt5 import QtWidgets, QtCore
 class PlotCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self):
-        self.fig = Figure()
+        self.fig = Figure(tight_layout=True)
         super(PlotCanvas, self).__init__(self.fig)
         self.axes1 = None
         self.axes1b = None

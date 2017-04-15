@@ -10,6 +10,8 @@ import matplotlib.ticker
 # import matplotlib.pyplot as plt
 import scipy.optimize
 
+matplotlib.rcParams['axes.autolimit_mode'] = 'round_numbers'
+
 
 def cheby_a1(k):
     """Calculate A1 of a Chebyshev filter from k"""
@@ -110,8 +112,8 @@ def plot_impedance(ax1, ax2, freqs, magnitude, phase):
         tlabel.set_color('b')
     for tlabel in ax2.get_yticklabels():
         tlabel.set_color('r')
-    ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
-    ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
+    ax1.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(9))
+    ax2.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(9))
 
 
 def calc_impedance(plotwidget,
@@ -199,8 +201,8 @@ def calc_impedance(plotwidget,
         tlabel.set_color('r')
     # align_y_axis(ax_power, ax_groupdelay, 9)
 
-    ax_power.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
-    ax_groupdelay.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(11))
+    ax_power.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(9))
+    ax_groupdelay.yaxis.set_major_locator(matplotlib.ticker.LinearLocator(9))
 
     #ax_power.set_ylim([min(ax_power.get_yticks()), max(ax_power.get_yticks())])
     #ax_groupdelay.set_ylim([min(ax_groupdelay.get_yticks()), max(ax_groupdelay.get_yticks())])

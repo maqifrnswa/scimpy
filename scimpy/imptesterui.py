@@ -23,10 +23,12 @@ class MeasurementParamsForm(QtWidgets.QGroupBox):
         self.bitwidthcombobox.addItems(["8", "16", "32"])
         self.bitwidthcombobox.setCurrentIndex(1)
         self.durationlineedit = QtWidgets.QLineEdit("2")
+        self.testrlineedit = QtWidgets.QLineEdit("12")
         layout.addRow("Sampling Rate (kHz):", self.sampleratelineedit)
         layout.addRow("Buffer Size (frames, 0=auto):", self.bufferlineedit)
         layout.addRow("Data width (bits):", self.bitwidthcombobox)
         layout.addRow("Measurement Duration (s):", self.durationlineedit)
+        layout.addRow("Test Resistor (Ohms):", self.testrlineedit)
         self.setLayout(layout)
 
 
@@ -145,7 +147,8 @@ class ImpTester(QtWidgets.QWidget):
                 framesize=int(measformwidget.bufferlineedit.text()),
                 datarate=int(float(measformwidget.sampleratelineedit.text())),
                 duration=float(measformwidget.durationlineedit.text()),
-                width=int(measformwidget.bitwidthcombobox.currentText())/8.0)
+                width=int(measformwidget.bitwidthcombobox.currentText())/8.0,
+                testr=float(measformwidget.testrlineedit.text()))
 
         statusbar = self.window().statusbar
 

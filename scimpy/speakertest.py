@@ -39,7 +39,8 @@ class SpeakerTestEngine():
             framesize=0,
             datarate=44100,
             duration=4,
-            width=2):
+            width=2,
+            testr=12):
         """Runs speaker impedance test
 
         Arguments:
@@ -164,19 +165,27 @@ class SpeakerTestEngine():
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
-        imp_data = input_data_fft0/(input_data_fft0-input_data_fft1)
+        imp_data = testr*input_data_fft0/(input_data_fft0-input_data_fft1)
 
-#        ax2.plot(x_data,
-#                 scipy.signal.savgol_filter(np.abs(imp_data),
-#                                            1, 0))
-
-        # Top to tip: black green red white; don't use "default" device
         ax2.plot(x_data,
-                 scipy.signal.savgol_filter(np.abs(input_data_fft0),
-                                            1, 0),
-                 x_data,
-                 scipy.signal.savgol_filter(np.abs(input_data_fft1),
+                 scipy.signal.savgol_filter(np.abs(imp_data),
                                             1, 0))
+
+        # Top to tip: black green white(ring) red(tip); don't use "default" device
+        # output: headphones
+        # input: line in (right goes to speaker+, left goes to line in)
+        #headphones: positive to test resistor
+        #test resistor to speaker+
+        # speaker- to headphones minus
+        # line in: "right" goes to speaker+, "left" goes to headphones+
+        # line in ground goes to headphones-
+        # in sound card settings, PCM capture: line in, set Line in to capture
+#        ax2.plot(x_data,
+#                 scipy.signal.savgol_filter(np.abs(input_data_fft0),
+#                                            1, 0),
+#                 x_data,
+#                 scipy.signal.savgol_filter(np.abs(input_data_fft1),
+#                                            1, 0))
         
         # pick filter with 10 Hz filtering?
         ax2.set_xlim([20, 20000])
