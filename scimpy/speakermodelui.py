@@ -254,8 +254,8 @@ class SpeakerModelWidget(QtWidgets.QWidget):
         def savedriver():
             update_driver_dict()
             basedirectory = QtCore.QStandardPaths.writableLocation(
-                QtCore.QStandardPaths.AppDataLocation)
-            driverdir = basedirectory+"/drivers"
+                QtCore.QStandardPaths.DocumentsLocation)
+            driverdir = basedirectory+"/Scimpy/drivers"
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
@@ -270,8 +270,8 @@ class SpeakerModelWidget(QtWidgets.QWidget):
 
         def loaddriver():
             basedirectory = QtCore.QStandardPaths.writableLocation(
-                QtCore.QStandardPaths.AppDataLocation)
-            driverdir = basedirectory+"/drivers"
+                QtCore.QStandardPaths.DocumentsLocation)
+            driverdir = basedirectory+"/Scimpy/drivers"
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"

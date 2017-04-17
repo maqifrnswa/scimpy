@@ -55,19 +55,19 @@ Commercial and closed-source software tools are available to characterize and ai
 
 
 
-\section*{About the Author}
-Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and was a post-doctoral research associate in Applied and Engineering Physics at Cornell University prior to appointment at Notre Dame.
-
-At Notre Dame, Professor Howard has taught undergraduate-level ``Electromagnetic Fields and Waves" and graduate courses in photonics and optics. He is the director of the Biomedical Photonics Research Laboratory and is funded by the National Science Foundation, US Department of Homeland Security, and US Department of Agriculture.
-
-Dr. Howard is also a strong supporter of open-source software and hardware projects, as well as open and collaborative education. He is a Debian Developer and a contributor to several large projects including Arduino, LibreCAD, GNOME, and Ubuntu.
+%\section*{About the Author}
+%Dr. Scott Howard is a professor of electrical engineering at the University of Notre Dame. He received a PhD in Electrical Engineering from Princeton University and was a post-doctoral research associate in Applied and Engineering Physics at Cornell University prior to appointment at Notre Dame.
+%
+%At Notre Dame, Professor Howard has taught undergraduate-level ``Electromagnetic Fields and Waves" and graduate courses in photonics and optics. He is the director of the Biomedical Photonics Research Laboratory and is funded by the National Science Foundation, US Department of Homeland Security, and US Department of Agriculture.
+%
+%Dr. Howard is also a strong supporter of open-source software and hardware projects, as well as open and collaborative education. He is a Debian Developer and a contributor to several large projects including Arduino, LibreCAD, GNOME, and Ubuntu.
 
 
 \mainmatter
 \part{Using Scimpy}
-\chapter{Introduction}
+\chapter{Overview}
 
-This is largely a presentation of the ideas from Thiele and Small's papers, we'll 
+Scimpy is a tool to help you design loudspeakers by measuring the loudspeaker impedance, extracting performance information known as ``Thiele-Small Parameters" (TS parameters), and then using these extracted parameters to model and predict speaker performance inside of a box. You can either measure and extract TS parameters yourself, or you can download/import data from vendor websites and use it to design the speaker enclosure.
 
 Organize better?
 \begin{enumerate}
@@ -78,10 +78,6 @@ Organize better?
 \item background on speaker design theory
 \end{enumerate}
 
-\begin{quote}
-``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." \\-- A. N. Thiele
-\end{quote}
-test
 
 Other good software tools: \url{http://audio.claub.net/software/jbabgy/jbagby.html}
 
@@ -90,22 +86,57 @@ Good diffraction paper: \url{http://www.torean.dk/artikel/Diffraction.pdf}
 test
 
 \chapter{Usage}
-test
-\section{How to Connect Hardware}
-Headphones output is low impedance output, like 10-100 ohms (typically are ~32 ohms). Use headphones as output to drive speakers
 
-line out? does it have enough current? no, output impedance is like 100-600 ohms
+\section{Impedance Testing}
 
-So hook up - headphones output, line in input.
+\subsection{Hardware Connections}
 
-Line-level: consumer is 0.447 Vmax (0.894 Vpp)
+\begin{enumerate}
+\item Using alligator clips, connect a speaker driver and test resistor (in the range of 12--100$\Omega$) in series with your speaker driver.
+\item Connect both the left and right output (tip \& ring) of the headphones port to the free lead of the test resistor and connect the ground (shield) of the headphones port to the free lead of the speaker
+\item Connect the ``right" (ring) of the sound card line in port to the speaker lead that is connected to the test resistor
+\item Connect the ``left" (tip) of the sound card line in port to the test resistor lead that is already connected to the headphones port.
+\item Connect the ground (shield) of the souncd card line in port to the lead of the speaker already attached to the headphones ground.
+\end{enumerate}
 
-line in: 600-47 kOhms (low impedance)
-microphone, more sensitive but powered (need AC coupling?)
-\section{How to Use the Software}
-\subsection{Taking Data}
+
+Why do we  use this configuration? Headphones output is a low impedance output that expect loads on the order of 10--100$\Omega$, typically \~32$\Omega$. Line out, on the other hand, expects high impedance loads and therefore may not have enough current (line-out impedance is on the order of 100--600$\Omega$). Since we're driving speakers, use headphones out.
+
+As for the input, line in is somewhat low impedance (600--47k$\Omega$), but works for our case. If signals are extra small, you can use the sound card microphone input, which has some extra gain. Microphones are sometimes powered, so you may want or need to use a blocking capacitor if you use the microphone input.
+
+\subsection{How to Use the Software}
+
+\begin{enumerate}
+\item Open Scimpy. Click on the ``Impedance Measurements" tab.
+\item Choose your sound input and output device. Avoid ``default," it can be prone to some errors due to extra buffering.
+\item Use your OS's audio controls to set and control output volume, input gain, and select ``line in" input capture (e.g., ``alsamixer")
+\item Review measurement parameters (sample rate, duration). Default values should work fine. Be sure to input what your test resistor value. For accuracy, measure the test resistor with a multimeter.
+\item Click ``begin test." Review input data (bottom plot in main window) to make sure there is no clipping (i.e., all data is in between -1 and 1) and adjust sound record/output levels in your OS's control software accordingly accordingly.
+\item Click ``Save .ZMA/.ZDA" if you'd like to save your measurements.
+\item Open the fitting tab. Enter BL value from the driver spec sheet. If you don't have it, it's ok - this just scales the predicted output power in the next step
+\item Click ``Extract TS Parameters." Check if they make sense. If not, type in some reasonable values in the boxes and run again.
+\item Click ``Hold plot" on the main plot window.
+\item Click ``Export to modeller"
+\item Click on the ``Speaker Modelling" tab.
+\item At the bottom of the tab, click ``Calculate and plot."
+\item Compare your modelled fit to the measured data, they should match.
+\item Play with enclosure size and port parameters to see output performance. Clicking on ``infinite baffle" will model the speaker in an infinitely large box. Selecting ``B2 Box" will find the volume of the box for a ``traditional" closed-box geometry (so it behaves like a second-order Butterworth filter). Selecting ``QB3-B4-C4" will find the box volume and port geometry to achieve a ``traditional" vented/ported speaker enclosure alignment. Details are in the theory sections below.
+\end{enumerate}
+
 \subsection{Interpreting Data}
+
+
+
 \part{Theory}
+
+\chapter{Introduction}
+
+\begin{quote}
+``Hence the expression Butterworth box. However, in the spite of the phonetic similarity, butter boxes are not in general suitable as loudspeaker enclosures." \\-- A. N. Thiele
+\end{quote}
+
+As Thiele accurately describes in the above quote, not everything makes a good speaker. You need to get the driver, the enclosure (i.e., cabinet or ``box") tuned just right. This part goes in to the theory to illustrate what goes in to making a good loudspeaker. This is largely a presentation of the ideas from Thiele and Small's papers, but hopefully with some insight.
+
 \chapter{Impedance}\label{Impedance}
 \textbf{Modern amps have lots of current, digital feedback - is impedance important? probably not, except to help cross over maybe... Impedance measurements can get you info on internal parameters, help tune/design box for example!}
 

@@ -57,9 +57,10 @@ class PlotCanvas(FigureCanvas):
 class CentralWidget(QtWidgets.QWidget):
     def __init__(self):
         def getimpdir():
+            # Used to stopre in AppDataLocation, but was kind of hidden...
             basedirectory = QtCore.QStandardPaths.writableLocation(
-                QtCore.QStandardPaths.AppDataLocation)
-            impdir = basedirectory+"/plots"
+                QtCore.QStandardPaths.DocumentsLocation)
+            impdir = basedirectory+"/Scimpy/plots"
             if not os.path.isdir(impdir):
                 os.makedirs(impdir)
             filters = "Impedance Files (*.ZDA *.ZMA);;All Files (*.*)"
