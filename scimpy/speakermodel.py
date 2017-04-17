@@ -93,8 +93,11 @@ def sealed_find_vb_qt(vas, fs_, f3_, qts):
 
 
 def plot_impedance(ax1, ax2, freqs, magnitude, phase):
-    ax1.plot(freqs, magnitude, 'b-')
-    ax2.plot(freqs, phase, 'r--')
+    mask = (freqs >= 20) & (freqs <= 20000)
+    ax1.plot(freqs[mask], magnitude[mask], 'b-')
+    ax2.plot(freqs[mask], phase[mask], 'r--')
+    ax2.set_zorder(ax1.get_zorder()-.5)  # put ax1 in front of ax2
+    ax1.patch.set_visible(False)  # hide the 'canvas'
 
     ax1.set_ylabel('Impedance Magnitude (Ohms)', color='b')
     ax1.set_title('Impedance Magnitude and Phase versus Frequency')

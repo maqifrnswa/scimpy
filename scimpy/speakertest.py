@@ -11,6 +11,7 @@ import time
 import matplotlib.ticker
 import numpy as np
 import scipy.signal
+import scimpy.speakermodel as speakermodel
 
 # Open the stream required, mono mode only...
 # Written _longhand_ so that youngsters can understand how it works...
@@ -58,7 +59,21 @@ class SpeakerTestEngine():
             """PyAudio callback to fill output buffer and handle input
             buffer"""
             input_data.append(in_data)
-            # frames_to_write = frame_count
+            global message
+            if status != 0:
+                print(status)
+                message = "WARNING: unknown error"
+                if status == pyaudio.paInputUnderflow:
+                    message = "WARNING: Input Underflow. Directly choose \
+sound device instead of using \"default.\""
+                if status == pyaudio.paInputOverflow:
+                    message = "ERROR: Input Overflow. Reduce CPU usage or \
+increase buffer size."
+                if status == pyaudio.paOutputUnderflow:
+                    message = "ERROR: Output Underflow. Reduce CPU usage or \
+increase buffer size."
+                if status == pyaudio.paOutputOverflow:
+                    message = "ERROR: Output Overflow. Reduce buffer size."
             data_out = data[
                 self.counter*2:(self.counter+frame_count)*2]
             self.counter = self.counter+frame_count
@@ -88,7 +103,7 @@ class SpeakerTestEngine():
         data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
                                   f0=10,
                                   t1=duration,
-                                  f1=20000,
+                                  f1=22050,
                                   method='log',
                                   phi=-90)*((2**(8*width))/2.-1)
         data = np.concatenate((np.zeros(int(duration*.1 * datarate)),
@@ -103,6 +118,8 @@ class SpeakerTestEngine():
 
         # use as a list of byte objects for speed, then convert
         input_data = []
+        global message
+        message = ""
 
         print("Opening input device %d and output device %d" % (
             self.device_ndx["Input"], self.device_ndx["Output"]))
@@ -120,6 +137,10 @@ class SpeakerTestEngine():
 
         while self.stream.is_active():
             time.sleep(0.2)
+        
+        print(message)
+        if message != "":
+            self.plotwidget.window().statusbar.showMessage(message, 5000)
 
         input_data = b''.join(input_data)  # [3:]
         input_data = np.fromstring(input_data, dtype=np_type)
@@ -155,21 +176,29 @@ class SpeakerTestEngine():
         # plt.subplot(2, 2, 1)
         ax1 = self.plotwidget.axes1  # can do this programatically with figure.axes()
         ax2 = self.plotwidget.axes2
-        # ax3 = self.plotwidget.axes3
+        ax1b = self.plotwidget.axes1b
         # ax4 = self.plotwidget.axes4
-        ax1.plot(input_data[:, 0])  # left
-        ax1.plot(input_data[:, 1])  # right
-    
+        timedata = np.arange(0,len(input_data[:,0]))/datarate
+        ax2.plot(timedata, input_data[:, 1]/((2**(8*width))/2.-1))
+        ax2.plot(timedata, input_data[:, 0]/((2**(8*width))/2.-1))
+
         # commented out all except microphont in and mic FFT
         # ax2.plot(data)  # left
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
         imp_data = testr*input_data_fft0/(input_data_fft0-input_data_fft1)
+        # TODO: only plot for freq 10-20kHz
 
-        ax2.plot(x_data,
-                 scipy.signal.savgol_filter(np.abs(imp_data),
-                                            1, 0))
+        speakermodel.plot_impedance(ax1=ax1,
+                                    ax2=ax1b,
+                                    freqs=x_data,
+                                    magnitude=np.abs(imp_data),
+                                    phase=np.angle(imp_data)*180/np.pi)
+
+        # ax2.plot(x_data,
+        #          scipy.signal.savgol_filter(np.abs(imp_data),
+        #                                     1, 0))
 
         # Top to tip: black green white(ring) red(tip); don't use "default" device
         # output: headphones
@@ -188,21 +217,21 @@ class SpeakerTestEngine():
 #                                            1, 0))
         
         # pick filter with 10 Hz filtering?
-        ax2.set_xlim([20, 20000])
+        ax2.set_xlim([0, max(timedata)])
 
 
-
-        ax1.set_title('Impedance Measurement (Not Finished!)')
-        ax1.set_ylabel('Microphone Left Channel Signal', color='b')
-        ax2.set_xlabel('Sample Number')
-        ax2.set_ylabel('abs(FFT) Left/(Left-Right)', color='b')
-        ax2.set_xlabel('Frequency (Hz)')
-        ax2.set_xscale('log')
-        ax2.xaxis.set_major_formatter(
-            matplotlib.ticker.FormatStrFormatter("%d"))
-        ax1.yaxis.set_major_formatter(
+### maybe reinstate these?
+#        ax1.set_title('Impedance Measurement (Not Finished!)')
+        ax2.set_ylabel('Measured Signal (clipping at 1)')
+        ax2.set_xlabel('Time (s)')
+#        ax2.set_ylabel('abs(FFT) Left/(Left-Right)', color='b')
+        ax1.set_xlabel('Frequency (Hz)')
+#        ax2.set_xscale('log')
+#        ax2.xaxis.set_major_formatter(
+#            matplotlib.ticker.FormatStrFormatter("%d"))
+        ax2.yaxis.set_major_formatter(
             matplotlib.ticker.FormatStrFormatter("%g"))
-        ax2.grid(True, which="both", color="0.65", ls='-')
+#        ax2.grid(True, which="both", color="0.65", ls='-')
 
 
 
