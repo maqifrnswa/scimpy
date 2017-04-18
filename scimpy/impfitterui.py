@@ -133,13 +133,13 @@ def free_speaker_extract(init_test, progressdialog):
             z1d = np.zeros(diff.size*2, dtype=np.float64)
             # since omega is linear, and we are interested in log(omega)
             # weight each by the gradient of log omega
-            z1d[0:z1d.size:2] = diff.real# * weights
-            z1d[1:z1d.size:2] = diff.imag# * weights
+            z1d[0:z1d.size:2] = diff.real * weights
+            z1d[1:z1d.size:2] = diff.imag * weights
             # print(ztotal[100], zmag[100] * np.exp(1j*zphase[100]))
             # sse = sum(z1d**2)
             # if sse > sse.size:
             #    return sum(z1d**2)
-            return sum(z1d**2) # old, unweighted
+            return sum(z1d**2)
             # return sum((abs(ztotal)-zmag)**2)
 
     def print_fun(x, f, accepted):
@@ -174,7 +174,7 @@ def free_speaker_extract(init_test, progressdialog):
 
     stepsize = .5
     bounds = [(element*.01, element*100) for element in init_test]
-    bounds[5] = (0,2)
+    bounds[5] = (0,1)
     minimizer_kwargs = dict(bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega, zmag, zphase)
@@ -243,17 +243,17 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
 
         formwidgetlayout = QtWidgets.QFormLayout()
 
-        bllineedit = QtWidgets.QLineEdit("1")
+        bllineedit = QtWidgets.QLineEdit("4.5")
         formwidgetlayout.addRow("*BL (Tm):", bllineedit)
-        relineedit = QtWidgets.QLineEdit("1")
+        relineedit = QtWidgets.QLineEdit("6")
         formwidgetlayout.addRow("Re (ohms):", relineedit)
-        rmslineedit = QtWidgets.QLineEdit("1")
+        rmslineedit = QtWidgets.QLineEdit("3.4")
         formwidgetlayout.addRow("Rms (ohms):", rmslineedit)
-        mmslineedit = QtWidgets.QLineEdit("1")
+        mmslineedit = QtWidgets.QLineEdit("1.8")
         formwidgetlayout.addRow("Mms (g):", mmslineedit)
-        cmslineedit = QtWidgets.QLineEdit("1")
+        cmslineedit = QtWidgets.QLineEdit("0.16")
         formwidgetlayout.addRow("Cms (mm/N):", cmslineedit)
-        lelineedit = QtWidgets.QLineEdit("1")
+        lelineedit = QtWidgets.QLineEdit("0.1")
         formwidgetlayout.addRow("K (times 1000):", lelineedit)
         reddylineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("n:", reddylineedit)

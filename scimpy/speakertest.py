@@ -187,7 +187,7 @@ increase buffer size."
 
         x_data = np.fft.rfftfreq(input_data[:, 0].size,
                                  d=1./datarate)
-        imp_data = testr*input_data_fft0/(input_data_fft0-input_data_fft1)
+        imp_data = testr*input_data_fft0/(input_data_fft1-input_data_fft0)
         # TODO: only plot for freq 10-20kHz
 
         speakermodel.plot_impedance(ax1=ax1,

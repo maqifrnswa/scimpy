@@ -22,7 +22,7 @@ class MeasurementParamsForm(QtWidgets.QGroupBox):
         self.bitwidthcombobox = QtWidgets.QComboBox()
         self.bitwidthcombobox.addItems(["8", "16", "32"])
         self.bitwidthcombobox.setCurrentIndex(1)
-        self.durationlineedit = QtWidgets.QLineEdit("2")
+        self.durationlineedit = QtWidgets.QLineEdit("0.3")
         self.testrlineedit = QtWidgets.QLineEdit("12")
         layout.addRow("Sampling Rate (kHz):", self.sampleratelineedit)
         layout.addRow("Buffer Size (frames, 0=auto):", self.bufferlineedit)
