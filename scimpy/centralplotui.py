@@ -74,7 +74,7 @@ class CentralWidget(QtWidgets.QWidget):
                                                          filters)
             if filename == "":
                 return
-            elif os.path.splitext(filename)[1] == "":
+            elif os.path.splitext(filename)[-1] == "":
                 filename = filename+".ZMA"
             print(self.canvas.axes1.get_lines()[0])
             try:

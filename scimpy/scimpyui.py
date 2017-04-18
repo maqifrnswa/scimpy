@@ -14,6 +14,7 @@ import scimpy.impfitterui as impfitterui
 import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.Qt import QDesktopServices, QUrl
 
 
 class SpeakerModelMainWindow(QtWidgets.QMainWindow):
@@ -60,20 +61,28 @@ class SpeakerModelMainWindow(QtWidgets.QMainWindow):
         self.tabifyDockWidget(self.imptestdock, self.impfitterdock)
 
         self.init_menus()
-        self.init_toolbar()
+#        self.init_toolbar()
+
+    def helptriggeraction(self):
+        QDesktopServices.openUrl(QUrl("https://github.com/maqifrnswa/scimpy/raw/master/doc/scimpy.pdf"))
 
     def init_menus(self):
         filemenu = self.menuBar().addMenu("&File")
         newaction = QtWidgets.QAction("&New", self)
         filemenu.addAction(newaction)
 
-    def init_toolbar(self):
-        filetoolbar = self.addToolBar("test")
-        newaction = QtWidgets.QAction("Testing", self)
-        newaction = QtWidgets.QAction("Testing", self)
-        newaction2 = QtWidgets.QAction("Testing2", self)
-        filetoolbar.addAction(newaction)
-        filetoolbar.addAction(newaction2)
+        helpmenu = self.menuBar().addMenu("&Help")
+        helpaction = QtWidgets.QAction("&Help", self)
+        helpaction.triggered.connect(self.helptriggeraction)
+        helpmenu.addAction(helpaction)
+
+#    def init_toolbar(self):
+#        filetoolbar = self.addToolBar("test")
+#        newaction = QtWidgets.QAction("Testing", self)
+#        newaction = QtWidgets.QAction("Testing", self)
+#        newaction2 = QtWidgets.QAction("Testing2", self)
+#        filetoolbar.addAction(newaction)
+#        filetoolbar.addAction(newaction2)
 
     def center(self):
         """Method to center widget on screen"""

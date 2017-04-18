@@ -259,11 +259,11 @@ class SpeakerModelWidget(QtWidgets.QWidget):
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename, exten = QtWidgets.QFileDialog.getSaveFileName(self,
+            filename = QtWidgets.QFileDialog.getSaveFileName(self,
                                                          "Save Driver Specs",
                                                          driverdir,
                                                          filters)
-            if os.path.splitext(filename)[1] == "":
+            if os.path.splitext(filename)[-1] == "":
                 filename = filename+".drv"
             with open(filename, 'w') as outfile:
                 json.dump(self.driver_params, outfile)

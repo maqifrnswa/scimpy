@@ -109,7 +109,7 @@ def find_main_window():
 #        self.result = output
 
 
-def free_speaker_extract(init_test, progressdialog):
+def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
     class Residuals():
         def __init__(self, omega, zmag, zphase):
             self.omega = omega
@@ -172,12 +172,13 @@ def free_speaker_extract(init_test, progressdialog):
     except IndexError:
         print("need to impliment if file only has zeros for phase")
 
+    mask = (omega >= minfreq*2*np.pi) & (omega <= maxfreq*2*np.pi)
     stepsize = .5
     bounds = [(element*.01, element*100) for element in init_test]
     bounds[5] = (0,1)
     minimizer_kwargs = dict(bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
-    residuals_obj = Residuals(omega, zmag, zphase)
+    residuals_obj = Residuals(omega[mask], zmag[mask], zphase[mask])
     output = scipy.optimize.basinhopping(residuals_obj,
                                          x0=init_test,
                                          callback=print_fun,
@@ -213,7 +214,10 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
                          float(mmslineedit.text())/blproduct**2/1000,
                          float(cmslineedit.text())*blproduct**2/1000,
                          float(reddylineedit.text())]
-            fitresult = free_speaker_extract(init_test, progressdialog)
+            fitresult = free_speaker_extract(init_test,
+                                             progressdialog,
+                                             float(minfreqlineedit.text()),
+                                             float(maxfreqlineedit.text()))
             # worker = FreeSpeakerExtract(init_test)
             # progressdialog.exec()
             # get fitresult from worker
@@ -257,6 +261,10 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
         formwidgetlayout.addRow("K (times 1000):", lelineedit)
         reddylineedit = QtWidgets.QLineEdit("1")
         formwidgetlayout.addRow("n:", reddylineedit)
+        minfreqlineedit = QtWidgets.QLineEdit("20")
+        formwidgetlayout.addRow("Minimum Fit Freq (Hz):", minfreqlineedit)
+        maxfreqlineedit = QtWidgets.QLineEdit("20000")
+        formwidgetlayout.addRow("Maximum Fit Freq (Hz):", maxfreqlineedit)
         lelabel = QtWidgets.QLabel("")
         formwidgetlayout.addRow("Le (mH @ 1 kHz):", lelabel)
         drelabel = QtWidgets.QLabel("")
