@@ -10,7 +10,7 @@ import scipy.optimize
 import logging
 import matplotlib
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 
 
 logger = logging.getLogger(__name__)
@@ -18,6 +18,14 @@ logger = logging.getLogger(__name__)
 
 # TODO put all the find_main_window functions in one module, just call that
 def find_main_window():
+    """
+
+
+    :returns: the top level Qt window
+
+    :rtype: PyQt5.QtWidgets.QMainWindow
+
+    """
     for widget in QtWidgets.QApplication.topLevelWidgets():
         if isinstance(widget, QtWidgets.QMainWindow):
             return widget
@@ -114,7 +122,16 @@ def find_main_window():
 
 
 def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
+    """
+
+    :param init_test: param progressdialog:
+    :param minfreq: param maxfreq:
+    :param progressdialog:
+    :param maxfreq:
+
+    """
     class Residuals():
+        """ """
         def __init__(self, omega, zmag, zphase):
             self.omega = omega
             self.zmag = zmag
@@ -147,10 +164,18 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             # return sum((abs(ztotal)-zmag)**2)
 
     def print_fun(x, f, accepted):
+        """
+
+        :param x: param f:
+        :param accepted:
+        :param f:
+
+        """
         if int(accepted) == 1:
             logger.debug("at minima %.4f accepted %d" % (f, int(accepted)) + str(x))
 
     class StepFunc():
+        """ """
         def __init__(self, stepsize, init_test):
             self.stepsize = stepsize
             self.init_test = init_test
@@ -165,6 +190,14 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             return xout
 
     def accept_test_func(f_new, x_new, f_old, x_old):
+        """
+
+        :param f_new: param x_new:
+        :param f_old: param x_old:
+        :param x_new:
+        :param x_old:
+
+        """
         # might not be needed...
         return bool(np.all(x_new > 0))
 
@@ -204,6 +237,7 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
     def init_ui(self):
         """Method to initialize UI and widget callbacks"""
         def freespeakerbtn_handler():
+            """ """
             progressdialog = QtWidgets.QProgressDialog("Finding Fit Values",
                                                    "Cancel",
                                                    0,
@@ -235,6 +269,7 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
             progressdialog.setValue(100)
 
         def export_to_model_btn_handler():
+            """ """
             speakermodel = find_main_window().speakermodel
             speakermodel.relineedit.setText(str(relineedit.text()))
             speakermodel.lelineedit.setText(str(lelineedit.text()))

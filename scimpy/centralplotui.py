@@ -61,7 +61,14 @@ class CentralWidget(QtWidgets.QWidget):
     """Central widget that holds the plots"""
     def __init__(self):
         def getimpdir():
-            """Returns the directory plots are stored"""
+            """
+
+            :returns: directory plots are stored and the filters to use for
+            Qt's file dialogs
+
+            :rtype: str, str
+
+            """
             # Used to stopre in AppDataLocation, but was kind of hidden...
             basedirectory = QtCore.QStandardPaths.writableLocation(
                 QtCore.QStandardPaths.DocumentsLocation)

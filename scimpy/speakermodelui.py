@@ -9,10 +9,9 @@ import os
 import json
 import scimpy.speakermodel as speakermodel
 import numpy as np
+from PyQt5 import QtWidgets, QtCore
 import matplotlib
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtWidgets, QtCore
-
 
 logger = logging.getLogger(__name__)
 
