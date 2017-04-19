@@ -7,9 +7,9 @@ Created on Mon Mar  7 22:18:45 2016
 import logging
 import pyaudio
 import scimpy.speakertest as speakertest
+from PyQt5 import QtWidgets
 import matplotlib
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtWidgets
 
 
 logger = logging.getLogger(__name__)

@@ -4,19 +4,19 @@ Created on Tue Mar  8 21:25:10 2016
 
 @author: showard
 """
-import scimpy.speakermodel as speakermodel
 import os
 import csv
 import pandas
 import matplotlib.axes
 import numpy as np
+from PyQt5 import QtWidgets, QtCore
+import scimpy.speakermodel as speakermodel
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
-from PyQt5 import QtWidgets, QtCore
 
 
 class PlotCanvas(FigureCanvas):
@@ -32,6 +32,7 @@ class PlotCanvas(FigureCanvas):
         self.placeholder()
 
     def placeholder(self):
+        """Plots placeholder figure upon load"""
         t__ = np.arange(0.0, 3.0, 0.01)
         s__ = np.sin(2*np.pi*t__)
         self.axes1.plot(t__, s__, 'b-')
@@ -43,20 +44,24 @@ class PlotCanvas(FigureCanvas):
         self.axes2.set_title("Scimpy Speaker Designer!")
 
     def init_axes(self):
+        """Adds subplots to the axes"""
         self.axes1 = self.fig.add_subplot(211)
         self.axes2 = self.fig.add_subplot(212)
         self.axes1b = matplotlib.axes.Axes.twinx(self.axes1)
         self.axes2b = matplotlib.axes.Axes.twinx(self.axes2)
 
     def clear_axes(self):
+        """Clears the axes"""
         if self.parentWidget().holdplotaction.isChecked() is False:
             self.fig.clf()
             self.init_axes()
 
 
 class CentralWidget(QtWidgets.QWidget):
+    """Central widget that holds the plots"""
     def __init__(self):
         def getimpdir():
+            """Returns the directory plots are stored"""
             # Used to stopre in AppDataLocation, but was kind of hidden...
             basedirectory = QtCore.QStandardPaths.writableLocation(
                 QtCore.QStandardPaths.DocumentsLocation)
@@ -67,11 +72,10 @@ class CentralWidget(QtWidgets.QWidget):
             return impdir, filters
 
         def saveimpedance():
+            """Saves active plots held on the widget"""
             impdir, filters = getimpdir()
-            filename, exten = QtWidgets.QFileDialog.getSaveFileName(self,
-                                                         "Save Impedance Data",
-                                                         impdir,
-                                                         filters)
+            filename = QtWidgets.QFileDialog.getSaveFileName(
+                self, "Save Impedance Data", impdir, filters)
             if filename == "":
                 return
             elif os.path.splitext(filename)[-1] == "":
@@ -91,11 +95,10 @@ class CentralWidget(QtWidgets.QWidget):
                     writer.writerow(row)
 
         def loadimpedance():
+            """Loads previously saved plots on to the widget"""
             impdir, filters = getimpdir()
-            filename, exten = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                         "Load Impedance Data",
-                                                         impdir,
-                                                         filters)
+            filename = QtWidgets.QFileDialog.getOpenFileName(
+                self, "Load Impedance Data", impdir, filters)
             if filename == "":
                 return
 
@@ -126,16 +129,16 @@ class CentralWidget(QtWidgets.QWidget):
 
         savezraaction.triggered.connect(saveimpedance)
         loadzraaction.triggered.connect(loadimpedance)
-        
+
         mpl_toolbar = NavigationToolbar(self.canvas, self.parentWidget())
-        
+
 #        toolbarwidget=QtWidgets.QWidget()
 #        layout2=QtWidgets.QHBoxLayout()
 #        layout2.addWidget(toolbar)
 #        layout2.addWidget(mpl_toolbar)
 #        toolbarwidget.setLayout(layout2)
 #        layout.addWidget(toolbarwidget)
-        
+
         layout.addWidget(toolbar)
         layout.addWidget(self.canvas)
         layout.addWidget(mpl_toolbar)
