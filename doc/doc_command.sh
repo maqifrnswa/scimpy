@@ -1,1 +1,1 @@
-pandoc -s -m --toc --template=template.html --css=template.css -o test.html test.md
+pdf2htmlEX --split-pages 1 --fit-width 1024 --dest-dir html scimpy.pdf --external-hint-tool=ttfautohint --auto-hint=1
