@@ -105,13 +105,14 @@ class SealedBoxWidget(QtWidgets.QGroupBox):
             print(wbox, float(self.vbllineedit.text()))
             area_to_length_ratio = (wbox**2) * \
                 (float(self.vbllineedit.text())/1000)/(345**2)
+                # wbox^2*V_b/c^2
             print("A/l in m = ", area_to_length_ratio,
-                  ' for 6" diameter, length inches = ',
-                  (np.pi*(6*0.0254/2)**2/area_to_length_ratio)/0.0254)
-            f3lineedit.setText("TBD")
+                  ' for 4" diameter, length inches = ',
+                  (np.pi*(4*0.0254/2)**2/area_to_length_ratio)/0.0254)
+            f3lineedit.setText("TBD, not implimented")
             qtlabel.setText("TBD")
             self.loveralineedit.setText(
-                "{0:3.0f}".format(1/area_to_length_ratio))
+                "{0:.3g}".format(1/area_to_length_ratio/100))
 
         super(SealedBoxWidget, self).__init__(title)
         layout = QtWidgets.QFormLayout()
@@ -125,13 +126,12 @@ class SealedBoxWidget(QtWidgets.QGroupBox):
         layout.addRow("Vb (ft^3):", vbflineedit)
         qtlabel = QtWidgets.QLabel()
         layout.addRow("Qt:", qtlabel)
-        f3lineedit = QtWidgets.QLineEdit()
+        f3lineedit = QtWidgets.QLabel()  # changed to QLabel from QLineEdit
         f3lineedit.setToolTip("3 dB Cutoff Frequency")
         layout.addRow("f3 (Hz):", f3lineedit)
         self.loveralineedit = QtWidgets.QLineEdit()
         self.loveralineedit.setToolTip("Port/Vent Length to Area Ratio")
-        layout.addRow("L/A (m^-1):",
-                      self.loveralineedit)
+        layout.addRow("L/A (cm^-1):", self.loveralineedit)
 
         resetbtn = QtWidgets.QPushButton("Set to Infinite Baffle")
         resetbtn.clicked.connect(reset_params)
@@ -302,7 +302,7 @@ class SpeakerModelWidget(QtWidgets.QWidget):
                                             )/1000,
                                         l_over_a=float(
                                             sealedboxwidg.loveralineedit
-                                            .text()))
+                                            .text())*100)
 
         def vasflineedit_callback():
             """On Vas in ft^3 change, find and update Cms (which then updates

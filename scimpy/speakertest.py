@@ -107,8 +107,8 @@ increase buffer size."
                                   method='log',
                                   phi=-90)*((2**(8*width))/2.-1)
         data = np.concatenate((np.zeros(int(duration*.1 * datarate)),
-                        data,
-                        np.zeros(int(duration*.1 * datarate))))
+                               data,
+                               np.zeros(int(duration * 0.1 * datarate))))
         if width == 1:
             data = data+(2**(8*width))/2-1
         data = data.astype(dtype=np_type, copy=False)
@@ -137,10 +137,8 @@ increase buffer size."
 
         while self.stream.is_active():
             time.sleep(0.2)
-        
-        print(message)
-        if message != "":
-            self.plotwidget.window().statusbar.showMessage(message, 5000)
+
+        self.plotwidget.window().statusbar.showMessage(message)
 
         input_data = b''.join(input_data)  # [3:]
         input_data = np.fromstring(input_data, dtype=np_type)

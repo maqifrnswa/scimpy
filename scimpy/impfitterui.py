@@ -186,11 +186,8 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
                                          minimizer_kwargs=minimizer_kwargs,
                                          #accept_test=accept_test_func,
                                          take_step=stepfuncobj)
-    print(output.keys())
+    # print(output.keys())
     output = output["x"]
-    print([output, "re: ", output[0], "le: ", output[1], "rms: ",
-           4.5**2/output[2], "mms: ", output[3]*4.5**2, "cms: ",
-           output[4]/4.5**2])
     return output
 
 
