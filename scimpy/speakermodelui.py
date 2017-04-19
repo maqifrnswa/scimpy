@@ -4,14 +4,17 @@ Created on Mon Mar  7 22:23:03 2016
 
 @author: showard
 """
-
+import logging
+import os
+import json
 import scimpy.speakermodel as speakermodel
 import numpy as np
 import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtWidgets, QtCore
-import os
-import json
+
+
+logger = logging.getLogger(__name__)
 
 
 # eventually just pass the whole widget as the argument below
@@ -98,17 +101,15 @@ class SealedBoxWidget(QtWidgets.QGroupBox):
                 "{0:0.2g}".format(float(vasflineedit.text())/alpha))
             self.vbllineedit.setText(
                 "{0:0.2g}".format(float(vasllineedit.text())/alpha))
-            print("fb Hz = ", float(fslineedit.text())*h__,
-                  " h = ", h__,
-                  " alpha = ", alpha)
+            logger.info("fb Hz = %f, h = %f, alpha = %f" %
+                        (float(fslineedit.text())*h__, h__, alpha))
+
             wbox = float(fslineedit.text())*h__*2*np.pi
-            print(wbox, float(self.vbllineedit.text()))
             area_to_length_ratio = (wbox**2) * \
                 (float(self.vbllineedit.text())/1000)/(345**2)
-                # wbox^2*V_b/c^2
-            print("A/l in m = ", area_to_length_ratio,
-                  ' for 4" diameter, length inches = ',
-                  (np.pi*(4*0.0254/2)**2/area_to_length_ratio)/0.0254)
+            logger.info('A/l in m = %f, for 2" diameter, length inches = %f' %
+                        (area_to_length_ratio,
+                         (np.pi*(2*0.0254/2)**2/area_to_length_ratio)/0.0254))
             f3lineedit.setText("TBD, not implimented")
             qtlabel.setText("TBD")
             self.loveralineedit.setText(

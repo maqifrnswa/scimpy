@@ -7,9 +7,13 @@ Created on Mon Mar  7 22:23:03 2016
 
 import numpy as np
 import scipy.optimize
+import logging
 import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtWidgets, QtCore
+
+
+logger = logging.getLogger(__name__)
 
 
 # TODO put all the find_main_window functions in one module, just call that
@@ -144,7 +148,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
 
     def print_fun(x, f, accepted):
         if int(accepted) == 1:
-            print("at minima %.4f accepted %d" % (f, int(accepted)), x)
+            logger.debug("at minima %.4f accepted %d" % (f, int(accepted)) + str(x))
 
     class StepFunc():
         def __init__(self, stepsize, init_test):
@@ -170,7 +174,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
         zmag = plotwidget.axes1.get_lines()[0].get_ydata()
         zphase = plotwidget.axes1b.get_lines()[0].get_ydata()/180.0*np.pi
     except IndexError:
-        print("need to impliment if file only has zeros for phase")
+        logger.error("need to impliment if file only has zeros for phase")
 
     mask = (omega >= minfreq*2*np.pi) & (omega <= maxfreq*2*np.pi)
     stepsize = .5

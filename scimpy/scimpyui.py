@@ -6,15 +6,16 @@ Created on Thu Feb  4 17:20:04 2016
 """
 
 import sys
+import argparse
+import logging
 import scimpy.imptesterui as imptesterui
 import scimpy.speakermodelui as speakermodelui
 import scimpy.centralplotui as centralplotui
 import scimpy.impfitterui as impfitterui
-
-import matplotlib
-matplotlib.use('Qt5Agg')
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.Qt import QDesktopServices, QUrl
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 
 class SpeakerModelMainWindow(QtWidgets.QMainWindow):
@@ -59,6 +60,8 @@ class SpeakerModelMainWindow(QtWidgets.QMainWindow):
         self.impfitterdock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable |
                                        QtWidgets.QDockWidget.DockWidgetFloatable)
         self.tabifyDockWidget(self.imptestdock, self.impfitterdock)
+        
+        self.speakermodeldock.raise_()
 
         self.init_menus()
 #        self.init_toolbar()
@@ -93,8 +96,21 @@ class SpeakerModelMainWindow(QtWidgets.QMainWindow):
         self.move(framegeo.topLeft())
 
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='Scimpy Speaker Design Suite')
+    parser.add_argument('-v', '--verbose',
+                        action='count',
+                        default=0,
+                        help="Increase logging level (-v info, -vv debug)")
+    args = parser.parse_args()
+    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    level = levels[min(len(levels)-1,args.verbose)]
+    logging.basicConfig(level=level)
+
+
 def main():
     """Starts Scimpy Speaker Design Suite"""
+    parse_arguments()
     app = QtWidgets.QApplication(sys.argv)
     app.setApplicationName("scimpy")
     # imptesterwidg = imptesterui.ImpTester()

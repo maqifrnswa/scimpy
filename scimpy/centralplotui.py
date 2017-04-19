@@ -76,7 +76,6 @@ class CentralWidget(QtWidgets.QWidget):
                 return
             elif os.path.splitext(filename)[-1] == "":
                 filename = filename+".ZMA"
-            print(self.canvas.axes1.get_lines()[0])
             try:
                 data = zip(self.canvas.axes1.get_lines()[0].get_xdata(),
                            self.canvas.axes1.get_lines()[0].get_ydata(),

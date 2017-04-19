@@ -8,10 +8,15 @@ right channel are available after run() in the input_data_fft0 and
 input_data_fft1 attributes """
 import pyaudio
 import time
+import logging
 import matplotlib.ticker
 import numpy as np
 import scipy.signal
 import scimpy.speakermodel as speakermodel
+
+
+logger = logging.getLogger(__name__)
+
 
 # Open the stream required, mono mode only...
 # Written _longhand_ so that youngsters can understand how it works...
@@ -61,7 +66,6 @@ class SpeakerTestEngine():
             input_data.append(in_data)
             global message
             if status != 0:
-                print(status)
                 message = "WARNING: unknown error"
                 if status == pyaudio.paInputUnderflow:
                     message = "WARNING: Input Underflow. Directly choose \
@@ -99,7 +103,7 @@ increase buffer size."
             pa_format = pyaudio.paInt32
             np_type = np.int32
         else:
-            print("Bit width should be 1, 2, or 4 bytes")
+            logger.error("Bit width should be 1, 2, or 4 bytes")
         data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
                                   f0=10,
                                   t1=duration,
@@ -121,8 +125,8 @@ increase buffer size."
         global message
         message = ""
 
-        print("Opening input device %d and output device %d" % (
-            self.device_ndx["Input"], self.device_ndx["Output"]))
+        logger.info("Opening input device %d and output device %d"
+                    % (self.device_ndx["Input"], self.device_ndx["Output"]))
 
         self.counter = 0
         self.stream = pya.open(format=pa_format,
@@ -142,7 +146,8 @@ increase buffer size."
 
         input_data = b''.join(input_data)  # [3:]
         input_data = np.fromstring(input_data, dtype=np_type)
-        print(len(input_data), len(data))
+        logger.info("Input data length: %f, Output data length: %f"
+                    % (len(input_data), len(data)))
         # two channels
         input_data =\
             np.reshape(input_data, (int(len(input_data)/2), 2))

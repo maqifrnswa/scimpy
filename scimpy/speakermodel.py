@@ -9,8 +9,10 @@ import numpy as np
 import matplotlib.ticker
 # import matplotlib.pyplot as plt
 import scipy.optimize
+import logging
 
 matplotlib.rcParams['axes.autolimit_mode'] = 'round_numbers'
+logger = logging.getLogger(__name__)
 
 
 def cheby_a1(k):
@@ -64,7 +66,7 @@ def find_ported_params_qb3(qts):
     qb3_a1 = (2+qb3_a2**2)/(2*np.sqrt(2*qb3_a2))
     qb3_a3 = np.sqrt(2*qb3_a2)
     alpha = (qb3_a1*qb3_a2*qb3_a3-qb3_a1**2-qb3_a3**2)/qb3_a3**2
-    print(alpha, h__)
+    logger.info("alpha = %f, h = %f" % (alpha, h__))
     return alpha, h__
 
 
@@ -148,7 +150,6 @@ def calc_impedance(plotwidget,
     ztotal = zmech+re_+1j*omega*le_
 
     transferfunc = 1j*(omega*zmech/ztotal)*re_*ces
-    print(l_over_a)
     if l_over_a != np.inf:
         transferfunc = transferfunc*(1j*omega*leb) / \
             (1j*omega*leb+1/(1j*omega*cev))

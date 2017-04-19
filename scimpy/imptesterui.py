@@ -4,11 +4,15 @@ Created on Mon Mar  7 22:18:45 2016
 
 @author: showard
 """
+import logging
 import pyaudio
 import scimpy.speakertest as speakertest
 import matplotlib
 matplotlib.use('Qt5Agg')
 from PyQt5 import QtWidgets
+
+
+logger = logging.getLogger(__name__)
 
 
 class MeasurementParamsForm(QtWidgets.QGroupBox):
@@ -71,7 +75,7 @@ class SoundDeviceGroupBox(QtWidgets.QGroupBox):
             displayed device information and sets the output device index"""
             new_row = self.devlistwidg.row(current)
             devinfolabel = self.deviceinfolabel
-            print(sc_info[new_row])
+            logger.info(sc_info[new_row])
             devinfolabel.setText("Default Sampling Rate (Hz): {0:.0f}\n"
                                  "Max {4} Channels: {1}\n"
                                  "Suggested {4} Buffer (frames): {2}-{3}\n"
