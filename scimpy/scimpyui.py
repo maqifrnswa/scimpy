@@ -64,7 +64,8 @@ class SpeakerModelMainWindow(QtWidgets.QMainWindow):
 #        self.init_toolbar()
 
     def helptriggeraction(self):
-        QDesktopServices.openUrl(QUrl("https://github.com/maqifrnswa/scimpy/raw/master/doc/scimpy.pdf"))
+        QDesktopServices.openUrl(QUrl(
+                "https://maqifrnswa.github.io/scimpy/doc/html/scimpy.html"))
 
     def init_menus(self):
         filemenu = self.menuBar().addMenu("&File")
