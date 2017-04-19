@@ -12,3 +12,4 @@ dist
 *.spec
 *.pyc
 *bak
+*.pdf

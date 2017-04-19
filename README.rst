@@ -106,10 +106,10 @@ To update to the newest version of scimpy
 
     
 
-Book
-~~~~
+Scimpy Usage and Speaker Design Theory Book
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-LaTeX (e.g., MiKTeX)
+Is available here: https://maqifrnswa.github.io/scimpy/doc/html/scimpy.html
 
 
 License
