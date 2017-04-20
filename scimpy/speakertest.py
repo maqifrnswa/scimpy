@@ -6,9 +6,9 @@ The main class is SpeakerTestEngine, which is initialized with no arguments.
 Data is collected with the run() method. FFT corresponding to the left and
 right channel are available after run() in the input_data_fft0 and
 input_data_fft1 attributes """
-import pyaudio
 import time
 import logging
+import pyaudio
 import matplotlib.ticker
 import numpy as np
 import scipy.signal
@@ -121,6 +121,7 @@ increase buffer size."
         data = np.array([data, data]).transpose().flatten()
 
         # use as a list of byte objects for speed, then convert
+        # actually faster than byte array
         input_data = []
         global message
         message = ""
@@ -144,8 +145,7 @@ increase buffer size."
 
         self.plotwidget.window().statusbar.showMessage(message)
 
-        input_data = b''.join(input_data)  # [3:]
-        input_data = np.fromstring(input_data, dtype=np_type)
+        input_data = np.fromstring(b''.join(input_data), dtype=np_type)
         logger.info("Input data length: %f, Output data length: %f"
                     % (len(input_data), len(data)))
         # two channels
@@ -177,11 +177,11 @@ increase buffer size."
         # plt.figure()
         self.plotwidget.clear_axes()
         # plt.subplot(2, 2, 1)
-        ax1 = self.plotwidget.axes1  # can do this programatically with figure.axes()
+        ax1 = self.plotwidget.axes1
         ax2 = self.plotwidget.axes2
         ax1b = self.plotwidget.axes1b
         # ax4 = self.plotwidget.axes4
-        timedata = np.arange(0,len(input_data[:,0]))/datarate
+        timedata = np.arange(0, len(input_data[:, 0]))/datarate
         ax2.plot(timedata, input_data[:, 1]/((2**(8*width))/2.-1))
         ax2.plot(timedata, input_data[:, 0]/((2**(8*width))/2.-1))
 
@@ -203,11 +203,12 @@ increase buffer size."
         #          scipy.signal.savgol_filter(np.abs(imp_data),
         #                                     1, 0))
 
-        # Top to tip: black green white(ring) red(tip); don't use "default" device
+        # Top to tip: black green white(ring) red(tip);
+        # don't use "default" device
         # output: headphones
         # input: line in (right goes to speaker+, left goes to line in)
-        #headphones: positive to test resistor
-        #test resistor to speaker+
+        # headphones: positive to test resistor
+        # test resistor to speaker+
         # speaker- to headphones minus
         # line in: "right" goes to speaker+, "left" goes to headphones+
         # line in ground goes to headphones-
@@ -218,13 +219,10 @@ increase buffer size."
 #                 x_data,
 #                 scipy.signal.savgol_filter(np.abs(input_data_fft1),
 #                                            1, 0))
-        
+
         # pick filter with 10 Hz filtering?
         ax2.set_xlim([0, max(timedata)])
 
-
-### maybe reinstate these?
-#        ax1.set_title('Impedance Measurement (Not Finished!)')
         ax2.set_ylabel('Measured Signal (clipping at 1)')
         ax2.set_xlabel('Time (s)')
 #        ax2.set_ylabel('abs(FFT) Left/(Left-Right)', color='b')
@@ -234,20 +232,4 @@ increase buffer size."
 #            matplotlib.ticker.FormatStrFormatter("%d"))
         ax2.yaxis.set_major_formatter(
             matplotlib.ticker.FormatStrFormatter("%g"))
-#        ax2.grid(True, which="both", color="0.65", ls='-')
-
-
-
-        # TODO! magnitude_spectrum and phase_spectrum in matplotlib might just work!
-        # data_x_data = np.fft.rfftfreq(data.size,
-#                                      d=1./datarate)
-
-        # ax4.plot(data_x_data, np.abs(data_fft))
-        # ax4.set_xlim(xmin=20)
-        # ax4.set_xscale('log')
-
         self.plotwidget.draw()
-
-if __name__ == "__main__":
-    ENGINE = SpeakerTestEngine()
-    ENGINE.run()

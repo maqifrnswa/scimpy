@@ -10,8 +10,7 @@ import json
 import scimpy.speakermodel as speakermodel
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-import matplotlib
-matplotlib.use('Qt5Agg')
+
 
 logger = logging.getLogger(__name__)
 
@@ -262,7 +261,7 @@ class SpeakerModelWidget(QtWidgets.QWidget):
             filename = QtWidgets.QFileDialog.getSaveFileName(self,
                                                          "Save Driver Specs",
                                                          driverdir,
-                                                         filters)
+                                                         filters)[0]
             if os.path.splitext(filename)[-1] == "":
                 filename = filename+".drv"
             with open(filename, 'w') as outfile:
@@ -275,10 +274,10 @@ class SpeakerModelWidget(QtWidgets.QWidget):
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename, exten = QtWidgets.QFileDialog.getOpenFileName(self,
+            filename = QtWidgets.QFileDialog.getOpenFileName(self,
                                                          "Load Driver Specs",
                                                          driverdir,
-                                                         filters)
+                                                         filters)[0]
             if filename != '':
                 with open(filename, 'r') as infile:
                     self.driver_params = json.load(infile)

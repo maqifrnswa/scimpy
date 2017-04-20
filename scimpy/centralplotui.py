@@ -7,12 +7,12 @@ Created on Tue Mar  8 21:25:10 2016
 import os
 import csv
 import pandas
-import matplotlib.axes
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import scimpy.speakermodel as speakermodel
 import matplotlib
-matplotlib.use('Qt5Agg')
+import matplotlib.axes
+# matplotlib.use('Qt5Agg')  # already done in scimpyui
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar)
@@ -82,7 +82,7 @@ class CentralWidget(QtWidgets.QWidget):
             """Saves active plots held on the widget"""
             impdir, filters = getimpdir()
             filename = QtWidgets.QFileDialog.getSaveFileName(
-                self, "Save Impedance Data", impdir, filters)
+                self, "Save Impedance Data", impdir, filters)[0]
             if filename == "":
                 return
             elif os.path.splitext(filename)[-1] == "":
@@ -105,7 +105,7 @@ class CentralWidget(QtWidgets.QWidget):
             """Loads previously saved plots on to the widget"""
             impdir, filters = getimpdir()
             filename = QtWidgets.QFileDialog.getOpenFileName(
-                self, "Load Impedance Data", impdir, filters)
+                self, "Load Impedance Data", impdir, filters)[0]
             if filename == "":
                 return
 

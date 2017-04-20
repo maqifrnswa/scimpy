@@ -8,8 +8,8 @@ import logging
 import pyaudio
 import scimpy.speakertest as speakertest
 from PyQt5 import QtWidgets
-import matplotlib
-matplotlib.use('Qt5Agg')
+# import matplotlib
+# matplotlib.use('Qt5Agg')  # already done in scimpyui
 
 
 logger = logging.getLogger(__name__)

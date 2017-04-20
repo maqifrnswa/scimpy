@@ -4,12 +4,12 @@ Created on Sun Feb 28 21:43:59 2016
 
 @author: showard
 """
-
+import logging
 import numpy as np
 import matplotlib.ticker
 # import matplotlib.pyplot as plt
 import scipy.optimize
-import logging
+
 
 matplotlib.rcParams['axes.autolimit_mode'] = 'round_numbers'
 logger = logging.getLogger(__name__)

@@ -114,7 +114,11 @@ As for the input, line in is somewhat low impedance (600--47k$\Omega$), but work
 \item Click ``begin test." Review input data (bottom plot in main window) to make sure there is no clipping (i.e., all data is in between -1 and 1) and adjust sound record/output levels in your OS's control software accordingly accordingly.
 \item Click ``Save .ZMA/.ZDA" if you'd like to save your measurements.
 \item Open the fitting tab. Enter BL value from the driver spec sheet. If you don't have it, it's ok - this just scales the predicted output power in the next step
-\item Click ``Extract TS Parameters." Check if they make sense. If not, type in some reasonable values in the boxes and run again.
+\item Click ``Extract TS Parameters." Below are some tips to get good values.
+\begin{enumerate}
+\item Enter in numbers close to what you expect, then fit for the whole range (20-20000 Hz)
+\item OR if you don't know what figures to use to start: first choose minimum and max frequencies around the resonance peak, set K=.00000001, BL=5, and all other variables = 1. Run, re-run several times until the result stops changing. Export it to the speaker modeller to compare against the measured data and see if it makes sense. Then increase the min and max frequencies to run over the full range (20-20000), or at least a bigger range. Some cheap drivers are ugly at low frequencies, so you can choose a min freq that skips those low frequencies.
+\end{enumerate} 
 \item Click ``Hold plot" on the main plot window.
 \item Click ``Export to modeller"
 \item Click on the ``Speaker Modelling" tab.
@@ -172,7 +176,7 @@ Phasors allows us to easily calculate the relationship between voltage and curre
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[V=$V_0\cos(\omega t)$] (0,2) % The voltage source
+  to[V<=$V_0\cos(\omega t)$] (0,2) % The voltage source
   to[short] (1,2)
   to[short] (2,2)
   to[R=$R$] (2,0) % The resistor
@@ -193,7 +197,7 @@ Phasors allows us to easily calculate the relationship between voltage and curre
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[V=\mbox{$\hat{V}=V_0e^{i\omega t}$}] (0,2) % The voltage source
+  to[V<=\mbox{$\hat{V}=V_0e^{i\omega t}$}] (0,2) % The voltage source
   to[short] (1,2)
   to[short] (2,2)
   to[generic=\mbox{$Z_R$}] (2,0) % The resistor
@@ -264,7 +268,7 @@ which illustrates two potential problems. (1) If $R_g > \hat{Z}_L$, then the vol
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[V=$v_0$] (0,2) % The voltage source
+  to[V<=$v_0$] (0,2) % The voltage source
   to[R=$R_g$] (2,2)
   to[generic=\mbox{$\hat{Z}_L$},v=$v_L$, i=$i_L$,o-o] (2,0)
   to[short] (0,0);
@@ -297,7 +301,11 @@ Equation \ref{generic_imp} assumes the magnitude and phase of  $\hat{v}_1$ can b
 \begin{align}\label{generic_imp_2measure}
 \hat{Z}_s=R_{test}\left( \frac{V_0 - \hat{v}_r}{\hat{v}_r}\right)=R_{test}\left( \frac{\hat{v}_s}{\hat{v}_r}\right)
 \end{align}
-which shows we need a another voltage meter to get $\hat{v}_s$. This is shown in Figure~\ref{imp_measure2}, and is the ciruit this project uses to find $\hat{Z}_s$ in Equation~\ref{generic_imp_2measure}).
+which shows we need a another voltage meter to get $\hat{v}_s$. This is shown in Figure~\ref{imp_measure2}, and is the circuit this project uses to find $\hat{Z}_s$:
+
+\begin{align}
+\hat{Z_s}=R_{test}\frac{\hat{v}_2}{\hat{v}_1-\hat{v}_2}
+\end{align} 
 
 
 
@@ -312,7 +320,7 @@ Note: Equation \ref{generic_imp_mag} differs from some hobbyist impedance measur
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[V=\mbox{$V_0\cos(\omega t)$}] (0,2) % The voltage source
+  to[V<=\mbox{$V_0\cos(\omega t)$}] (0,2) % The voltage source
   to[short] (1,2)
   to[R=$R_{test}$,i=$\hat{i}_r$,v=$\hat{v}_r$,o-o] (3,2) % The resistor
   to[short] (4,2)
@@ -330,22 +338,23 @@ Note: Equation \ref{generic_imp_mag} differs from some hobbyist impedance measur
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[V=\mbox{$V_0\cos(\omega t)$}] (0,2) % The voltage source
+  to[V<=\mbox{$V_0\cos(\omega t)$}] (0,2) % The voltage source
   to[short] (1,2)
   to[R=$R_{test}$,i=$\hat{i}_r$,v=$\hat{v}_r$,o-o] (3,2) % The resistor
-  to[short] (4,2)
+  to[short] (4,2) node[above] {$\hat{v}_2$}
   to[generic=\mbox{$\hat{Z}_s$},v=$\hat{v}_s$,i=$i_s$] (4,0)
   to[short] (0,0);
-  \draw (1,2)
-  to[short] (1,1)
-  to[voltmeter] (3,1)
-  to[short] (3,2);
+  \draw (1,0)
+  to[voltmeter,o-o] (1,2)
+  node[above] {$\hat{v}_1$};
   \draw (4,2)
-  to[short,o-] (5.5,2)
-  to[voltmeter, mirror] (5.5,0)
-  to[short,-o] (4,0);
+  to[short,o-] (5.5,2);
+  \draw (4,0)
+  to[short,o-] (5.5,0)
+  to[voltmeter] (5.5,2)
+  to[short,-o] (4,2);
 \end{circuitikz}
-\caption{Speaker impedance matching (this project, no lock-in required)}\label{imp_measure2}
+\caption{Speaker impedance measurement used in this project, no lock-in required}\label{imp_measure2}
 \end{figure}
 
 
@@ -381,7 +390,7 @@ After building the impedance matching circuit, we need to build a circuit that s
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[open,v^<=$v_i$,o-o] (0,2) % The voltage source
   to[short] (1,2)
   to[generic=$\hat{Z}$] (3,2) % The resistor
   to[short] (4,2)
@@ -421,7 +430,7 @@ You can see that the LR2 filter has many positive features compared to our simpl
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[open,v^<=$v_i$,o-o] (0,2) % The voltage source
   to[short] (1,2)
   to[generic=$\hat{Z_1}$] (3,2) % The resistor
   to[R=$R_1$,] (3,0)
@@ -460,7 +469,7 @@ A loudspeaker driver is fundamentally a system that translates electrical curren
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[open,v^<=$v_i$,o-o] (0,2) % The voltage source
   to[R=$R_e$] (2,2) % The resistor
   to[L=$L_e$,mirror] (4,2)
   to[short] (5,2)
@@ -487,7 +496,7 @@ as seen in Figure~\ref{electrical_model_leach}.
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[open,v^<=$v_i$,o-o] (0,2) % The voltage source
   to[R=$R_e$] (2,2) % The resistor
   to[generic=$\hat{Z}_L$] (4,2)
   to[short] (5,2)
@@ -518,7 +527,7 @@ where $R_{e,\text{DC}}$ is the value of $R_e$ at $\omega=0$. This allows us to i
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$v_i$,o-o] (0,2) % The voltage source
+  to[open,v^<=$v_i$,o-o] (0,2) % The voltage source
   to[R=$R_e(\omega)$] (2,2) % The resistor
   to[L=$L_e(\omega)$] (4,2)
   to[short] (5,2)
@@ -564,7 +573,7 @@ The mechanical system in Equation~\ref{force_equation} describes the speaker in 
 \centering
 \begin{circuitikz}
   \draw (0,0)
-  to[open,v^>=$F$,o-o] (0,2) % The voltage source
+  to[open,v^<=$F$,o-o] (0,2) % The voltage source
   to[L=$M_{md}$] (2,2) % The resistor
   to[R=$R_{ms}$] (4,2)
   to[C=$C_{ms}$] (6,2)
@@ -732,7 +741,7 @@ We now have all the tools to model the acoustic system as a circuit. When the sp
 \centering
 \begin{circuitikz}[yscale=.75]
   \draw (0,0)
-  to[open,v^>=$p_i$,o-o] (0,4) % The voltage source
+  to[open,v^<=$p_i$,o-o] (0,4) % The voltage source
   to[short,i=$Q_d$] (1,4)
   to[R=$Z_{rad}$,v>=$p_{f}$] (3,4)
   to[short] (4,4)
@@ -756,7 +765,7 @@ We now have all the tools to model the acoustic system as a circuit. When the sp
 \centering
 \begin{circuitikz}
   \draw (0,2)
-  to[open,v^>=$p_i$,o-o] (0,4) % The voltage source
+  to[open,v^<=$p_i$,o-o] (0,4) % The voltage source
   to[short,i=$Q_d$] (2,4)
   to[C=$C_{AB}$,i>^=$Q_{ab}$] (2,2)
   to[short] (0,2);
@@ -811,11 +820,11 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
 \centering
 \begin{circuitikz}[xscale=.6]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
-  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[open,v^<=$v_0$,o-o] (-2,2)
   to[R=$R_e$] (0,2)
-  to[L=$L_e$] (2,2)
-  to[C=$C_{mes}$,mirror] (2,0)
-  to[short] (-2,0);
+  to[L=$L_e$] (2,2);
+  \draw (-2,0) -- (2,0)
+  to[C=$C_{mes}$] (2,2);
   \draw (2,2)
   to[short] (4,2)
   to[R=$R_{es}$] (4,0)
@@ -826,9 +835,9 @@ Next, we remember Equation~\ref{mech_imp_dual} to convert from mechanical impeda
   to[short] (4,0);
   \draw (6,2)
   to[L=$L_{ceb}$] (8,2)
-  to[R=$R_{el}$] (10,2)
-  to[C=$C_{lev}$, mirror] (10,0)
-  to[short] (6,0);
+  to[R=$R_{el}$] (10,2);
+  \draw (6,0) -- (10,0)
+  to[C=$C_{lev}$] (10,2);
   \draw (10,2)
   to[short] (12,2)
   to[R=$R_{ev}$] (12,0)
@@ -931,11 +940,11 @@ In all cases, several simple conclusions can be drawn. To maximize output effici
 \centering
 \begin{circuitikz}[xscale=.75]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
-  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[open,v^<=$v_0$,o-o] (-2,2)
   to[R=$R_e$] (0,2)
-  to[L=$L_e$] (2,2)
-  to[C=$C_{mes}$,mirror] (2,0)
-  to[short] (-2,0);
+  to[L=$L_e$] (2,2);
+  \draw (-2,0) -- (2,0)
+  to[C=$C_{mes}$] (2,2);
   \draw (2,2)
   to[short] (4,2)
   to[R=$R_{es}$] (4,0)
@@ -962,11 +971,11 @@ We can use our understanding and model in Figure \ref{fig:elec-mech-acoustic_mod
 \centering
 \begin{circuitikz}[xscale=.65]%[scale=VALUE,transform shape] to shrink in 2D more
   \draw (-2,0)
-  to[open,v^>=$v_0$,o-o] (-2,2)
+  to[open,v^<=$v_0$,o-o] (-2,2)
   to[R=$R_e$] (0,2)
-  to[L=$L_e$] (2,2)
-  to[C=$C_{mes}$,mirror] (2,0)
-  to[short] (-2,0);
+  to[L=$L_e$] (2,2);
+  \draw (-2,0) -- (2,0)
+  to[C=$C_{mes}$] (2,2);
   \draw (2,2)
   to[short] (4,2)
   to[R=$R_{es}$] (4,0)

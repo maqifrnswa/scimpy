@@ -8,8 +8,8 @@ Created on Mon Mar  7 22:23:03 2016
 import numpy as np
 import scipy.optimize
 import logging
-import matplotlib
-matplotlib.use('Qt5Agg')
+# import matplotlib
+# matplotlib.use('Qt5Agg')  # already done in scimpyui
 from PyQt5 import QtWidgets
 
 
