@@ -81,9 +81,10 @@ Organize better?
 
 Other good software tools: \url{http://audio.claub.net/software/jbabgy/jbagby.html}
 
-Good diffraction paper: \url{http://www.torean.dk/artikel/Diffraction.pdf}
+Good diffraction paper: \url{http://www.torean.dk/artikel/Diffraction.pdf} conclusion (from me) Urban's DED model (section 4.10). Diffraction theory can be sommerfeld or fresnel-krichoff. Since you know you hear things at 90 degreeseven with infinite baffle, then sommerfeld doesn't work - use fresnel-kirchoff. You get form of $F_0=\frac{1+\cos(\theta)}{2}$. We know edges will do something to diffraction such that at low frequencies far from the source you get $F_{tot} \,d\phi= F_0\,d\phi + F_n\,d\phi=\text{constant}$, so $F_n=\frac{-\cos(\theta)}{2}$. Doing that, assuming a circular baffle for an approximation, and assuming very far away from speaker and in line with speaker, you get $F_{tot}= 1-\frac{1}{2} e^{-ikb}$ where $b$ is baffle radius ($r_0\approx r_n \gg b$). So $F=1$ with an infinite baffle, want to find $kb$ when $F=1/2$, happens when $\nu=\frac{c}{\pi b}$.that seems wrong: Do we want F=1/2? I think maybe $F^2=1/2; F=1/sqrt(2)$?
 
-test
+Freeware from Tolvan Data (Basta! = speaker simulator, Sirp = measurements, The Edge = edge diffraction modeller, xdir = directional diffraction modeller): \url{http://www.tolvan.com/index.php?page=/basta/basta.php}
+
 
 \chapter{Usage}
 

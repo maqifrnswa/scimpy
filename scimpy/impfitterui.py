@@ -4,16 +4,13 @@ Created on Mon Mar  7 22:23:03 2016
 
 @author: showard
 """
-
+import math
 import numpy as np
 import scipy.optimize
 import logging
 # import matplotlib
 # matplotlib.use('Qt5Agg')  # already done in scimpyui
 from PyQt5 import QtWidgets
-
-
-logger = logging.getLogger(__name__)
 
 
 # TODO put all the find_main_window functions in one module, just call that
@@ -120,8 +117,10 @@ def find_main_window():
 #               output[4]/4.5**2])
 #        self.result = output
 
-
-def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
+# TODO: make free_speaker_extract work for general,
+# no inductor, and freq. dep. inductor
+# impliment using bounds?
+def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq, fittype):
     """
 
     :param init_test: param progressdialog:
@@ -137,6 +136,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             self.zmag = zmag
             self.zphase = zphase
             self.weights = np.gradient(np.log10(omega))
+            self.weights = self.weights
 
         def __call__(self, x0):
             # Possibly give option to restrict fit range?
@@ -151,7 +151,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             #ztotal = zelect+re_+omega*le_*1j
             ztotal = zelect+re_+le_*(1j*omega)**n__
             diff = ztotal - zmag * np.exp(1j*zphase)
-            z1d = np.zeros(diff.size*2, dtype=np.float64)
+            z1d = np.zeros(diff.size*2, dtype=np.float32)
             # since omega is linear, and we are interested in log(omega)
             # weight each by the gradient of log omega
             z1d[0:z1d.size:2] = diff.real * weights
@@ -160,7 +160,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             # sse = sum(z1d**2)
             # if sse > sse.size:
             #    return sum(z1d**2)
-            return sum(z1d**2)
+            return math.sqrt(sum(z1d**2))
             # return sum((abs(ztotal)-zmag)**2)
 
     def print_fun(x, f, accepted):
@@ -172,7 +172,8 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
 
         """
         if int(accepted) == 1:
-            logger.debug("at minima %.4f accepted %d" % (f, int(accepted)) + str(x))
+            logging.debug("at minima %.4f accepted %d. %s",
+                          f, int(accepted), str(x))
 
     class StepFunc():
         """ """
@@ -186,7 +187,8 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
             # xout = x + x * np.random.uniform(-s, s, len(x))
             # xout = x+self.init_test*np.random.normal(0, s, len(x))
             # xout = x+x*np.random.normal(0, s, len(x))
-            xout = x + [np.random.normal(0, s*element) for element in self.init_test]
+            xout = x + [
+                np.random.normal(0, s*element) for element in self.init_test]
             return xout
 
     def accept_test_func(f_new, x_new, f_old, x_old):
@@ -207,12 +209,21 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
         zmag = plotwidget.axes1.get_lines()[0].get_ydata()
         zphase = plotwidget.axes1b.get_lines()[0].get_ydata()/180.0*np.pi
     except IndexError:
-        logger.error("need to impliment if file only has zeros for phase")
+        logging.error("Error reading axes data")
 
     mask = (omega >= minfreq*2*np.pi) & (omega <= maxfreq*2*np.pi)
     stepsize = .5
     bounds = [(element*.01, element*100) for element in init_test]
-    bounds[5] = (0,1)
+    if fittype == 0:
+        bounds[5] = (0, 1)
+    elif fittype == 1:
+        bounds[5] = (1, 1)  # n is 1
+    elif fittype == 2:
+        bounds[5] = (1, 1)
+        bounds[1] = (0, 0)  # le is shorted
+    else:
+        logging.error("Unknown fit type")
+
     minimizer_kwargs = dict(bounds=bounds)
     stepfuncobj = StepFunc(stepsize=stepsize, init_test=init_test)
     residuals_obj = Residuals(omega[mask], zmag[mask], zphase[mask])
@@ -221,9 +232,10 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq):
                                          callback=print_fun,
                                          niter_success=200,
                                          minimizer_kwargs=minimizer_kwargs,
-                                         #accept_test=accept_test_func,
+                                         # accept_test=accept_test_func,
                                          take_step=stepfuncobj)
-    # print(output.keys())
+
+    logging.debug("Output: %s", output)  # print(output.keys())
     output = output["x"]
     return output
 
@@ -252,7 +264,8 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
             fitresult = free_speaker_extract(init_test,
                                              progressdialog,
                                              float(minfreqlineedit.text()),
-                                             float(maxfreqlineedit.text()))
+                                             float(maxfreqlineedit.text()),
+                                             fittypecombo.currentIndex())
             # worker = FreeSpeakerExtract(init_test)
             # progressdialog.exec()
             # get fitresult from worker
@@ -309,10 +322,16 @@ class ImpedanceFitterWidget(QtWidgets.QGroupBox):
 #        ceslineedit = QtWidgets.QLineEdit()
 #        formwidgetlayout.addRow("Cev (mH):", ceslineedit)
 
+        fittypecombo = QtWidgets.QComboBox()
+        fittypecombo.addItem("All Values")
+        fittypecombo.addItem("Freq. Indep. Le")
+        fittypecombo.addItem("Le = 0")
+        formwidgetlayout.addRow("Fit Method", fittypecombo)
         freespeakerbtn = QtWidgets.QPushButton("Extract Free Speaker Params")
         freespeakerbtn.clicked.connect(freespeakerbtn_handler)
         formwidgetlayout.addRow(freespeakerbtn)
-        export_to_model_btn = QtWidgets.QPushButton("Export to Speaker Modeler")
+        export_to_model_btn = QtWidgets.QPushButton(
+            "Export to Speaker Modeler")
         formwidgetlayout.addRow(export_to_model_btn)
         export_to_model_btn.clicked.connect(export_to_model_btn_handler)
 

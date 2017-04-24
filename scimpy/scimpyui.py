@@ -60,7 +60,7 @@ class SpeakerModelMainWindow(QtWidgets.QMainWindow):
         self.impfitterdock.setFeatures(QtWidgets.QDockWidget.DockWidgetMovable |
                                        QtWidgets.QDockWidget.DockWidgetFloatable)
         self.tabifyDockWidget(self.imptestdock, self.impfitterdock)
-        
+
         self.speakermodeldock.raise_()
 
         self.init_menus()
@@ -104,8 +104,9 @@ def parse_arguments():
                         help="Increase logging level (-v info, -vv debug)")
     args = parser.parse_args()
     levels = [logging.WARNING, logging.INFO, logging.DEBUG]
-    level = levels[min(len(levels)-1,args.verbose)]
-    logging.basicConfig(level=level)
+    level = levels[min(len(levels)-1, args.verbose)]
+    logging.basicConfig(format="%(levelname)s:%(module)s:%(message)s",
+                        level=level)
 
 
 def main():

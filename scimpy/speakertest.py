@@ -15,9 +15,6 @@ import scipy.signal
 import scimpy.speakermodel as speakermodel
 
 
-logger = logging.getLogger(__name__)
-
-
 # Open the stream required, mono mode only...
 # Written _longhand_ so that youngsters can understand how it works...
 
@@ -103,7 +100,7 @@ increase buffer size."
             pa_format = pyaudio.paInt32
             np_type = np.int32
         else:
-            logger.error("Bit width should be 1, 2, or 4 bytes")
+            logging.error("Bit width should be 1, 2, or 4 bytes")
         data = scipy.signal.chirp(t=np.arange(0, duration, 1./datarate),
                                   f0=10,
                                   t1=duration,
@@ -126,7 +123,7 @@ increase buffer size."
         global message
         message = ""
 
-        logger.info("Opening input device %d and output device %d"
+        logging.info("Opening input device %d and output device %d"
                     % (self.device_ndx["Input"], self.device_ndx["Output"]))
 
         self.counter = 0
@@ -146,7 +143,7 @@ increase buffer size."
         self.plotwidget.window().statusbar.showMessage(message)
 
         input_data = np.fromstring(b''.join(input_data), dtype=np_type)
-        logger.info("Input data length: %f, Output data length: %f"
+        logging.info("Input data length: %f, Output data length: %f"
                     % (len(input_data), len(data)))
         # two channels
         input_data =\

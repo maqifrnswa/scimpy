@@ -12,9 +12,6 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 
 
-logger = logging.getLogger(__name__)
-
-
 # eventually just pass the whole widget as the argument below
 # or we can keep an object somewhere that keeps all
 # of these and pass that object to each widget
@@ -99,15 +96,15 @@ class SealedBoxWidget(QtWidgets.QGroupBox):
                 "{0:0.2g}".format(float(vasflineedit.text())/alpha))
             self.vbllineedit.setText(
                 "{0:0.2g}".format(float(vasllineedit.text())/alpha))
-            logger.info("fb Hz = %f, h = %f, alpha = %f" %
-                        (float(fslineedit.text())*h__, h__, alpha))
+            logging.info("fb Hz = %f, h = %f, alpha = %f",
+                        float(fslineedit.text())*h__, h__, alpha)
 
             wbox = float(fslineedit.text())*h__*2*np.pi
             area_to_length_ratio = (wbox**2) * \
                 (float(self.vbllineedit.text())/1000)/(345**2)
-            logger.info('A/l in m = %f, for 2" diameter, length inches = %f' %
-                        (area_to_length_ratio,
-                         (np.pi*(2*0.0254/2)**2/area_to_length_ratio)/0.0254))
+            logging.info('A/l in m = %f, for 2" diameter, length inches = %f',
+                        area_to_length_ratio,
+                        (np.pi*(2*0.0254/2)**2/area_to_length_ratio)/0.0254)
             f3lineedit.setText("TBD, not implimented")
             qtlabel.setText("TBD")
             self.loveralineedit.setText(
@@ -155,8 +152,8 @@ class SpeakerModelWidget(QtWidgets.QWidget):
     """Widget for modeling speaker performance based on T/S values"""
     def __init__(self):
         super(SpeakerModelWidget, self).__init__()
-        self.driver_params = {}  # TODO save values in this dict! just pass this!
         # TDOD use driver_params rather than constantly getting text values
+        self.driver_params = {}
         self.init_ui()
 
     def calc_system_params(self):
@@ -258,10 +255,11 @@ class SpeakerModelWidget(QtWidgets.QWidget):
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename = QtWidgets.QFileDialog.getSaveFileName(self,
-                                                         "Save Driver Specs",
-                                                         driverdir,
-                                                         filters)[0]
+            filename = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Save Driver Specs",
+                driverdir,
+                filters)[0]
             if os.path.splitext(filename)[-1] == "":
                 filename = filename+".drv"
             with open(filename, 'w') as outfile:
@@ -274,10 +272,11 @@ class SpeakerModelWidget(QtWidgets.QWidget):
             if not os.path.isdir(driverdir):
                 os.makedirs(driverdir)
             filters = "Driver Files (*.drv);;All Files (*.*)"
-            filename = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                         "Load Driver Specs",
-                                                         driverdir,
-                                                         filters)[0]
+            filename = QtWidgets.QFileDialog.getOpenFileName(
+                self,
+                "Load Driver Specs",
+                driverdir,
+                filters)[0]
             if filename != '':
                 with open(filename, 'r') as infile:
                     self.driver_params = json.load(infile)
@@ -334,11 +333,13 @@ class SpeakerModelWidget(QtWidgets.QWidget):
         formwidgetlayout.addRow("*Re (ohms):", relineedit)
         lelineedit = QtWidgets.QLineEdit("0.1")
         lelineedit.editingFinished.connect(self.calc_system_params)
-        lelineedit.setToolTip("Leach K, if n=1 Voice Coil Inductance *Required*")
+        lelineedit.setToolTip(
+            "Leach K, if n=1 Voice Coil Inductance *Required*")
         formwidgetlayout.addRow("*Le (mH) or K*1000:", lelineedit)
         nlineedit = QtWidgets.QLineEdit("1")
         nlineedit.editingFinished.connect(self.calc_system_params)
-        nlineedit.setToolTip("Leach n parameter (if n=1, then K=Le) *Required*")
+        nlineedit.setToolTip(
+            "Leach n parameter (if n=1, then K=Le) *Required*")
         formwidgetlayout.addRow("*n:", nlineedit)
         sdlineedit = QtWidgets.QLineEdit("25")
         sdlineedit.editingFinished.connect(self.calc_system_params)
@@ -415,7 +416,7 @@ class SpeakerModelWidget(QtWidgets.QWidget):
         fileoplayout.addWidget(loadbtn)
         driverfileopwidg.setLayout(fileoplayout)
 
-        # TODO below is a hack, find a better way
+        # TODO below is a hack, find a better way than exposing all these
         self.sdlineedit = sdlineedit
         self.relineedit = relineedit
         self.lelineedit = lelineedit

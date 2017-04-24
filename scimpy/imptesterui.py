@@ -12,9 +12,6 @@ from PyQt5 import QtWidgets
 # matplotlib.use('Qt5Agg')  # already done in scimpyui
 
 
-logger = logging.getLogger(__name__)
-
-
 class MeasurementParamsForm(QtWidgets.QGroupBox):
     """Widget form for entering measurement parameters"""
     def __init__(self, title):
@@ -75,7 +72,7 @@ class SoundDeviceGroupBox(QtWidgets.QGroupBox):
             displayed device information and sets the output device index"""
             new_row = self.devlistwidg.row(current)
             devinfolabel = self.deviceinfolabel
-            logger.info(sc_info[new_row])
+            logging.info(sc_info[new_row])
             devinfolabel.setText("Default Sampling Rate (Hz): {0:.0f}\n"
                                  "Max {4} Channels: {1}\n"
                                  "Suggested {4} Buffer (frames): {2}-{3}\n"
