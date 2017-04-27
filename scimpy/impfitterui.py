@@ -215,7 +215,7 @@ def free_speaker_extract(init_test, progressdialog, minfreq, maxfreq, fittype):
     stepsize = .5
     bounds = [(element*.01, element*100) for element in init_test]
     if fittype == 0:
-        bounds[5] = (0, 1)
+        bounds[5] = (0.5, 1)
     elif fittype == 1:
         bounds[5] = (1, 1)  # n is 1
     elif fittype == 2:
