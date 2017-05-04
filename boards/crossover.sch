@@ -17,7 +17,6 @@ LIBS:analog_switches
 LIBS:motorola
 LIBS:texas
 LIBS:intel
-LIBS:audio
 LIBS:interface
 LIBS:digital-audio
 LIBS:philips
@@ -29,6 +28,8 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:w_connectors
+LIBS:tda7292
+LIBS:audio
 LIBS:crossover-cache
 EELAYER 25 0
 EELAYER END
@@ -157,10 +158,10 @@ F 3 "" H 2750 3100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR15
+L GND #PWR16
 U 1 1 58E14D15
 P 2750 2100
-F 0 "#PWR15" H 2750 1850 50  0001 C CNN
+F 0 "#PWR16" H 2750 1850 50  0001 C CNN
 F 1 "GND" H 2750 1950 50  0000 C CNN
 F 2 "" H 2750 2100 50  0000 C CNN
 F 3 "" H 2750 2100 50  0000 C CNN
@@ -710,9 +711,9 @@ $Comp
 L TDA7292 U3
 U 1 1 58E4767B
 P 6850 2750
-F 0 "U3" H 7100 3000 50  0000 C CNN
-F 1 "TDA7292" H 7100 2900 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:Multiwatt_15_Vertical" H 6650 2750 50  0001 C CIN
+F 0 "U3" H 6800 2750 50  0000 C CNN
+F 1 "TDA7292" H 7150 2850 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 6650 2750 50  0001 C CIN
 F 3 "" H 6850 2750 50  0000 C CNN
 F 4 "tda7292" H 6850 2750 60  0001 C CNN "manf#"
 	1    6850 2750
@@ -747,10 +748,10 @@ F 3 "" H 2550 3100 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L +12V #PWR14
+L +12V #PWR15
 U 1 1 58E5C1AB
 P 2550 2100
-F 0 "#PWR14" H 2550 1950 50  0001 C CNN
+F 0 "#PWR15" H 2550 1950 50  0001 C CNN
 F 1 "+12V" H 2550 2240 50  0000 C CNN
 F 2 "" H 2550 2100 50  0000 C CNN
 F 3 "" H 2550 2100 50  0000 C CNN
@@ -903,20 +904,8 @@ F 4 "640456-6" H 5650 1150 60  0001 C CNN "manf#"
 	1    5650 1150
 	1    0    0    -1  
 $EndComp
-Text Notes -3200 5700 0    60   ~ 0
-Design:\n10W in to each 8 ohm driver\n-which means ~~9V and ~~1.1 A each\n-Power supply needs > 4.4 A, ~~5A\n- 20-25W power dissipated in each chip, 10W each driver = 80-90W\n\n1% THD\n-Vs needs +/- 20V (for 6 ohm, 13.5V)\n- 12-0-12 transformer will get ~~+/-17 V (maybe good enough)\n\nResevoir Caps\n- C = Q/V = I*t/V, I is ~~5 A, t = 1/60/2, \n- Supply V rejection ratio = 75 dB\ngain ~~30 dB, 75-30 = 45 dB = 5.6 mV out ripple/1V supply ripple\n- C = 5A*(1/60/2)/1V = 41mH (pretty high...)\n- 4V supply ripple: 6200uH (better), 20 mV amp. output ripple\n(try it out, if need bigger, then get bigger)\n\n-put a small, better behaved cap in parallel to decouple since big caps have bad esr\n-put a resistor that discharges cap when power is off over 6.8 seconds (1k)
-$Comp
-L TRANSFO_3 T1
-U 1 1 58E73943
-P -900 1150
-F 0 "T1" H -900 1650 50  0000 C CNN
-F 1 "TRANSFO_3" H -900 650 50  0000 C CNN
-F 2 "" H -900 1150 50  0001 C CNN
-F 3 "" H -900 1150 50  0000 C CNN
-F 4 "VPS24-5400" H -900 1150 60  0001 C CNN "manf#"
-	1    -900 1150
-	1    0    0    -1  
-$EndComp
+Text Notes -3350 7900 0    60   ~ 0
+Design:\n10W in to each 8 ohm driver\n-which means ~~9V RMS and ~~1.1 A RMS each\n-Power supply needs > 4.4 A, ~~5A\n- ~~20W power dissipated in each chip, 10W each driver = 80W\n- 80W/24 V RMS =  3.3 A RMS\n\n1% THD\n-Vs needs +/- 20V (for 6 ohm, 13.5V)\n- 12-0-12 transformer will get ~~+/-17 V (maybe good enough)\n\nResevoir Caps\n- C = Q/V = I*t/V, I is ~~5 A, t = 1/60/2, \n- Supply V rejection ratio = 75 dB\ngain ~~30 dB, 75-30 = 45 dB = 5.6 mV out ripple/1V supply ripple\n- C = 5A*(1/60/2)/1V = 41mH (pretty high...)\n- 4V supply ripple: 6200uH (better), 20 mV amp. output ripple\n(try it out, if need bigger, then get bigger)\n\n-put a small, better behaved cap in parallel to decouple since big caps have bad esr\n-put a resistor that discharges cap when power is off over 6.8 seconds (1k)
 $Comp
 L GND #PWR9
 U 1 1 58EE846A
@@ -928,7 +917,7 @@ F 3 "" H 5400 1450 50  0000 C CNN
 	1    5400 1450
 	1    0    0    -1  
 $EndComp
-Text Notes -2500 6500 0    60   ~ 0
+Text Notes 700  7800 0    60   ~ 0
 minimum gain 29 dB = 28x\navg. power =  V^2/2R\nVpeak= 0.447V*G, with Vin-peak = 0.447 V\nwant 10 W output\nGain = sqrt(2*10* Road)\n10 W per 8 ohm channel, given 0.447 Vpeak input, gain = 
 $Comp
 L C_Small C6
@@ -1120,25 +1109,25 @@ $EndComp
 $Comp
 L CP C31
 U 1 1 58F036F5
-P 6000 2600
-F 0 "C31" H 6025 2700 50  0000 L CNN
-F 1 "1u" H 6025 2500 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 6038 2450 50  0001 C CNN
-F 3 "" H 6000 2600 50  0000 C CNN
-F 4 "105CKR050M" H 6000 2600 60  0001 C CNN "manf#"
-	1    6000 2600
+P 6000 2650
+F 0 "C31" H 6025 2750 50  0000 L CNN
+F 1 "1u" H 6025 2550 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 6038 2500 50  0001 C CNN
+F 3 "" H 6000 2650 50  0000 C CNN
+F 4 "105CKR050M" H 6000 2650 60  0001 C CNN "manf#"
+	1    6000 2650
 	0    1    1    0   
 $EndComp
 $Comp
 L CP C32
 U 1 1 58F15280
-P 6950 2000
-F 0 "C32" H 6975 2100 50  0000 L CNN
-F 1 "1000u" H 6700 1900 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 6988 1850 50  0001 C CNN
-F 3 "" H 6950 2000 50  0000 C CNN
-F 4 "108CKS025M" H 6950 2000 60  0001 C CNN "manf#"
-	1    6950 2000
+P 6800 2150
+F 0 "C32" H 6825 2250 50  0000 L CNN
+F 1 "1000u" H 6900 2200 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 6838 2000 50  0001 C CNN
+F 3 "" H 6800 2150 50  0000 C CNN
+F 4 "108CKS025M" H 6800 2150 60  0001 C CNN "manf#"
+	1    6800 2150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1166,23 +1155,23 @@ $EndComp
 $Comp
 L C_Small C33
 U 1 1 58F1610D
-P 7550 2350
-F 0 "C33" H 7560 2420 50  0000 L CNN
-F 1 "100n" H 7560 2270 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 7550 2350 50  0001 C CNN
-F 3 "" H 7550 2350 50  0000 C CNN
-	1    7550 2350
+P 7350 2050
+F 0 "C33" H 7360 2120 50  0000 L CNN
+F 1 "100n" H 7360 1970 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 7350 2050 50  0001 C CNN
+F 3 "" H 7350 2050 50  0000 C CNN
+	1    7350 2050
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR11
+L +12V #PWR14
 U 1 1 58F16AA0
-P 6950 1850
-F 0 "#PWR11" H 6950 1700 50  0001 C CNN
-F 1 "+12V" H 6950 1990 50  0000 C CNN
-F 2 "" H 6950 1850 50  0000 C CNN
-F 3 "" H 6950 1850 50  0000 C CNN
-	1    6950 1850
+P 6800 2000
+F 0 "#PWR14" H 6800 1850 50  0001 C CNN
+F 1 "+12V" H 6800 2140 50  0000 C CNN
+F 2 "" H 6800 2000 50  0000 C CNN
+F 3 "" H 6800 2000 50  0000 C CNN
+	1    6800 2000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1210,12 +1199,12 @@ $EndComp
 $Comp
 L GND #PWR23
 U 1 1 58F18F33
-P 7000 3000
-F 0 "#PWR23" H 7000 2750 50  0001 C CNN
-F 1 "GND" H 7000 2850 50  0000 C CNN
-F 2 "" H 7000 3000 50  0000 C CNN
-F 3 "" H 7000 3000 50  0000 C CNN
-	1    7000 3000
+P 6750 3050
+F 0 "#PWR23" H 6750 2800 50  0001 C CNN
+F 1 "GND" H 6750 2900 50  0000 C CNN
+F 2 "" H 6750 3050 50  0000 C CNN
+F 3 "" H 6750 3050 50  0000 C CNN
+	1    6750 3050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1259,7 +1248,7 @@ U 2 1 58F1C68B
 P 9100 3450
 F 0 "U3" H 9350 3700 50  0000 C CNN
 F 1 "TDA7292" H 9350 3600 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:Multiwatt_15_Vertical" H 8900 3450 50  0001 C CIN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 8900 3450 50  0001 C CIN
 F 3 "" H 9100 3450 50  0000 C CNN
 	2    9100 3450
 	1    0    0    -1  
@@ -1278,12 +1267,12 @@ $EndComp
 $Comp
 L CP C37
 U 1 1 58F1C6AA
-P 8250 3300
-F 0 "C37" H 8275 3400 50  0000 L CNN
-F 1 "1u" H 8275 3200 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 8288 3150 50  0001 C CNN
-F 3 "" H 8250 3300 50  0000 C CNN
-	1    8250 3300
+P 8250 3350
+F 0 "C37" H 8275 3450 50  0000 L CNN
+F 1 "1u" H 8275 3250 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 8288 3200 50  0001 C CNN
+F 3 "" H 8250 3350 50  0000 C CNN
+	1    8250 3350
 	0    1    1    0   
 $EndComp
 $Comp
@@ -1312,9 +1301,9 @@ $Comp
 L TDA7292 U5
 U 1 1 58F1F958
 P 6500 5000
-F 0 "U5" H 6750 5250 50  0000 C CNN
-F 1 "TDA7292" H 6750 5150 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:Multiwatt_15_Vertical" H 6300 5000 50  0001 C CIN
+F 0 "U5" H 6750 5200 50  0000 C CNN
+F 1 "TDA7292" H 6800 5100 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 6300 5000 50  0001 C CIN
 F 3 "" H 6500 5000 50  0000 C CNN
 	1    6500 5000
 	1    0    0    -1  
@@ -1322,12 +1311,12 @@ $EndComp
 $Comp
 L CP C41
 U 1 1 58F1F977
-P 5650 4850
-F 0 "C41" H 5675 4950 50  0000 L CNN
-F 1 "1u" H 5675 4750 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 5688 4700 50  0001 C CNN
-F 3 "" H 5650 4850 50  0000 C CNN
-	1    5650 4850
+P 5650 4900
+F 0 "C41" H 5675 5000 50  0000 L CNN
+F 1 "1u" H 5675 4800 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 5688 4750 50  0001 C CNN
+F 3 "" H 5650 4900 50  0000 C CNN
+	1    5650 4900
 	0    1    1    0   
 $EndComp
 $Comp
@@ -1355,23 +1344,23 @@ $EndComp
 $Comp
 L C_Small C40
 U 1 1 58F1F991
-P 7250 4450
-F 0 "C40" H 7260 4520 50  0000 L CNN
-F 1 "100n" H 7260 4370 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 7250 4450 50  0001 C CNN
-F 3 "" H 7250 4450 50  0000 C CNN
-	1    7250 4450
+P 7150 4500
+F 0 "C40" H 7160 4570 50  0000 L CNN
+F 1 "100n" H 7160 4420 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 7150 4500 50  0001 C CNN
+F 3 "" H 7150 4500 50  0000 C CNN
+	1    7150 4500
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR35
 U 1 1 58F1F99A
-P 7250 4650
-F 0 "#PWR35" H 7250 4400 50  0001 C CNN
-F 1 "GND" H 7250 4500 50  0000 C CNN
-F 2 "" H 7250 4650 50  0000 C CNN
-F 3 "" H 7250 4650 50  0000 C CNN
-	1    7250 4650
+P 7050 4650
+F 0 "#PWR35" H 7050 4400 50  0001 C CNN
+F 1 "GND" H 7050 4500 50  0000 C CNN
+F 2 "" H 7050 4650 50  0000 C CNN
+F 3 "" H 7050 4650 50  0000 C CNN
+	1    7050 4650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1399,12 +1388,12 @@ $EndComp
 $Comp
 L GND #PWR39
 U 1 1 58F1F9BB
-P 6650 5250
-F 0 "#PWR39" H 6650 5000 50  0001 C CNN
-F 1 "GND" H 6650 5100 50  0000 C CNN
-F 2 "" H 6650 5250 50  0000 C CNN
-F 3 "" H 6650 5250 50  0000 C CNN
-	1    6650 5250
+P 6400 5300
+F 0 "#PWR39" H 6400 5050 50  0001 C CNN
+F 1 "GND" H 6400 5150 50  0000 C CNN
+F 2 "" H 6400 5300 50  0000 C CNN
+F 3 "" H 6400 5300 50  0000 C CNN
+	1    6400 5300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1446,7 +1435,7 @@ U 2 1 58F1F9DB
 P 8750 5700
 F 0 "U5" H 9000 5950 50  0000 C CNN
 F 1 "TDA7292" H 9000 5850 50  0000 C CNN
-F 2 "TO_SOT_Packages_THT:Multiwatt_15_Vertical" H 8550 5700 50  0001 C CIN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 8550 5700 50  0001 C CIN
 F 3 "" H 8750 5700 50  0000 C CNN
 	2    8750 5700
 	1    0    0    -1  
@@ -1487,12 +1476,12 @@ $EndComp
 $Comp
 L CP C42
 U 1 1 58F1F9F9
-P 7900 5550
-F 0 "C42" H 7925 5650 50  0000 L CNN
-F 1 "1u" H 7925 5450 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 7938 5400 50  0001 C CNN
-F 3 "" H 7900 5550 50  0000 C CNN
-	1    7900 5550
+P 7900 5600
+F 0 "C42" H 7925 5700 50  0000 L CNN
+F 1 "1u" H 7925 5500 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D5_L11_P2" H 7938 5450 50  0001 C CNN
+F 3 "" H 7900 5600 50  0000 C CNN
+	1    7900 5600
 	0    1    1    0   
 $EndComp
 $Comp
@@ -1540,10 +1529,10 @@ F 3 "" H 9750 4100 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L GND #PWR34
+L GND #PWR33
 U 1 1 58F238B3
 P 9750 4300
-F 0 "#PWR34" H 9750 4050 50  0001 C CNN
+F 0 "#PWR33" H 9750 4050 50  0001 C CNN
 F 1 "GND" H 9750 4150 50  0000 C CNN
 F 2 "" H 9750 4300 50  0000 C CNN
 F 3 "" H 9750 4300 50  0000 C CNN
@@ -1615,26 +1604,26 @@ left_in
 Text Label 4450 800  0    60   ~ 0
 right_in
 $Comp
-L GND #PWR17
+L GND #PWR19
 U 1 1 58FA3D11
-P 7300 2200
-F 0 "#PWR17" H 7300 1950 50  0001 C CNN
-F 1 "GND" H 7300 2050 50  0000 C CNN
-F 2 "" H 7300 2200 50  0000 C CNN
-F 3 "" H 7300 2200 50  0000 C CNN
-	1    7300 2200
+P 7150 2350
+F 0 "#PWR19" H 7150 2100 50  0001 C CNN
+F 1 "GND" H 7150 2200 50  0000 C CNN
+F 2 "" H 7150 2350 50  0000 C CNN
+F 3 "" H 7150 2350 50  0000 C CNN
+	1    7150 2350
 	1    0    0    -1  
 $EndComp
 $Comp
 L R R36
 U 1 1 58FA730A
-P 7100 2150
-F 0 "R36" V 7200 2100 50  0000 C CNN
-F 1 "1K" V 7100 2150 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM7mm" V 7030 2150 50  0001 C CNN
-F 3 "" H 7100 2150 50  0000 C CNN
-F 4 "CFR16J1K0" V 7100 2150 60  0001 C CNN "manf#"
-	1    7100 2150
+P 6950 2300
+F 0 "R36" V 7050 2250 50  0000 C CNN
+F 1 "1K" V 6950 2300 50  0000 C CNN
+F 2 "Resistors_ThroughHole:Resistor_Horizontal_RM7mm" V 6880 2300 50  0001 C CNN
+F 3 "" H 6950 2300 50  0000 C CNN
+F 4 "CFR16J1K0" V 6950 2300 60  0001 C CNN "manf#"
+	1    6950 2300
 	0    -1   -1   0   
 $EndComp
 Text Notes 5150 700  0    60   ~ 0
@@ -1692,10 +1681,10 @@ F 3 "" H 9500 4950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR19
+L GND #PWR20
 U 1 1 58F95BC1
 P 9550 2350
-F 0 "#PWR19" H 9550 2100 50  0001 C CNN
+F 0 "#PWR20" H 9550 2100 50  0001 C CNN
 F 1 "GND" H 9550 2200 50  0000 C CNN
 F 2 "" H 9550 2350 50  0000 C CNN
 F 3 "" H 9550 2350 50  0000 C CNN
@@ -1717,62 +1706,62 @@ F 4 "PTD902-2015F-A103" H -1750 50  60  0001 C CNN "manf#"
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR18
+L +12V #PWR11
 U 1 1 58FD91B3
-P 7550 2200
-F 0 "#PWR18" H 7550 2050 50  0001 C CNN
-F 1 "+12V" H 7550 2340 50  0000 C CNN
-F 2 "" H 7550 2200 50  0000 C CNN
-F 3 "" H 7550 2200 50  0000 C CNN
-	1    7550 2200
+P 7350 1900
+F 0 "#PWR11" H 7350 1750 50  0001 C CNN
+F 1 "+12V" H 7350 2040 50  0000 C CNN
+F 2 "" H 7350 1900 50  0000 C CNN
+F 3 "" H 7350 1900 50  0000 C CNN
+	1    7350 1900
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR20
+L GND #PWR18
 U 1 1 58FD92F9
-P 7550 2500
-F 0 "#PWR20" H 7550 2250 50  0001 C CNN
-F 1 "GND" H 7550 2350 50  0000 C CNN
-F 2 "" H 7550 2500 50  0000 C CNN
-F 3 "" H 7550 2500 50  0000 C CNN
-	1    7550 2500
+P 7350 2200
+F 0 "#PWR18" H 7350 1950 50  0001 C CNN
+F 1 "GND" H 7350 2050 50  0000 C CNN
+F 2 "" H 7350 2200 50  0000 C CNN
+F 3 "" H 7350 2200 50  0000 C CNN
+	1    7350 2200
 	1    0    0    -1  
 $EndComp
 $Comp
 L CP C47
 U 1 1 58FFC6A5
-P 7050 4450
-F 0 "C47" H 7075 4550 50  0000 L CNN
-F 1 "1000u" H 7000 4350 50  0000 R CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 7088 4300 50  0001 C CNN
-F 3 "" H 7050 4450 50  0000 C CNN
-	1    7050 4450
+P 6950 4500
+F 0 "C47" H 6975 4600 50  0000 L CNN
+F 1 "1000u" H 6900 4400 50  0000 R CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 6988 4350 50  0001 C CNN
+F 3 "" H 6950 4500 50  0000 C CNN
+	1    6950 4500
 	1    0    0    -1  
 $EndComp
 $Comp
 L CP C39
 U 1 1 58FFCF72
-P 7800 2350
-F 0 "C39" H 7825 2450 50  0000 L CNN
-F 1 "1000u" H 8050 2250 50  0000 R CNN
-F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 7838 2200 50  0001 C CNN
-F 3 "" H 7800 2350 50  0000 C CNN
-	1    7800 2350
+P 7600 2050
+F 0 "C39" H 7625 2150 50  0000 L CNN
+F 1 "1000u" H 7850 1950 50  0000 R CNN
+F 2 "Capacitors_ThroughHole:C_Radial_D10_L20_P5" H 7638 1900 50  0001 C CNN
+F 3 "" H 7600 2050 50  0000 C CNN
+	1    7600 2050
 	1    0    0    -1  
 $EndComp
-Text Label 6700 2300 0    60   ~ 0
+Text Label 6350 2400 0    60   ~ 0
 1s_delay
-Text Label 5800 4600 0    60   ~ 0
+Text Label 5850 4600 0    60   ~ 0
 1s_delay
 $Comp
-L +12V #PWR33
+L +12V #PWR34
 U 1 1 590037ED
-P 6500 4300
-F 0 "#PWR33" H 6500 4150 50  0001 C CNN
-F 1 "+12V" H 6500 4440 50  0000 C CNN
-F 2 "" H 6500 4300 50  0000 C CNN
-F 3 "" H 6500 4300 50  0000 C CNN
-	1    6500 4300
+P 7050 4350
+F 0 "#PWR34" H 7050 4200 50  0001 C CNN
+F 1 "+12V" H 7050 4490 50  0000 C CNN
+F 2 "" H 7050 4350 50  0000 C CNN
+F 3 "" H 7050 4350 50  0000 C CNN
+	1    7050 4350
 	1    0    0    -1  
 $EndComp
 $Sheet
@@ -1900,7 +1889,7 @@ Connection ~ 3250 2500
 Wire Wire Line
 	5450 1850 5450 2950
 Wire Wire Line
-	5200 2600 5850 2600
+	5200 2600 5450 2600
 Wire Wire Line
 	4600 2700 4600 2950
 Wire Wire Line
@@ -2153,11 +2142,7 @@ Wire Wire Line
 Wire Wire Line
 	3900 6900 3850 6900
 Wire Wire Line
-	6350 2900 6250 2900
-Wire Wire Line
-	6250 2900 6250 4000
-Wire Wire Line
-	6150 2600 6350 2600
+	6250 2850 6250 4000
 Wire Wire Line
 	6850 3650 7150 3650
 Wire Wire Line
@@ -2175,13 +2160,6 @@ Wire Wire Line
 	6850 3350 6850 3300
 Connection ~ 6850 3300
 Wire Wire Line
-	6850 3050 6850 3100
-Wire Wire Line
-	6850 3100 6700 3100
-Wire Wire Line
-	6700 3100 6700 3300
-Connection ~ 6700 3300
-Wire Wire Line
 	6250 4000 7350 4000
 Wire Wire Line
 	7350 4000 7350 3200
@@ -2193,17 +2171,15 @@ Connection ~ 7850 2750
 Wire Wire Line
 	7850 3500 7850 3450
 Wire Wire Line
-	9600 3450 10350 3450
+	9400 3450 10350 3450
 Wire Wire Line
 	9750 3450 9750 3550
-Wire Wire Line
-	8600 3600 8500 3600
 Wire Wire Line
 	9750 3850 9750 3950
 Connection ~ 9750 3900
 Connection ~ 9750 3450
 Wire Wire Line
-	8400 3300 8600 3300
+	8400 3350 8800 3350
 Wire Wire Line
 	8500 3900 9750 3900
 Wire Wire Line
@@ -2216,20 +2192,14 @@ Wire Wire Line
 Wire Wire Line
 	5450 4100 8100 4100
 Wire Wire Line
-	8100 4100 8100 3300
+	8100 4100 8100 3350
 Connection ~ 5450 4100
 Wire Wire Line
-	8500 3600 8500 3900
+	8500 3550 8500 3900
 Wire Wire Line
-	7000 5000 8000 5000
+	6800 5000 8000 5000
 Wire Wire Line
-	6000 5150 5900 5150
-Wire Wire Line
-	5900 5150 5900 6250
-Wire Wire Line
-	5800 4850 6000 4850
-Wire Wire Line
-	7250 4550 7250 4650
+	5900 5100 5900 6250
 Wire Wire Line
 	6500 5900 6800 5900
 Wire Wire Line
@@ -2247,13 +2217,6 @@ Wire Wire Line
 	6500 5600 6500 5550
 Connection ~ 6500 5550
 Wire Wire Line
-	6500 5300 6500 5350
-Wire Wire Line
-	6500 5350 6350 5350
-Wire Wire Line
-	6350 5350 6350 5550
-Connection ~ 6350 5550
-Wire Wire Line
 	5900 6250 7000 6250
 Wire Wire Line
 	7000 6250 7000 5450
@@ -2265,19 +2228,15 @@ Connection ~ 7500 5000
 Wire Wire Line
 	7500 5750 7500 5700
 Wire Wire Line
-	9250 5700 10000 5700
+	9050 5700 10000 5700
 Wire Wire Line
 	9400 5700 9400 5800
-Wire Wire Line
-	8250 5850 8150 5850
 Wire Wire Line
 	9400 6100 9400 6200
 Connection ~ 9400 6150
 Wire Wire Line
 	9400 6550 9400 6500
 Connection ~ 9400 5700
-Wire Wire Line
-	8050 5550 8250 5550
 Wire Wire Line
 	8150 6150 9400 6150
 Wire Wire Line
@@ -2288,18 +2247,13 @@ Connection ~ 9750 5700
 Wire Wire Line
 	9750 6450 9750 6400
 Wire Wire Line
-	7750 6600 7750 5550
+	7750 6600 7750 5600
 Wire Wire Line
-	8150 5850 8150 6150
-Wire Wire Line
-	5500 4850 5450 4850
-Connection ~ 5450 4850
+	8150 5800 8150 6150
 Wire Wire Line
 	5200 5250 5450 5250
 Wire Wire Line
 	5150 6600 7750 6600
-Wire Wire Line
-	7250 4300 7250 4350
 Wire Wire Line
 	9750 4300 9750 4250
 Wire Wire Line
@@ -2315,7 +2269,7 @@ Wire Wire Line
 Wire Wire Line
 	8050 2250 9900 2250
 Wire Wire Line
-	7350 2750 8050 2750
+	7150 2750 8050 2750
 Wire Wire Line
 	8000 5000 8000 4350
 Wire Wire Line
@@ -2361,38 +2315,12 @@ Wire Wire Line
 Wire Wire Line
 	9750 2350 9750 2450
 Wire Wire Line
-	7250 2150 7300 2150
+	7350 2200 7350 2150
 Wire Wire Line
-	6350 4600 6350 4650
+	7350 2200 7600 2200
 Wire Wire Line
-	7300 2150 7300 2200
-Wire Wire Line
-	6950 2150 6700 2150
-Wire Wire Line
-	6700 2150 6700 2400
-Wire Wire Line
-	7400 2200 7400 2450
-Wire Wire Line
-	7400 2450 6850 2450
-Wire Wire Line
-	5800 4600 6350 4600
-Wire Wire Line
-	6500 4700 6500 4300
-Wire Wire Line
-	7050 4600 7250 4600
-Connection ~ 7250 4600
-Connection ~ 7050 4300
-Wire Wire Line
-	7550 2500 7550 2450
-Wire Wire Line
-	7550 2500 7800 2500
-Wire Wire Line
-	7800 2200 7400 2200
-Wire Wire Line
-	7550 2250 7550 2200
-Connection ~ 7550 2200
-Wire Wire Line
-	6500 4300 7250 4300
+	7350 1950 7350 1900
+Connection ~ 7350 1900
 Wire Wire Line
 	7300 900  8150 900 
 Connection ~ 7300 750 
@@ -2478,17 +2406,6 @@ Connection ~ 7200 5000
 Text Notes 3500 250  0    60   ~ 0
 USE KICOST for BOMs!
 $Comp
-L C_Small C54
-U 1 1 5902351C
-P 7350 1050
-F 0 "C54" H 7360 1120 50  0000 L CNN
-F 1 "100n" H 7450 1050 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 7350 1050 50  0001 C CNN
-F 3 "" H 7350 1050 50  0000 C CNN
-	1    7350 1050
-	1    0    0    -1  
-$EndComp
-$Comp
 L R R48
 U 1 1 590237A2
 P 7200 1100
@@ -2539,17 +2456,6 @@ F 3 "" H 6650 1650 50  0000 C CNN
 	1    6650 1650
 	-1   0    0    1   
 $EndComp
-$Comp
-L C_Small C55
-U 1 1 59025568
-P 6800 1650
-F 0 "C55" H 6810 1720 50  0000 L CNN
-F 1 "100n" H 6900 1700 50  0000 L CNN
-F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 6800 1650 50  0001 C CNN
-F 3 "" H 6800 1650 50  0000 C CNN
-	1    6800 1650
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6650 1500 6650 1450
 Wire Wire Line
@@ -2560,7 +2466,6 @@ Wire Wire Line
 	6800 1800 6800 1750
 Wire Wire Line
 	6650 2200 6650 1800
-Connection ~ 6700 2200
 Wire Wire Line
 	6650 1800 6800 1800
 Wire Wire Line
@@ -2577,14 +2482,137 @@ F 3 "" H 5900 2200 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GND #PWR16
+L GND #PWR17
 U 1 1 59026D9A
 P 5750 2200
-F 0 "#PWR16" H 5750 1950 50  0001 C CNN
+F 0 "#PWR17" H 5750 1950 50  0001 C CNN
 F 1 "GND" H 5750 2050 50  0000 C CNN
 F 2 "" H 5750 2200 50  0000 C CNN
 F 3 "" H 5750 2200 50  0000 C CNN
 	1    5750 2200
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	6250 2850 6550 2850
+Wire Wire Line
+	5850 2650 5450 2650
+Connection ~ 5450 2650
+Wire Wire Line
+	6150 2650 6550 2650
+Wire Wire Line
+	6600 4350 7150 4350
+Connection ~ 7050 4350
+Wire Wire Line
+	5500 4900 5450 4900
+Connection ~ 5450 4900
+Wire Wire Line
+	5800 4900 6200 4900
+Wire Wire Line
+	5900 5100 6200 5100
+Wire Wire Line
+	8150 5800 8450 5800
+Wire Wire Line
+	8050 5600 8450 5600
+Wire Wire Line
+	8500 3550 8800 3550
+Wire Wire Line
+	6400 4700 6400 4600
+Wire Wire Line
+	6400 4600 5850 4600
+Wire Wire Line
+	7150 4650 7150 4600
+Wire Wire Line
+	7150 4350 7150 4400
+Wire Wire Line
+	6950 4650 7150 4650
+Wire Wire Line
+	6600 4350 6600 4800
+Connection ~ 6950 4350
+Connection ~ 7050 4650
+Wire Wire Line
+	6600 5200 6600 5550
+Connection ~ 6600 5550
+Wire Wire Line
+	6950 2950 6950 3300
+Connection ~ 6950 3300
+Wire Wire Line
+	7100 2300 7150 2300
+Wire Wire Line
+	7150 2300 7150 2350
+Wire Wire Line
+	6800 2300 6350 2300
+Wire Wire Line
+	6350 2300 6350 2400
+Wire Wire Line
+	6350 2400 6750 2400
+Wire Wire Line
+	6750 2400 6750 2450
+Wire Wire Line
+	6950 2550 7250 2550
+Wire Wire Line
+	7250 2550 7250 1900
+Wire Wire Line
+	7250 1900 7600 1900
+$Comp
+L TRANSFO_3 novalue4
+U 1 1 5908AD80
+P -2050 1100
+F 0 "novalue4" H -2050 1600 50  0000 C CNN
+F 1 "TRANSFO_3" H -2050 600 50  0000 C CNN
+F 2 "" H -2050 1100 50  0001 C CNN
+F 3 "" H -2050 1100 50  0000 C CNN
+F 4 "VPS24-3300" H -2050 1100 60  0001 C CNN "manf#"
+	1    -2050 1100
+	1    0    0    -1  
+$EndComp
+Text Notes -3250 5700 0    60   ~ 0
+http://www.signaltransfer.freeuk.com/powerout.htm\ntl07x max V is +/15V\nVp after rectifier = 15V\nVp before rectifier = 17 V (two diode drop off)\nVrms before rectifier = 12 V <- use this transformer\n\nFor one 8 ohm driver:\n15 Vs = ~~8 W per driver for 1% THD (10W for 10%)\nsqrt(10 W * 8 omh) = 8.9 Vrms over driver\n8.9 V rms = 12.6 Vp\nIpk = 12.6/8 = 1.6 A peak <-5 less than Imax = 5A\nEach rail (capacitor) only supplies 1/2 of the time\nso average per time per capacitor:\nI avg = 1.6 A peak/pi = 0.5 A\n(should we just be talking about power instead? 4*10W+2*20W=80W,\n80W/2 = 40W on each rail, 40W/15V DC = 2.6 A DC per rail)\n\n0.1% noise = .0089 V rms at output\nsupply side rejection = 75 dB,gain =30 dB, net rejection 45 dB\n0.0089 V rms out = 1.59 V noise on supply side\nneed to calc capacitance and ripple)\n\nV rms ripple = ripple factor * V_avg_DC\nripple factor = 1/(4*sqrt(3)*f*C*R)\nf = 60 Hz\n\nsawtooth wave:\nvrms = I_avg /(4*sqrt(3)*freq*cap)\nassume avg is approx the dc value\n\nvdc =15, i_avg = 2.6\n3900 uF gets 1.59 V rms\n\nthen use current = C dV/dt (with V=Vrms cos(omega t))\nI rms =  I_avg*pi /(2*sqrt(3)) = 0.9 * I_avg = 2.34 A rms\n
+$Comp
+L C_Small C54
+U 1 1 590A1DA3
+P 7350 1050
+F 0 "C54" H 7360 1120 50  0000 L CNN
+F 1 "100n" H 7360 970 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D6_P5" H 7350 1050 50  0001 C CNN
+F 3 "" H 7350 1050 50  0000 C CNN
+	1    7350 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L C_Small C55
+U 1 1 590A1F6B
+P 6800 1650
+F 0 "C55" H 6810 1720 50  0000 L CNN
+F 1 "100n" H 6810 1570 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D6_P5" H 6800 1650 50  0001 C CNN
+F 3 "" H 6800 1650 50  0000 C CNN
+	1    6800 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L TDA7292 novalue3
+U 1 1 590A8981
+P -750 -750
+F 0 "novalue3" H -500 -500 50  0000 C CNN
+F 1 "HEATSINK FOR TDA7292" H -400 -600 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 550 -950 50  0001 C CIN
+F 3 "" H -500 -500 50  0001 C CNN
+F 4 "6400BG" H -750 -750 60  0001 C CNN "manf#"
+	1    -750 -750
+	1    0    0    -1  
+$EndComp
+$Comp
+L TDA7292 novalue3
+U 2 1 590A8E1D
+P 100 -500
+F 0 "novalue3" H 350 -250 50  0000 C CNN
+F 1 "HEATSINK FOR TDA7292" H 450 -350 50  0000 C CNN
+F 2 "TO_SOT_Packages_THT:Multiwatt-11_Vertical_StaggeredType1" H 1400 -700 50  0001 C CIN
+F 3 "" H 350 -250 50  0001 C CNN
+F 4 "6400BG" H 100 -500 60  0001 C CNN "manf#"
+	2    100  -500
+	1    0    0    -1  
+$EndComp
+Text Notes 550  1150 0    60   ~ 0
+possible ground loop? audio in and power in both ground?
 $EndSCHEMATC
