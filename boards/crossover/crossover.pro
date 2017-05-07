@@ -1,4 +1,4 @@
-update=Mon 01 May 2017 03:59:21 PM EDT
+update=Sun 07 May 2017 12:31:20 AM EDT
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,18 +23,6 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
 [eeschema]
 version=1
 LibDir=
@@ -57,17 +45,16 @@ LibName15=analog_switches
 LibName16=motorola
 LibName17=texas
 LibName18=intel
-LibName19=interface
-LibName20=digital-audio
-LibName21=philips
-LibName22=display
-LibName23=cypress
-LibName24=siliconi
-LibName25=opto
-LibName26=atmel
-LibName27=contrib
-LibName28=valves
-LibName29=w_connectors
-LibName30=tda7292
-LibName31=/home/showard/kicadlibraries/kicad-library/library/audio
-LibName32=audio
+LibName19=audio
+LibName20=interface
+LibName21=digital-audio
+LibName22=philips
+LibName23=display
+LibName24=cypress
+LibName25=siliconi
+LibName26=opto
+LibName27=atmel
+LibName28=contrib
+LibName29=valves
+[general]
+version=1

@@ -1,7 +1,0 @@
-(fp_lib_table
-  (lib (name tda7292)(type KiCad)(uri "$(KIPRJMOD)/tda7292.pretty")(options "")(descr ""))
-  (lib (name Heatsinks)(type KiCad)(uri "$(KIPRJMOD)/libraries/Heatsinks.pretty")(options "")(descr ""))
-  (lib (name Resistors_THT)(type KiCad)(uri "$(KIPRJMOD)/libraries/Resistors_THT.pretty")(options "")(descr ""))
-  (lib (name Symbols)(type KiCad)(uri "$(KIPRJMOD)/libraries/Symbols.pretty")(options "")(descr ""))
-  (lib (name TO_SOT_Packages_THT)(type KiCad)(uri "$(KIPRJMOD)/libraries/TO_SOT_Packages_THT.pretty")(options "")(descr ""))
-)
