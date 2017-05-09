@@ -1,0 +1,113 @@
+
+(rules PCB amp
+  (snap_angle 
+    fortyfive_degree
+  )
+  (autoroute_settings
+    (fanout off)
+    (autoroute on)
+    (postroute on)
+    (vias on)
+    (via_costs 50)
+    (plane_via_costs 5)
+    (start_ripup_costs 100)
+    (start_pass_no 4894)
+    (layer_rule F.Cu
+      (active on)
+      (preferred_direction horizontal)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 3.0)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 1.5)
+    )
+  )
+  (rule
+    (width 254.0)
+    (clear 254.2)
+    (clear 127.0 (type smd_to_turn_gap))
+    (clear 63.6 (type smd_smd))
+  )
+  (padstack "Via[0-1]_685.8:330.2_um"
+    (shape
+      (circle F.Cu 685.8 0.0 0.0)
+    )
+    (shape
+      (circle B.Cu 685.8 0.0 0.0)
+    )
+    (attach off)
+  )
+  (via 
+    "Via[0-1]_685.8:330.2_um" "Via[0-1]_685.8:330.2_um" default
+  )
+  (via 
+    "Via[0-1]_685.8:330.2_um-kicad_default" "Via[0-1]_685.8:330.2_um" "kicad_default"
+  )
+  (via 
+    "Via[0-1]_685.8:330.2_um-Audio Out" "Via[0-1]_685.8:330.2_um" "Audio Out"
+  )
+  (via 
+    "Via[0-1]_685.8:330.2_um-Power" "Via[0-1]_685.8:330.2_um" Power
+  )
+  (via_rule
+    default "Via[0-1]_685.8:330.2_um"
+  )
+  (via_rule
+    "kicad_default" "Via[0-1]_685.8:330.2_um-kicad_default"
+  )
+  (via_rule
+    "Audio Out" "Via[0-1]_685.8:330.2_um-Audio Out"
+  )
+  (via_rule
+    Power "Via[0-1]_685.8:330.2_um-Power"
+  )
+  (class default
+    (clearance_class default)
+    (via_rule default)
+    (rule
+      (width 254.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "kicad_default"
+    "Net-(C10-Pad1)" "Net-(C2-Pad1)" "Net-(C6-Pad1)" "Net-(C14-Pad1)" "Net-(R1-Pad1)" "Net-(R4-Pad1)" "Net-(R6-Pad2)" "Net-(R7-Pad1)"
+    "Net-(C1-Pad1)" "Net-(C5-Pad1)" "Net-(C9-Pad1)" "Net-(RV1-Pad2)" "Net-(RV2-Pad2)" "/right_high_in" "/left_high_in" "/left_low_in"
+    "Net-(C15-Pad1)" "Net-(D1-Pad1)" "Net-(Q1-Pad3)" "Net-(R11-Pad1)" "Net-(R14-Pad2)" /M/SB "/right_low_in" "Net-(R13-Pad1)"
+    "Net-(R15-Pad1)"
+    (clearance_class "kicad_default")
+    (via_rule kicad_default)
+    (rule
+      (width 254.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class "Audio Out"
+    "/right_high_out" "/left_high_out" "/left_low_out" "/right_low_out"
+    (clearance_class "Audio Out")
+    (via_rule Audio Out)
+    (rule
+      (width 635.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+  (class Power
+    GND +15V "-15V"
+    (clearance_class Power)
+    (via_rule Power)
+    (rule
+      (width 1270.0)
+    )
+    (circuit 
+      (use_layer F.Cu B.Cu)
+    )
+  )
+)

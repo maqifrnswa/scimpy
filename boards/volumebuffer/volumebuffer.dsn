@@ -21,9 +21,11 @@
       )
     )
     (boundary
-      (rect pcb 27107 -16764 99271 -52365)
+      (path pcb 0  28448 -51816  92202 -51816  92202 -15748  28448 -15748
+            28448 -51816  28448 -51816)
     )
-    (plane GND (polygon F.Cu 0  90424 -50800  30988 -50800  30988 -16764  90424 -16764))
+    (plane GND (polygon F.Cu 0  91440 -50800  29464 -50800  29464 -16256  91440 -16256))
+    (plane GND (polygon B.Cu 0  91440 -50800  29464 -50800  29464 -16256  91440 -16256))
     (via "Via[0-1]_685.8:330.2_um")
     (rule
       (width 254)
@@ -37,8 +39,7 @@
       (place RV1 56134 -46736 front 180 (PN DUAL_POT))
     )
     (component "Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-3pol"
-      (place P2 34036 -37592 front 270 (PN CONN_01X03))
-      (place P4 34036 -21336 front 270 (PN CONN_01X03))
+      (place P2 33782 -27940 front 270 (PN CONN_01X03))
     )
     (component Capacitors_ThroughHole:C_Disc_D3_P2.5
       (place C6 53340 -36616 front 270 (PN 100n))
@@ -52,7 +53,7 @@
       (place C3 58725.9 -42172.7 front 90 (PN 100n))
       (place C5 43180 -36576 front 270 (PN 100n))
       (place C9 59741.9 -19058.7 front 270 (PN 100n))
-      (place C10 83871.9 -19138.7 front 270 (PN 100n))
+      (place C10 84074 -23114 front 270 (PN 100n))
     )
     (component scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal
       (place R4 73457.9 -42172.7 front 90 (PN 2K2))
@@ -79,7 +80,13 @@
       (place U2 45150.1 -34165.3 front 90 (PN TL072))
     )
     (component Socket_Strips:Socket_Strip_Angled_1x07
-      (place P1 88392 -36068 front 90 (PN CONN_01X07))
+      (place P1 88392 -40640 front 90 (PN CONN_01X07))
+    )
+    (component Mounting_Holes:MountingHole_3.2mm_M3
+      (place mnt2 87884 -46990 front 0 (PN MountingHole_3.2mm_M3))
+      (place mnt3 88900 -19558 front 0 (PN MountingHole_3.2mm_M3))
+      (place REF** 33782 -19558 front 0 (PN MountingHole_3.2mm_M3))
+      (place mnt1 33782 -46990 front 0 (PN MountingHole_3.2mm_M3))
     )
   )
   (library
@@ -280,6 +287,20 @@
       (pin Oval[A]Pad_1727.2x2032_um 6 12700 0)
       (pin Oval[A]Pad_1727.2x2032_um 7 15240 0)
     )
+    (image Mounting_Holes:MountingHole_3.2mm_M3
+      (outline (path signal 150  3200 0  3043.38 -988.854  2588.85 -1880.91  1880.91 -2588.85
+            988.854 -3043.38  0 -3200  -988.854 -3043.38  -1880.91 -2588.85
+            -2588.85 -1880.91  -3043.38 -988.854  -3200 0  -3043.38 988.854
+            -2588.85 1880.91  -1880.91 2588.85  -988.854 3043.38  0 3200
+            988.854 3043.38  1880.91 2588.85  2588.85 1880.91  3043.38 988.854))
+      (outline (path signal 50  3450 0  3281.14 -1066.11  2791.11 -2027.86  2027.86 -2791.11
+            1066.11 -3281.14  0 -3450  -1066.11 -3281.14  -2027.86 -2791.11
+            -2791.11 -2027.86  -3281.14 -1066.11  -3450 0  -3281.14 1066.11
+            -2791.11 2027.86  -2027.86 2791.11  -1066.11 3281.14  0 3450
+            1066.11 3281.14  2027.86 2791.11  2791.11 2027.86  3281.14 1066.11))
+      (keepout "" (circle F.Cu 3200))
+      (keepout "" (circle B.Cu 3200))
+    )
     (padstack Round[A]Pad_1300_um
       (shape (circle F.Cu 1300))
       (shape (circle B.Cu 1300))
@@ -349,7 +370,7 @@
   (network
     (net GND
       (pins RV1-3 RV1-6 P2-2 C6-2 C1-2 R5-1 R6-1 R8-2 C4-1 C8-2 R14-1 R15-1 R16-1
-        P4-2 P1-2)
+        P1-3)
     )
     (net "Net-(C7-Pad2)"
       (pins C7-2 R9-1 R14-2 U2-6)
@@ -370,7 +391,7 @@
       (pins C2-1 R2-1 R3-2 U1-1)
     )
     (net "Net-(C2-Pad2)"
-      (pins R5-2 C2-2 U1-6)
+      (pins R6-2 C2-2 U1-6)
     )
     (net /left_bass
       (pins R7-2 R1-2 C3-1 C5-1 U2-1 P1-4)
@@ -382,7 +403,7 @@
       (pins R4-1 U1-7 P1-5)
     )
     (net /right_tweet
-      (pins R13-1 U1-14 P1-7)
+      (pins R13-1 U1-8 P1-7)
     )
     (net "Net-(R3-Pad1)"
       (pins R4-2 R3-1 U1-5)
@@ -391,31 +412,31 @@
       (pins RV1-1 P2-3)
     )
     (net "Net-(C3-Pad2)"
-      (pins R6-2 C3-2 U1-2)
+      (pins R5-2 C3-2 U1-2)
     )
     (net "Net-(C5-Pad2)"
       (pins R7-1 R8-1 C5-2 U2-2)
     )
     (net "Net-(C9-Pad1)"
-      (pins R11-1 R12-2 C9-1 U1-8)
+      (pins R11-1 R12-2 C9-1 U1-14)
     )
     (net "Net-(C9-Pad2)"
-      (pins C9-2 R15-2 U1-13)
+      (pins C9-2 R15-2 U1-9)
     )
     (net "Net-(C10-Pad2)"
-      (pins C10-2 R16-2 U1-9)
+      (pins C10-2 R16-2 U1-13)
     )
     (net "Net-(R10-Pad1)"
-      (pins R10-1 R11-2 U1-10)
+      (pins R10-1 R11-2 U1-12)
     )
     (net "Net-(R12-Pad1)"
-      (pins R12-1 R13-2 U1-12)
+      (pins R12-1 R13-2 U1-10)
     )
     (net +15V
-      (pins C1-1 C4-2 U1-4 U2-8 P4-1 P1-1)
+      (pins C1-1 C4-2 U1-4 U2-8 P1-1)
     )
     (net -15V
-      (pins C6-1 C8-1 U1-11 U2-4 P4-3 P1-3)
+      (pins C6-1 C8-1 U1-11 U2-4 P1-2)
     )
     (class kicad_default "" /left_bass /left_in /left_tweet /right_bass /right_in
       /right_tweet "Net-(C10-Pad2)" "Net-(C2-Pad1)" "Net-(C2-Pad2)" "Net-(C3-Pad2)"
@@ -434,7 +455,7 @@
         (use_via Via[0-1]_685.8:330.2_um)
       )
       (rule
-        (width 254)
+        (width 508)
         (clearance 254.1)
       )
     )

@@ -53,7 +53,7 @@ F 0 "U2" H 3150 3050 50  0000 L CNN
 F 1 "TL072" H 3150 2650 50  0000 L CNN
 F 2 "Housings_DIP:DIP-8_W7.62mm" H 3150 2850 50  0001 C CNN
 F 3 "" H 3150 2850 50  0000 C CNN
-F 4 "tl072" H 3150 2850 60  0001 C CNN "manf#"
+F 4 "tl072cp" H 3150 2850 60  0001 C CNN "manf#"
 	1    3150 2850
 	1    0    0    -1  
 $EndComp
@@ -337,6 +337,7 @@ F 0 "U1" H 5850 2950 50  0000 L CNN
 F 1 "TL074" H 5850 2550 50  0000 L CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm" H 5800 2850 50  0001 C CNN
 F 3 "" H 5900 2950 50  0000 C CNN
+F 4 "tl074cn" H 5850 2750 60  0001 C CNN "manf#"
 	1    5850 2750
 	1    0    0    -1  
 $EndComp
@@ -384,10 +385,10 @@ Connection ~ 5750 3250
 Text Notes 1300 6350 0    60   ~ 0
 http://www.linkwitzlab.com/models.htm#E\n\nall pass filters gives delay = 2 RC\nfor f < f0 = 1/(2pi R C)\nNeed f0 > cross-over freq\ntypically need at least 2 stages to get\nf0 > cross-over freq and enough delay\n\ntg = 2RC/(1+(f*RC*2pi)^2)\ntg = 1/(pi*f_0)* 1/(1+(f/f_0)^2)
 $Comp
-L R R6
+L R R5
 U 1 1 590D1572
 P 5400 3050
-F 0 "R6" V 5480 3050 50  0000 C CNN
+F 0 "R5" V 5480 3050 50  0000 C CNN
 F 1 "Rph" V 5400 3050 50  0000 C CNN
 F 2 "scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 5330 3050 50  0001 C CNN
 F 3 "" H 5400 3050 50  0000 C CNN
@@ -433,18 +434,8 @@ F 0 "R1" V 5280 2000 50  0000 C CNN
 F 1 "2K2" V 5200 2000 50  0000 C CNN
 F 2 "scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 5130 2000 50  0001 C CNN
 F 3 "" H 5200 2000 50  0000 C CNN
+F 4 "MCMF0W4FF2201A50" V 5200 2000 60  0001 C CNN "manf#"
 	1    5200 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L R R2
-U 1 1 590D1592
-P 6050 2000
-F 0 "R2" V 6130 2000 50  0000 C CNN
-F 1 "2K2" V 6050 2000 50  0000 C CNN
-F 2 "scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 5980 2000 50  0001 C CNN
-F 3 "" H 6050 2000 50  0000 C CNN
-	1    6050 2000
 	0    1    1    0   
 $EndComp
 Wire Wire Line
@@ -482,10 +473,10 @@ F 3 "" H 7600 2850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R5
+L R R6
 U 1 1 590D15B0
 P 7100 3050
-F 0 "R5" V 7180 3050 50  0000 C CNN
+F 0 "R6" V 7180 3050 50  0000 C CNN
 F 1 "Rph" V 7100 3050 50  0000 C CNN
 F 2 "scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 7030 3050 50  0001 C CNN
 F 3 "" H 7100 3050 50  0000 C CNN
@@ -562,13 +553,13 @@ Wire Wire Line
 Connection ~ 7950 2650
 $Comp
 L TL074 U1
-U 3 1 590D15E1
+U 4 1 590D15E1
 P 5850 4650
 F 0 "U1" H 5850 4850 50  0000 L CNN
 F 1 "TL074" H 5850 4450 50  0000 L CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm" H 5800 4750 50  0001 C CNN
 F 3 "" H 5900 4850 50  0000 C CNN
-	3    5850 4650
+	4    5850 4650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -654,13 +645,13 @@ Wire Wire Line
 Connection ~ 6250 4650
 $Comp
 L TL074 U1
-U 4 1 590D161C
+U 3 1 590D161C
 P 7550 4550
 F 0 "U1" H 7550 4750 50  0000 L CNN
 F 1 "TL074" H 7550 4350 50  0000 L CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm" H 7500 4650 50  0001 C CNN
 F 3 "" H 7600 4750 50  0000 C CNN
-	4    7550 4550
+	3    7550 4550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -796,10 +787,10 @@ F 3 "" H 2500 3050 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L -15V #PWR18
+L -15V #PWR16
 U 1 1 590D6717
 P 2500 4050
-F 0 "#PWR18" H 2500 4150 50  0001 C CNN
+F 0 "#PWR16" H 2500 4150 50  0001 C CNN
 F 1 "-15V" H 2500 4200 50  0000 C CNN
 F 2 "" H 2500 4050 50  0000 C CNN
 F 3 "" H 2500 4050 50  0000 C CNN
@@ -818,63 +809,16 @@ F 3 "" H 5750 2200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L -15V #PWR12
+L -15V #PWR13
 U 1 1 590D6882
 P 5750 3450
-F 0 "#PWR12" H 5750 3550 50  0001 C CNN
+F 0 "#PWR13" H 5750 3550 50  0001 C CNN
 F 1 "-15V" H 5750 3600 50  0000 C CNN
 F 2 "" H 5750 3450 50  0000 C CNN
 F 3 "" H 5750 3450 50  0000 C CNN
 	1    5750 3450
 	-1   0    0    1   
 $EndComp
-$Comp
-L CONN_01X03 P4
-U 1 1 590D68FA
-P 900 4050
-F 0 "P4" H 900 4250 50  0000 C CNN
-F 1 "CONN_01X03" V 1000 4050 50  0000 C CNN
-F 2 "Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-3pol" H 900 4050 50  0001 C CNN
-F 3 "" H 900 4050 50  0000 C CNN
-F 4 "1935174" H 900 4050 60  0001 C CNN "manf#"
-	1    900  4050
-	-1   0    0    1   
-$EndComp
-$Comp
-L +15V #PWR016
-U 1 1 590D699C
-P 1000 4450
-F 0 "#PWR016" H 1000 4300 50  0001 C CNN
-F 1 "+15V" H 1000 4590 50  0000 C CNN
-F 2 "" H 1000 4450 50  0000 C CNN
-F 3 "" H 1000 4450 50  0000 C CNN
-	1    1000 4450
-	1    0    0    -1  
-$EndComp
-$Comp
-L -15V #PWR20
-U 1 1 590D6B19
-P 1450 3950
-F 0 "#PWR20" H 1450 4050 50  0001 C CNN
-F 1 "-15V" H 1450 4100 50  0000 C CNN
-F 2 "" H 1450 3950 50  0000 C CNN
-F 3 "" H 1450 3950 50  0000 C CNN
-	1    1450 3950
-	-1   0    0    1   
-$EndComp
-$Comp
-L GND #PWR017
-U 1 1 590D6B93
-P 1250 4050
-F 0 "#PWR017" H 1250 3800 50  0001 C CNN
-F 1 "GND" H 1250 3900 50  0000 C CNN
-F 2 "" H 1250 4050 50  0000 C CNN
-F 3 "" H 1250 4050 50  0000 C CNN
-	1    1250 4050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1250 4050 1100 4050
 $Comp
 L CONN_01X07 P1
 U 1 1 590D272F
@@ -883,6 +827,7 @@ F 0 "P1" H 9600 3100 50  0000 C CNN
 F 1 "CONN_01X07" V 9700 2700 50  0000 C CNN
 F 2 "Socket_Strips:Socket_Strip_Angled_1x07" H 9600 2700 50  0001 C CNN
 F 3 "" H 9600 2700 50  0000 C CNN
+F 4 "0022288073" H 9600 2700 60  0001 C CNN "manf#"
 	1    9600 2700
 	1    0    0    -1  
 $EndComp
@@ -903,10 +848,10 @@ Wire Wire Line
 Wire Wire Line
 	9000 2700 9400 2700
 $Comp
-L +15V #PWR018
+L +15V #PWR016
 U 1 1 590D2B76
 P 9100 2200
-F 0 "#PWR018" H 9100 2050 50  0001 C CNN
+F 0 "#PWR016" H 9100 2050 50  0001 C CNN
 F 1 "+15V" H 9100 2340 50  0000 C CNN
 F 2 "" H 9100 2200 50  0000 C CNN
 F 3 "" H 9100 2200 50  0000 C CNN
@@ -914,25 +859,25 @@ F 3 "" H 9100 2200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR019
+L GND #PWR017
 U 1 1 590D2BED
-P 9100 2250
-F 0 "#PWR019" H 9100 2000 50  0001 C CNN
-F 1 "GND" H 9100 2100 50  0000 C CNN
-F 2 "" H 9100 2250 50  0000 C CNN
-F 3 "" H 9100 2250 50  0000 C CNN
-	1    9100 2250
-	1    0    0    -1  
-$EndComp
-$Comp
-L -15V #PWR15
-U 1 1 590D2CDA
 P 9100 2450
-F 0 "#PWR15" H 9100 2550 50  0001 C CNN
-F 1 "-15V" H 9100 2600 50  0000 C CNN
+F 0 "#PWR017" H 9100 2200 50  0001 C CNN
+F 1 "GND" H 9100 2300 50  0000 C CNN
 F 2 "" H 9100 2450 50  0000 C CNN
 F 3 "" H 9100 2450 50  0000 C CNN
 	1    9100 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L -15V #PWR3
+U 1 1 590D2CDA
+P 9100 2250
+F 0 "#PWR3" H 9100 2350 50  0001 C CNN
+F 1 "-15V" H 9100 2400 50  0000 C CNN
+F 2 "" H 9100 2250 50  0000 C CNN
+F 3 "" H 9100 2250 50  0000 C CNN
+	1    9100 2250
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
@@ -953,10 +898,27 @@ Wire Wire Line
 	9350 2200 9350 2400
 Wire Wire Line
 	9350 2400 9400 2400
-Wire Wire Line
-	1100 3950 1450 3950
-Wire Wire Line
-	1000 4450 1100 4450
-Wire Wire Line
-	1100 4450 1100 4150
+$Comp
+L POT_Dual no_value1
+U 1 1 59125A0A
+P 1250 4150
+F 0 "no_value1" H 1410 4460 50  0000 C CNN
+F 1 "connector_dual_pot" H 1250 4250 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-06_06x2.54mm_Straight" H 1250 4150 50  0001 C CNN
+F 3 "http://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=640456&DocType=Customer+Drawing&DocLang=English" H 1250 4150 50  0001 C CNN
+F 4 "3-643815-6" H 1250 4150 60  0001 C CNN "manf#"
+	1    1250 4150
+	0    1    1    0   
+$EndComp
+$Comp
+L R R2
+U 1 1 590D1592
+P 6050 2000
+F 0 "R2" V 6130 2000 50  0000 C CNN
+F 1 "2K2" V 6050 2000 50  0000 C CNN
+F 2 "scimpy_library:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 5980 2000 50  0001 C CNN
+F 3 "" H 6050 2000 50  0000 C CNN
+	1    6050 2000
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
