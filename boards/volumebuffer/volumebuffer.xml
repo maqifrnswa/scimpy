@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/home/showard/scimpy/scimpy/boards/volumebuffer/volumebuffer.sch</source>
-    <date>Tue 09 May 2017 07:28:31 PM EDT</date>
+    <date>Fri 02 Jun 2017 03:31:04 PM EDT</date>
     <tool>Eeschema 4.0.5+dfsg1-4</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -95,6 +95,9 @@
     <comp ref="C5">
       <value>100n</value>
       <footprint>Capacitors_ThroughHole:C_Disc_D6_P5</footprint>
+      <fields>
+        <field name="manf#">FG26C0G1H104JNT06</field>
+      </fields>
       <libsource lib="device" part="C_Small"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>590A1DA3</tstamp>
@@ -126,6 +129,9 @@
     <comp ref="C1">
       <value>100n</value>
       <footprint>Capacitors_ThroughHole:C_Disc_D3_P2.5</footprint>
+      <fields>
+        <field name="manf#">K104K15X7RF53L2</field>
+      </fields>
       <libsource lib="device" part="C_Small"/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>590D1566</tstamp>
@@ -242,7 +248,7 @@
       <value>CONN_01X07</value>
       <footprint>Socket_Strips:Socket_Strip_Angled_1x07</footprint>
       <fields>
-        <field name="manf#">0022288073</field>
+        <field name="manf#">22-16-2070</field>
       </fields>
       <libsource lib="conn" part="CONN_01X07"/>
       <sheetpath names="/" tstamps="/"/>
@@ -250,7 +256,6 @@
     </comp>
     <comp ref="no_value1">
       <value>connector_dual_pot</value>
-      <footprint>Connectors_Molex:Molex_KK-6410-06_06x2.54mm_Straight</footprint>
       <datasheet>http://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&amp;DocNm=640456&amp;DocType=Customer+Drawing&amp;DocLang=English</datasheet>
       <fields>
         <field name="manf#">3-643815-6</field>
@@ -431,14 +436,14 @@
     </libpart>
   </libparts>
   <libraries>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
     <library logical="conn">
       <uri>/usr/share/kicad/library/conn.lib</uri>
     </library>
     <library logical="linear">
       <uri>/usr/share/kicad/library/linear.lib</uri>
-    </library>
-    <library logical="device">
-      <uri>/usr/share/kicad/library/device.lib</uri>
     </library>
   </libraries>
   <nets>
@@ -448,7 +453,7 @@
       <node ref="R10" pin="1"/>
     </net>
     <net code="4" name="Net-(C9-Pad2)">
-      <node ref="U1" pin="9"/>
+      <node ref="U1" pin="2"/>
       <node ref="C9" pin="2"/>
       <node ref="R15" pin="2"/>
     </net>
@@ -522,14 +527,14 @@
       <node ref="no_value1" pin="1"/>
     </net>
     <net code="20" name="/right_tweet">
-      <node ref="U1" pin="8"/>
+      <node ref="U1" pin="1"/>
       <node ref="R13" pin="1"/>
       <node ref="P1" pin="7"/>
     </net>
     <net code="21" name="Net-(R12-Pad1)">
       <node ref="R13" pin="2"/>
       <node ref="R12" pin="1"/>
-      <node ref="U1" pin="10"/>
+      <node ref="U1" pin="3"/>
     </net>
     <net code="22" name="/left_tweet">
       <node ref="P1" pin="5"/>
@@ -575,16 +580,16 @@
     <net code="31" name="Net-(C3-Pad2)">
       <node ref="R5" pin="2"/>
       <node ref="C3" pin="2"/>
-      <node ref="U1" pin="2"/>
+      <node ref="U1" pin="9"/>
     </net>
     <net code="34" name="Net-(C2-Pad1)">
-      <node ref="U1" pin="1"/>
+      <node ref="U1" pin="8"/>
       <node ref="R2" pin="1"/>
       <node ref="R3" pin="2"/>
       <node ref="C2" pin="1"/>
     </net>
     <net code="35" name="Net-(R1-Pad1)">
-      <node ref="U1" pin="3"/>
+      <node ref="U1" pin="10"/>
       <node ref="R1" pin="1"/>
       <node ref="R2" pin="2"/>
     </net>

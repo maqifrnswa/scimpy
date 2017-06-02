@@ -1,10 +1,6 @@
-update=Tue 09 May 2017 01:56:05 AM EDT
+update=Mon 29 May 2017 08:54:33 PM EDT
 version=1
-last_client=eeschema
-[general]
-version=1
-RootSch=
-BoardNm=
+last_client=kicad
 [pcbnew]
 version=1
 LastNetListRead=
@@ -62,3 +58,5 @@ LibName28=contrib
 LibName29=valves
 LibName30=tda7292
 LibName31=switches
+[general]
+version=1

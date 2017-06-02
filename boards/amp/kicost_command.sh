@@ -1,1 +1,1 @@
-kicost -i crossover.xml --overwrite
+kicost -i amp.xml --overwrite -e farnell

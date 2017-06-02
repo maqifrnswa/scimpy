@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/showard/scimpy/scimpy/boards/powersupply/powersupply.sch</source>
+    <date>Fri 02 Jun 2017 02:08:32 PM EDT</date>
+    <tool>Eeschema 4.0.5+dfsg1-4</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>LR4 Active Crossover, Power Supply, and Amp</title>
+        <company>Scott Howard</company>
+        <rev>0</rev>
+        <date>2017-04-26</date>
+        <source>powersupply.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="R2">
+      <value>1K 1W</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM15mm</footprint>
+      <fields>
+        <field name="manf#">ROX1SJ1K0</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E0977A</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>1K 1W</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM15mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E097EA</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>6800u</value>
+      <footprint>Capacitors_ThroughHole:C_Radial_D22_L41_P10</footprint>
+      <fields>
+        <field name="manf#">UVR1H682MRD</field>
+      </fields>
+      <libsource lib="device" part="CP1"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E14E27</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>6800u</value>
+      <footprint>Capacitors_ThroughHole:C_Radial_D22_L41_P10</footprint>
+      <libsource lib="device" part="CP1"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E14EB6</tstamp>
+    </comp>
+    <comp ref="D1">
+      <value>Diode_Bridge</value>
+      <footprint>Diodes_ThroughHole:Diode_Bridge_18.5x5.5</footprint>
+      <fields>
+        <field name="manf#">GBU8J-BP</field>
+      </fields>
+      <libsource lib="device" part="D_Bridge_-A+A"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E312D3</tstamp>
+    </comp>
+    <comp ref="P1">
+      <value>CONN_01X03</value>
+      <footprint>Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-3pol</footprint>
+      <fields>
+        <field name="manf#">1935174</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X03"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E31639</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>100n</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D3_P2.5</footprint>
+      <fields>
+        <field name="manf#">K104K15X7RF53L2</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E5D56E</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>100n</value>
+      <footprint>Capacitors_ThroughHole:C_Disc_D3_P2.5</footprint>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58E5D68C</tstamp>
+    </comp>
+    <comp ref="novalue4">
+      <value>TRANSFO_3</value>
+      <fields>
+        <field name="manf#">VPS24-3300</field>
+      </fields>
+      <libsource lib="device" part="Transformer_SP_2S"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5908AD80</tstamp>
+    </comp>
+    <comp ref="novalue6">
+      <value>POWER OUTLET</value>
+      <fields>
+        <field name="manf#">719W-00/03</field>
+      </fields>
+      <libsource lib="regul" part="LM317_SOT223"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>590C121C</tstamp>
+    </comp>
+    <comp ref="novalue7">
+      <value>fuse 1A, 250V rated</value>
+      <fields>
+        <field name="manf#">0217001.HXP</field>
+      </fields>
+      <libsource lib="regul" part="LM317_SOT223"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>590C15D2</tstamp>
+    </comp>
+    <comp ref="P2">
+      <value>CONN_01X03</value>
+      <footprint>Terminal_Blocks:TerminalBlock_Pheonix_MKDS1.5-3pol</footprint>
+      <fields>
+        <field name="manf#">1935174</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X03"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>590CB8B6</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="conn" part="CONN_01X03">
+      <description>Connector, single row, 01x03</description>
+      <footprints>
+        <fp>Pin_Header_Straight_1X03</fp>
+        <fp>Pin_Header_Angled_1X03</fp>
+        <fp>Socket_Strip_Straight_1X03</fp>
+        <fp>Socket_Strip_Angled_1X03</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X03</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+        <pin num="3" name="P3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="CP1">
+      <description>Polarised capacitor</description>
+      <footprints>
+        <fp>SMD*_Pol</fp>
+        <fp>C_Axial*</fp>
+        <fp>C_Radial*</fp>
+        <fp>c_elec*</fp>
+        <fp>C*elec</fp>
+        <fp>TantalC*</fp>
+        <fp>CP*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">CP1</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="C_Small">
+      <description>Unpolarized capacitor</description>
+      <footprints>
+        <fp>C?</fp>
+        <fp>C_????_*</fp>
+        <fp>C_????</fp>
+        <fp>SMD*_c</fp>
+        <fp>Capacitor*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C_Small</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="D_Bridge_-A+A">
+      <description>Diode bridge (pins: 1=-, 2=AC, 3=+, 4=AC)</description>
+      <footprints>
+        <fp>Diode?Bridge*</fp>
+        <fp>Diode?Rectifier*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_Bridge_-A+A</field>
+      </fields>
+      <pins>
+        <pin num="1" name="-" type="input"/>
+        <pin num="2" name="~" type="input"/>
+        <pin num="3" name="+" type="input"/>
+        <pin num="4" name="~" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="regul" part="LM317_SOT223">
+      <description>Linear Regulator (adjustable)</description>
+      <docs>regulator/lm117.pdf</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LM317_SOT223</field>
+      </fields>
+      <pins>
+        <pin num="1" name="ADJ" type="input"/>
+        <pin num="2" name="OUT" type="power_out"/>
+        <pin num="3" name="IN" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+        <fp>Resistor_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="Transformer_SP_2S">
+      <description>Transformer, split primary, dual secondary</description>
+      <fields>
+        <field name="Reference">T</field>
+        <field name="Value">Transformer_SP_2S</field>
+      </fields>
+      <pins>
+        <pin num="1" name="IN+" type="passive"/>
+        <pin num="2" name="PM" type="passive"/>
+        <pin num="3" name="IN-" type="passive"/>
+        <pin num="4" name="OUT1A" type="passive"/>
+        <pin num="5" name="OUT1B" type="passive"/>
+        <pin num="6" name="OUT2A" type="passive"/>
+        <pin num="7" name="OUT2B" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="conn">
+      <uri>/usr/share/kicad/library/conn.lib</uri>
+    </library>
+    <library logical="regul">
+      <uri>/usr/share/kicad/library/regul.lib</uri>
+    </library>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(novalue4-Pad3)">
+      <node ref="novalue4" pin="3"/>
+    </net>
+    <net code="2" name="Net-(novalue7-Pad2)">
+      <node ref="novalue7" pin="2"/>
+    </net>
+    <net code="3" name="Net-(novalue7-Pad1)">
+      <node ref="novalue7" pin="1"/>
+    </net>
+    <net code="4" name="Net-(novalue6-Pad3)">
+      <node ref="novalue6" pin="3"/>
+    </net>
+    <net code="5" name="Net-(novalue6-Pad2)">
+      <node ref="novalue6" pin="2"/>
+    </net>
+    <net code="6" name="Net-(novalue6-Pad1)">
+      <node ref="novalue6" pin="1"/>
+    </net>
+    <net code="7" name="Net-(novalue4-Pad7)">
+      <node ref="novalue4" pin="7"/>
+    </net>
+    <net code="8" name="Net-(novalue4-Pad6)">
+      <node ref="novalue4" pin="6"/>
+    </net>
+    <net code="9" name="Net-(novalue4-Pad5)">
+      <node ref="novalue4" pin="5"/>
+    </net>
+    <net code="10" name="Net-(novalue4-Pad4)">
+      <node ref="novalue4" pin="4"/>
+    </net>
+    <net code="11" name="Net-(novalue7-Pad3)">
+      <node ref="novalue7" pin="3"/>
+    </net>
+    <net code="12" name="Net-(novalue4-Pad2)">
+      <node ref="novalue4" pin="2"/>
+    </net>
+    <net code="13" name="Net-(novalue4-Pad1)">
+      <node ref="novalue4" pin="1"/>
+    </net>
+    <net code="14" name="/+12VAC">
+      <node ref="D1" pin="4"/>
+      <node ref="P1" pin="3"/>
+    </net>
+    <net code="15" name="/-12VAC">
+      <node ref="D1" pin="2"/>
+      <node ref="P1" pin="1"/>
+    </net>
+    <net code="16" name="GND">
+      <node ref="C4" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="R2" pin="2"/>
+      <node ref="R3" pin="1"/>
+      <node ref="P1" pin="2"/>
+      <node ref="C2" pin="2"/>
+      <node ref="C5" pin="1"/>
+      <node ref="P2" pin="2"/>
+    </net>
+    <net code="17" name="-15V">
+      <node ref="R3" pin="2"/>
+      <node ref="D1" pin="1"/>
+      <node ref="C4" pin="2"/>
+      <node ref="C5" pin="2"/>
+      <node ref="P2" pin="3"/>
+    </net>
+    <net code="18" name="+15V">
+      <node ref="R2" pin="1"/>
+      <node ref="P2" pin="1"/>
+      <node ref="D1" pin="3"/>
+      <node ref="C1" pin="1"/>
+      <node ref="C2" pin="1"/>
+    </net>
+  </nets>
+</export>

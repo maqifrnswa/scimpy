@@ -307,6 +307,7 @@ F 0 "C5" H 3610 3220 50  0000 L CNN
 F 1 "100n" H 3610 3070 50  0000 L CNN
 F 2 "Capacitors_ThroughHole:C_Disc_D6_P5" H 3600 3150 50  0001 C CNN
 F 3 "" H 3600 3150 50  0000 C CNN
+F 4 "FG26C0G1H104JNT06" H 3600 3150 60  0001 C CNN "manf#"
 	1    3600 3150
 	1    0    0    -1  
 $EndComp
@@ -331,14 +332,14 @@ Wire Wire Line
 	2350 3000 2350 2750
 $Comp
 L TL074 U1
-U 1 1 590D1545
+U 3 1 590D1545
 P 5850 2750
 F 0 "U1" H 5850 2950 50  0000 L CNN
 F 1 "TL074" H 5850 2550 50  0000 L CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm" H 5800 2850 50  0001 C CNN
 F 3 "" H 5900 2950 50  0000 C CNN
 F 4 "tl074cn" H 5850 2750 60  0001 C CNN "manf#"
-	1    5850 2750
+	3    5850 2750
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -373,6 +374,7 @@ F 0 "C1" H 5960 2470 50  0000 L CNN
 F 1 "100n" H 5960 2320 50  0000 L CNN
 F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 5950 2400 50  0001 C CNN
 F 3 "" H 5950 2400 50  0000 C CNN
+F 4 "K104K15X7RF53L2" H 5950 2400 60  0001 C CNN "manf#"
 	1    5950 2400
 	1    0    0    -1  
 $EndComp
@@ -645,13 +647,13 @@ Wire Wire Line
 Connection ~ 6250 4650
 $Comp
 L TL074 U1
-U 3 1 590D161C
+U 1 1 590D161C
 P 7550 4550
 F 0 "U1" H 7550 4750 50  0000 L CNN
 F 1 "TL074" H 7550 4350 50  0000 L CNN
 F 2 "Housings_DIP:DIP-14_W7.62mm" H 7500 4650 50  0001 C CNN
 F 3 "" H 7600 4750 50  0000 C CNN
-	3    7550 4550
+	1    7550 4550
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -827,7 +829,7 @@ F 0 "P1" H 9600 3100 50  0000 C CNN
 F 1 "CONN_01X07" V 9700 2700 50  0000 C CNN
 F 2 "Socket_Strips:Socket_Strip_Angled_1x07" H 9600 2700 50  0001 C CNN
 F 3 "" H 9600 2700 50  0000 C CNN
-F 4 "0022288073" H 9600 2700 60  0001 C CNN "manf#"
+F 4 "22-16-2070" H 9600 2700 60  0001 C CNN "manf#"
 	1    9600 2700
 	1    0    0    -1  
 $EndComp
@@ -904,7 +906,7 @@ U 1 1 59125A0A
 P 1250 4150
 F 0 "no_value1" H 1410 4460 50  0000 C CNN
 F 1 "connector_dual_pot" H 1250 4250 50  0000 C CNN
-F 2 "Connectors_Molex:Molex_KK-6410-06_06x2.54mm_Straight" H 1250 4150 50  0001 C CNN
+F 2 "" H 1250 4150 50  0001 C CNN
 F 3 "http://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=640456&DocType=Customer+Drawing&DocLang=English" H 1250 4150 50  0001 C CNN
 F 4 "3-643815-6" H 1250 4150 60  0001 C CNN "manf#"
 	1    1250 4150
