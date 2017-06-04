@@ -11,7 +11,10 @@ import matplotlib.ticker
 import scipy.optimize
 
 
-matplotlib.rcParams['axes.autolimit_mode'] = 'round_numbers'
+try:
+    matplotlib.rcParams['axes.autolimit_mode'] = 'round_numbers'
+except KeyError:
+    logging.warn("matplotlib axes.autolimit_mode=round_number not supported")
 
 
 def cheby_a1(k):
